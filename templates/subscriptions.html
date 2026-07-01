@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow-lg border-0 rounded-4">
+
+    <div class="card-body">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="fw-bold mb-1">
+                    📦 My Subscriptions
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Manage all your subscriptions in one place.
+                </p>
+            </div>
+
+            <div>
+
+                <a href="{{ url_for('auth.add_subscription') }}"
+                   class="btn btn-success">
+
+                    ➕ Add
+
+                </a>
+
+                <a href="/export-csv"
+                   class="btn btn-outline-secondary">
+
+                    📥 Export
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Filters -->
+        <form method="GET">
+
+            <div class="row g-2 mb-4">
+
+                <div class="col-lg-5">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="🔍 Search subscription..."
+                        value="{{ search }}">
+
+                </div>
+
+                <div class="col-lg-3">
+
+                    <select
+                        name="category"
+                        class="form-select">
+
+                        <option value="">All Categories</option>
+
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Education">Education</option>
+                        <option value="Music">Music</option>
+                        <option value="Productivity">Productivity</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Other">Other</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-lg-2">
+
+                    <select
+                        name="sort"
+                        class="form-select">
+
+                        <option value="">Sort By</option>
+                        <option value="renewal">Renewal Date</option>
+                        <option value="cost">Monthly Cost</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-lg-2 d-grid">
+
+                    <button
+                        class="btn btn-primary">
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- Table -->
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-primary">
+
+                    <tr>
+
+                        <th>Service</th>
+                        <th>Category</th>
+                        <th>Monthly</th>
+                        <th>Priority</th>
+                        <th>Usage</th>
+                        <th>Renewal</th>
+                        <th class="text-center">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for subscription in subscriptions.items %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+
+                                {{ subscription.service_name }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-info text-dark">
+
+                                {{ subscription.category }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ "%.0f"|format(subscription.monthly_cost) }}
+
+                        </td>
+
+                        <td>
+
+                            {% if subscription.priority=="High" %}
+
+                                <span class="badge bg-success">
+
+                                    High
+
+                                </span>
+
+                            {% elif subscription.priority=="Medium" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Medium
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Low
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                {{ subscription.usage_frequency }}
+
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ subscription.usage_hours }} hrs
+
+                            </small>
+
+                        </td>
+
+                        <td>
+
+                            {{ subscription.renewal_date.strftime("%d %b %Y") }}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a href="/edit-subscription/{{ subscription.id }}"
+                               class="btn btn-sm btn-outline-warning">
+
+                                ✏️
+
+                            </a>
+
+                            <a href="/delete-subscription/{{ subscription.id }}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Delete this subscription?')">
+
+                                🗑️
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Pagination -->
+
+        <nav class="mt-4">
+
+            <ul class="pagination justify-content-center">
+
+                {% if subscriptions.has_prev %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="{{ url_for('auth.subscriptions',page=subscriptions.prev_num,search=search,category=category,sort=sort) }}">
+
+                            Previous
+
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ subscriptions.page }}
+
+                    </span>
+
+                </li>
+
+                {% if subscriptions.has_next %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="{{ url_for('auth.subscriptions',page=subscriptions.next_num,search=search,category=category,sort=sort) }}">
+
+                            Next
+
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock %}

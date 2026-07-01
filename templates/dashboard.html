@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Welcome Header -->
+<div class="dashboard-header mb-5">
+    <h1 class="welcome-title">👋 Welcome, {{ current_user.username }}</h1>
+    <p class="welcome-subtitle">Here's an overview of your subscriptions.</p>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-4 mb-5">
+    
+    <!-- Total Subscriptions Card -->
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card card-primary">
+            <div class="card-icon">📦</div>
+            <div class="card-content">
+                <h6 class="card-label">Total Subscriptions</h6>
+                <h2 class="card-value">{{ total_subscriptions }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Spending Card -->
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card card-success">
+            <div class="card-icon">💰</div>
+            <div class="card-content">
+                <h6 class="card-label">Monthly Spending</h6>
+                <h2 class="card-value">₹{{ total_monthly }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yearly Spending Card -->
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card card-warning">
+            <div class="card-icon">📅</div>
+            <div class="card-content">
+                <h6 class="card-label">Yearly Spending</h6>
+                <h2 class="card-value">₹{{ total_yearly }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Health Score Card -->
+    <div class="col-lg-3 col-md-6">
+        <div class="summary-card card-danger">
+            <div class="card-icon">❤️</div>
+            <div class="card-content">
+                <h6 class="card-label">Health Score</h6>
+                <h2 class="card-value">{{ health_score }}<span>/100</span></h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Analytics Row -->
+<div class="row g-4 mb-5">
+
+    <!-- Spending by Category -->
+    <div class="col-lg-6">
+        <div class="analytics-card">
+            <div class="card-header-modern">
+                <h5 class="card-title">🥧 Spending by Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas
+                        id="categoryChart"
+                        data-labels='{{ category_labels | tojson }}'
+                        data-values='{{ category_values | tojson }}'>
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Cost by Subscription -->
+    <div class="col-lg-6">
+        <div class="analytics-card">
+            <div class="card-header-modern">
+                <h5 class="card-title">📊 Monthly Cost by Subscription</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas
+                        id="costChart"
+                        data-labels='{{ subscription_labels | tojson }}'
+                        data-values='{{ subscription_values | tojson }}'>
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Insights Row -->
+<div class="row g-4 mb-5">
+
+    <!-- Potential Savings -->
+    <div class="col-lg-6">
+        <div class="insights-card">
+            <div class="card-header-modern">
+                <h5 class="card-title">💰 Potential Savings</h5>
+            </div>
+            <div class="card-body">
+                <div class="savings-grid">
+                    <div class="savings-item">
+                        <h6 class="savings-label">Monthly Savings</h6>
+                        <p class="savings-value">₹{{ potential_monthly_savings }}</p>
+                    </div>
+                    <div class="savings-item">
+                        <h6 class="savings-label">Yearly Savings</h6>
+                        <p class="savings-value">₹{{ potential_yearly_savings }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Renewals -->
+    <div class="col-lg-6">
+        <div class="insights-card">
+            <div class="card-header-modern">
+                <h5 class="card-title">📅 Upcoming Renewals</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_renewals %}
+                    <div class="renewal-list">
+                        {% for sub in upcoming_renewals %}
+                            <div class="renewal-item">
+                                <div class="renewal-info">
+                                    <h6 class="renewal-service">{{ sub.service_name }}</h6>
+                                    <p class="renewal-category">{{ sub.category }}</p>
+                                </div>
+                                <div class="renewal-date">{{ sub.renewal_date }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">No subscriptions renewing in the next 7 days.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Smart Recommendations -->
+<div class="mb-5">
+    <div class="recommendations-header mb-4">
+        <h5 class="recommendations-title">💡 Smart AI Recommendations</h5>
+    </div>
+    
+    {% if recommendations %}
+        <div class="recommendations-grid">
+            {% for rec in recommendations %}
+                <div class="recommendation-card" style="border-left-color: {{ rec.color | default('#0d6efd') }}">
+                    <div class="recommendation-content">
+                        <h6 class="recommendation-service">{{ rec.service }}</h6>
+                        <p class="recommendation-reason"><strong>Reason:</strong> {{ rec.reason }}</p>
+                        <p class="recommendation-text"><strong>Recommendation:</strong> {{ rec.recommendation }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="text-muted">No recommendations available at this time.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+{% endblock %}

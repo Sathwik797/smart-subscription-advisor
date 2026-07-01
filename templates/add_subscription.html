@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-success text-white text-center">
+                    <h3>➕ Add Subscription</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        <!-- Service Name -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                🎬 Service Name
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="service_name"
+                                placeholder="Netflix"
+                                required>
+                        </div>
+
+                        <!-- Monthly Cost + Category -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    💰 Monthly Cost
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="monthly_cost"
+                                    min="0"
+                                    step="1"
+                                    placeholder="299"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    📂 Category
+                                </label>
+
+                                <select
+                                    name="category"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Productivity">Productivity</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Other">Other</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Start Date + Billing Cycle -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    📅 Start Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="start_date"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    🔄 Billing Cycle
+                                </label>
+
+                                <select
+                                    class="form-select"
+                                    name="billing_cycle"
+                                    required>
+
+                                    <option value="" selected disabled>
+                                        Select Billing Cycle
+                                    </option>
+
+                                    <option value="Monthly">
+                                        Monthly
+                                    </option>
+
+                                    <option value="Yearly">
+                                        Yearly
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Usage Frequency + Hours -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    📈 Usage Frequency
+                                </label>
+
+                                <select
+                                    name="usage_frequency"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="" selected disabled>
+                                        Select Usage Frequency
+                                    </option>
+
+                                    <option value="Daily">
+                                        Daily
+                                    </option>
+
+                                    <option value="Weekly">
+                                        Weekly
+                                    </option>
+
+                                    <option value="Monthly">
+                                        Monthly
+                                    </option>
+
+                                    <option value="Rarely">
+                                        Rarely
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    ⏱ Hours Used
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="usage_hours"
+                                    min="0"
+                                    step="0.5"
+                                    placeholder="Example: 2.5"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <small class="text-muted">
+                                <strong>Note:</strong><br>
+                                • Daily → Enter hours used per day.<br>
+                                • Weekly → Enter total hours per week.<br>
+                                • Monthly → Enter total hours per month.<br>
+                                • Rarely → Approximate monthly usage.
+                            </small>
+
+                        </div>
+
+                        <div class="d-grid">
+
+                            <button
+                                type="submit"
+                                class="btn btn-success btn-lg">
+
+                                ➕ Add Subscription
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/add_subscription.js') }}"></script>
+
+{% endblock %}

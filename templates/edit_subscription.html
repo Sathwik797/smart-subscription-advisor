@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-warning text-dark text-center">
+                    <h3>✏️ Edit Subscription</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        <!-- Service Name -->
+                        <div class="mb-3">
+                            <label class="form-label">🎬 Service Name</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="service_name"
+                                value="{{ subscription.service_name }}"
+                                required>
+                        </div>
+
+                        <!-- Monthly Cost + Category -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">💰 Monthly Cost</label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="monthly_cost"
+                                    min="0"
+                                    step="1"
+                                    value="{{ subscription.monthly_cost }}"
+                                    required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">📂 Category</label>
+
+                                <select
+                                    name="category"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="Entertainment"
+                                        {% if subscription.category=="Entertainment" %}selected{% endif %}>
+                                        Entertainment
+                                    </option>
+
+                                    <option value="Music"
+                                        {% if subscription.category=="Music" %}selected{% endif %}>
+                                        Music
+                                    </option>
+
+                                    <option value="Education"
+                                        {% if subscription.category=="Education" %}selected{% endif %}>
+                                        Education
+                                    </option>
+
+                                    <option value="Productivity"
+                                        {% if subscription.category=="Productivity" %}selected{% endif %}>
+                                        Productivity
+                                    </option>
+
+                                    <option value="Gaming"
+                                        {% if subscription.category=="Gaming" %}selected{% endif %}>
+                                        Gaming
+                                    </option>
+
+                                    <option value="Other"
+                                        {% if subscription.category=="Other" %}selected{% endif %}>
+                                        Other
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Start Date + Billing Cycle -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    📅 Start Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="start_date"
+                                    value="{{ subscription.start_date }}"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    🔄 Billing Cycle
+                                </label>
+
+                                <select
+                                    name="billing_cycle"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="Monthly"
+                                        {% if subscription.billing_cycle=="Monthly" %}selected{% endif %}>
+                                        Monthly
+                                    </option>
+
+                                    <option value="Yearly"
+                                        {% if subscription.billing_cycle=="Yearly" %}selected{% endif %}>
+                                        Yearly
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Usage -->
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    📈 Usage Frequency
+                                </label>
+
+                                <select
+                                    name="usage_frequency"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="Daily"
+                                        {% if subscription.usage_frequency=="Daily" %}selected{% endif %}>
+                                        Daily
+                                    </option>
+
+                                    <option value="Weekly"
+                                        {% if subscription.usage_frequency=="Weekly" %}selected{% endif %}>
+                                        Weekly
+                                    </option>
+
+                                    <option value="Monthly"
+                                        {% if subscription.usage_frequency=="Monthly" %}selected{% endif %}>
+                                        Monthly
+                                    </option>
+
+                                    <option value="Rarely"
+                                        {% if subscription.usage_frequency=="Rarely" %}selected{% endif %}>
+                                        Rarely
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    ⏱ Hours Used
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="usage_hours"
+                                    min="0"
+                                    step="0.5"
+                                    value="{{ subscription.usage_hours }}"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <small class="text-muted d-block mb-3">
+                            Daily → hrs/day |
+                            Weekly → hrs/week |
+                            Monthly/Rarely → hrs/month
+                        </small>
+
+                        <!-- Priority -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                ⭐ Calculated Priority
+                            </label>
+
+                            <div>
+
+                                {% if subscription.priority == "High" %}
+
+                                    <span class="badge bg-success fs-6 px-3 py-2">
+                                        🟢 High
+                                    </span>
+
+                                {% elif subscription.priority == "Medium" %}
+
+                                    <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                        🟡 Medium
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger fs-6 px-3 py-2">
+                                        🔴 Low
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                            <small class="text-muted">
+                                Priority is automatically calculated based on your profile, category, cost and usage.
+                            </small>
+
+                        </div>
+
+                        <!-- Smart Subscription Insights -->
+                        <div class="card shadow-sm border-0 mt-4">
+
+                            <div class="card-header bg-primary text-white">
+                                🤖 Smart Subscription Insights
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="text-center mb-4">
+
+                                    <h2 class="fw-bold">
+                                        {{ insight.score }}/100
+                                    </h2>
+
+                                    {% if insight.priority == "High" %}
+                                        <span class="badge bg-success fs-6">
+                                            High Priority
+                                        </span>
+
+                                    {% elif insight.priority == "Medium" %}
+                                        <span class="badge bg-warning text-dark fs-6">
+                                            Medium Priority
+                                        </span>
+
+                                    {% else %}
+                                        <span class="badge bg-danger fs-6">
+                                            Low Priority
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+
+                                <hr>
+
+                                <h5>Why?</h5>
+
+                                <ul class="list-group list-group-flush mb-3">
+
+                                    {% for reason in insight.reasons %}
+                                    <li class="list-group-item">
+                                        ✅ {{ reason }}
+                                    </li>
+                                    {% endfor %}
+
+                                </ul>
+
+                                <div class="alert alert-info mb-0">
+
+                                    <strong>Recommendation:</strong><br>
+
+                                    {{ insight.recommendation }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Button -->
+                        <div class="d-grid mt-4">
+
+                            <button
+                                type="submit"
+                                class="btn btn-warning btn-lg">
+
+                                💾 Update Subscription
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/add_subscription.js') }}"></script>
+
+{% endblock %}

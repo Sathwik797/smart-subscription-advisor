@@ -1,0 +1,115 @@
+body{
+    background:#f8f9fa;
+}
+
+/* Card */
+.card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+/* Inputs */
+
+.form-control,
+.form-select{
+
+    height:48px;
+
+    border-radius:10px;
+
+    transition:.3s;
+
+}
+
+/* Focus */
+
+.form-control:focus,
+.form-select:focus{
+
+    border-color:#0d6efd;
+
+    box-shadow:0 0 10px rgba(13,110,253,.2);
+
+}
+
+/* Labels */
+
+.form-label{
+
+    font-weight:600;
+
+}
+
+/* Button */
+
+.btn{
+
+    height:50px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+}
+
+/* Flatpickr */
+
+.flatpickr-input{
+
+    cursor:pointer;
+
+}
+
+.flatpickr-calendar{
+
+    border-radius:15px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+}
+
+/* Global Container */
+.container{
+    margin-top:30px;
+}
+
+/* Card Header */
+.card-header{
+    font-weight:600;
+    border-radius:18px 18px 0 0 !important;
+}
+
+/* Tables */
+.table{
+    vertical-align:middle;
+}
+
+/* Alerts */
+.alert{
+    border-radius:12px;
+}
+
+/* Badges */
+.badge{
+    font-size:15px;
+}
+
+.container{
+    margin-top:40px;
+    margin-bottom:40px;
+}
+
+.suggestion-chip{
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.suggestion-chip:hover{
+    transform:scale(1.05);
+    background:#0d6efd !important;
+}

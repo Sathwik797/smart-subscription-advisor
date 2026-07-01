@@ -1,0 +1,428 @@
+/* Dashboard Modern SaaS Styles */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* Welcome Header */
+.dashboard-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+}
+
+.welcome-subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-card {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 140px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.summary-card.card-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: white;
+}
+
+.summary-card.card-success {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: white;
+}
+
+.summary-card.card-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+    color: #333;
+}
+
+.summary-card.card-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+    color: white;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    min-width: 70px;
+    text-align: center;
+}
+
+.card-content {
+    flex: 1;
+}
+
+.card-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0 0 0;
+}
+
+.card-value span {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+/* Analytics Cards */
+.analytics-card,
+.insights-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.analytics-card:hover,
+.insights-card:hover {
+    box-shadow: var(--card-hover-shadow);
+}
+
+.card-header-modern {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #fafbfc;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    width: 100%;
+}
+
+#categoryChart,
+#costChart {
+    max-height: 320px;
+}
+
+/* Savings Grid */
+.savings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.savings-item {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.savings-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.savings-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--success-color);
+    margin: 0.5rem 0 0 0;
+}
+
+/* Renewal List */
+.renewal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.renewal-item {
+    padding: 1.25rem;
+    background: #fafbfc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    border-left: 3px solid var(--primary-color);
+}
+
+.renewal-item:hover {
+    background: #f0f2f5;
+}
+
+.renewal-info {
+    flex: 1;
+}
+
+.renewal-service {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.renewal-category {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0.3rem 0 0 0;
+}
+
+.renewal-date {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
+
+/* Recommendations Section */
+.recommendations-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.recommendations-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.recommendation-card {
+    border-left: 4px solid var(--primary-color);
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.recommendation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.recommendation-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.recommendation-service {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    color: #1a1a1a;
+}
+
+.recommendation-reason,
+.recommendation-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 0.75rem 0;
+    color: #4a5568;
+}
+
+.recommendation-reason strong,
+.recommendation-text strong {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.recommendation-reason:last-child,
+.recommendation-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+    background: #fafbfc;
+    border-radius: var(--border-radius);
+}
+
+.empty-state p {
+    margin: 0;
+    color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 1.75rem;
+    }
+
+    .summary-card {
+        flex-direction: column;
+        text-align: center;
+        min-height: auto;
+        gap: 0.75rem;
+    }
+
+    .card-icon {
+        font-size: 2rem;
+        min-width: auto;
+    }
+
+    .card-value {
+        font-size: 1.5rem;
+    }
+
+    .savings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .renewal-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .renewal-date {
+        margin-left: 0;
+        margin-top: 0.75rem;
+    }
+
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .welcome-title {
+        font-size: 1.5rem;
+    }
+
+    .summary-card {
+        padding: 1.25rem;
+        min-height: auto;
+    }
+
+    .card-label {
+        font-size: 0.75rem;
+    }
+
+    .card-value {
+        font-size: 1.25rem;
+    }
+
+    .card-value span {
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+}
+
+/* Utility Classes */
+.table td {
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    transition: 0.2s;
+}
+
+.table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.table-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-sm {
+    width: 40px;
+    height: 35px;
+}
+
+.badge {
+    font-size: 13px;
+    padding: 7px 10px;
+}
+
+.summary-card{
+    transition:.3s;
+}
+
+.summary-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 12px 25px rgba(0,0,0,.15);
+}

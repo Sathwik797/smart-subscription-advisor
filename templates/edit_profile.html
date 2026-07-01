@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow-lg border-0 rounded-4">
+
+            <div class="card-body text-center p-5">
+
+                <img src="https://ui-avatars.com/api/?name={{ current_user.username }}&background=0D6EFD&color=fff&size=120"
+                     class="rounded-circle mb-3"
+                     alt="Profile">
+
+                <form method="POST">
+
+                    <div class="mb-3 text-start">
+
+                        <label class="form-label">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control"
+                            value="{{ current_user.username }}"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3 text-start">
+
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            value="{{ current_user.email }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="mb-3 text-start">
+
+                        <label class="form-label">
+                            Occupation
+                        </label>
+
+                        <select
+                            name="occupation"
+                            class="form-select">
+
+                            <option value="Student"
+                                {% if current_user.occupation=="Student" %}selected{% endif %}>
+                                Student
+                            </option>
+
+                            <option value="Software Developer"
+                                {% if current_user.occupation=="Software Developer" %}selected{% endif %}>
+                                Software Developer
+                            </option>
+
+                            <option value="Working Professional"
+                                {% if current_user.occupation=="Working Professional" %}selected{% endif %}>
+                                Working Professional
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-4 text-start">
+
+                        <label class="form-label">
+                            Financial Preference
+                        </label>
+
+                        <select
+                            name="financial_preference"
+                            class="form-select">
+
+                            <option value="Money Saver"
+                                {% if current_user.financial_preference=="Money Saver" %}selected{% endif %}>
+                                Money Saver
+                            </option>
+
+                            <option value="Balanced"
+                                {% if current_user.financial_preference=="Balanced" %}selected{% endif %}>
+                                Balanced
+                            </option>
+
+                            <option value="Convenience"
+                                {% if current_user.financial_preference=="Convenience" %}selected{% endif %}>
+                                Convenience
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                        <button type="submit" class="btn btn-success">
+                            💾 Save Changes
+                        </button>
+
+                        <a href="{{ url_for('auth.dashboard') }}"
+                        class="btn btn-secondary">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white mb-3">
+                            <div class="card-body">
+                                <h5>Total Subscriptions</h5>
+                                <h2>{{ total_subscriptions }}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white mb-3">
+                            <div class="card-body">
+                                <h5>Monthly Spending</h5>
+                                <h2>₹{{ total_monthly }}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-dark mb-3">
+                            <div class="card-body">
+                                <h5>Yearly Spending</h5>
+                                <h2>₹{{ total_yearly }}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <a href="/dashboard" class="btn btn-primary mt-3">
+                    Go to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

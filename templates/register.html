@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-lg border-0 rounded-4 mt-5">
+
+            <div class="card-header bg-primary text-white text-center">
+                <h3>📝 Register</h3>
+            </div>
+
+            <div class="card-body p-4">
+
+                <form method="POST">
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="form-control"
+                            value="{{ form_data.username if form_data else '' }}"
+                            placeholder="Enter your username"
+                            required>
+                    </div>
+
+                    {% if username_error %}
+                    <div class="text-danger mt-1">
+                        {{ username_error }}
+                    </div>
+                    {% endif %}
+
+                    {% if suggestions %}
+
+                    <div class="mt-2">
+
+                        <small class="text-muted">
+                            Suggested usernames:
+                        </small>
+
+                        <div class="mt-1">
+
+                            {% for suggestion in suggestions %}
+
+                                <span
+                                    class="badge bg-primary me-2 suggestion-chip"
+                                    style="cursor:pointer;"
+                                    onclick="selectUsername('{{ suggestion }}')">
+
+                                    {{ suggestion }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            value="{{ form_data.email if form_data else '' }}"
+                            placeholder="Enter your email"
+                            required>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Create a password"
+                            required>
+                    </div>
+
+                    <!-- Occupation -->
+                    <div class="mb-3">
+                        <label class="form-label">Occupation</label>
+
+                        <select
+                            name="occupation"
+                            class="form-select"
+                            required>
+
+                            <option value="" disabled
+                                {% if not form_data or not form_data.occupation %}selected{% endif %}>
+                                Select your occupation
+                            </option>
+
+                            <option value="Student"
+                                {% if form_data and form_data.occupation == "Student" %}selected{% endif %}>
+                                🎓 Student
+                            </option>
+
+                            <option value="Software Developer"
+                                {% if form_data and form_data.occupation == "Software Developer" %}selected{% endif %}>
+                                💻 Software Developer
+                            </option>
+
+                            <option value="AI/ML Engineer"
+                                {% if form_data and form_data.occupation == "AI/ML Engineer" %}selected{% endif %}>
+                                🤖 AI/ML Engineer
+                            </option>
+
+                            <option value="Designer"
+                                {% if form_data and form_data.occupation == "Designer" %}selected{% endif %}>
+                                🎨 Designer
+                            </option>
+
+                            <option value="Business Owner"
+                                {% if form_data and form_data.occupation == "Business Owner" %}selected{% endif %}>
+                                📈 Business Owner
+                            </option>
+
+                            <option value="Other"
+                                {% if form_data and form_data.occupation == "Other" %}selected{% endif %}>
+                                Other
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <!-- Financial Preference -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Financial Preference
+                        </label>
+
+                        <select
+                            name="financial_preference"
+                            class="form-select"
+                            required>
+
+                            <option value="" disabled
+                                {% if not form_data or not form_data.financial_preference %}selected{% endif %}>
+                                Choose your financial style
+                            </option>
+
+                            <option value="Money Saver"
+                                {% if form_data and form_data.financial_preference == "Money Saver" %}selected{% endif %}>
+                                💰 Money Saver
+                            </option>
+
+                            <option value="Balanced"
+                                {% if form_data and form_data.financial_preference == "Balanced" %}selected{% endif %}>
+                                ⚖️ Balanced
+                            </option>
+
+                            <option value="Premium"
+                                {% if form_data and form_data.financial_preference == "Premium" %}selected{% endif %}>
+                                💎 Premium
+                            </option>
+
+                        </select>
+
+                    </div>
+                        <small class="text-muted">
+                            This helps us personalize future subscription recommendations.
+                        </small>
+                    </div>
+
+                    <!-- Register Button -->
+                    <div class="d-grid">
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg">
+                            Register
+                        </button>
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <p class="text-center mb-0">
+                    Already have an account?
+                    <a href="/login">Login</a>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+function selectUsername(username) {
+    document.getElementById("username").value = username;
+}
+</script>
+
+{% endblock %}
