@@ -8,7 +8,6 @@ from models.subscription import Subscription
 
 
 app = Flask(__name__)
-app.secret_key = "Sathwik123sunny456"
 app.config.from_object(Config)
 
 db.init_app(app)
