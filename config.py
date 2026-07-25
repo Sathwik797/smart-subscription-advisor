@@ -1,14 +1,21 @@
 import os
-from dotenv import load_dotenv
 from urllib.parse import quote_plus
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
-print("DB_HOST:", os.getenv("DB_HOST"))
-print("DB_USER:", os.getenv("DB_USER"))
-print("DB_NAME:", os.getenv("DB_NAME"))
+
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY")
+
+    # JWT settings are loaded from the environment so secrets are not hardcoded.
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", SECRET_KEY)
+    jwt_expires_raw = os.getenv("JWT_ACCESS_TOKEN_EXPIRES", "3600")
+    try:
+        JWT_ACCESS_TOKEN_EXPIRES = int(jwt_expires_raw)
+    except (TypeError, ValueError):
+        JWT_ACCESS_TOKEN_EXPIRES = 3600
 
     DB_HOST = os.getenv("DB_HOST")
     DB_PORT = os.getenv("DB_PORT", "3306")
