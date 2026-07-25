@@ -1,86 +1,219 @@
 # 🚀 Smart Subscription Advisor
 
-A Flask-based web application that helps users efficiently manage their subscriptions, track monthly and yearly expenses, and receive smart recommendations based on their usage patterns.
+A production-inspired full-stack web application that helps users manage their subscriptions, monitor expenses, and receive personalized recommendations while demonstrating modern backend architecture using Flask.
+
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Flask](https://img.shields.io/badge/Flask-Backend-black)
+![MySQL](https://img.shields.io/badge/Database-MySQL-orange)
+![JWT](https://img.shields.io/badge/Auth-JWT-success)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
-Managing multiple subscriptions can be difficult. Smart Subscription Advisor allows users to organize all their subscriptions in one place, monitor spending, and receive intelligent insights to help reduce unnecessary expenses.
+Managing multiple subscriptions across different platforms can become expensive and difficult to track.
+
+Smart Subscription Advisor allows users to:
+
+- Track all subscriptions in one place
+- Monitor monthly and yearly expenses
+- Receive personalized subscription recommendations
+- Visualize spending through analytics
+- Export subscription data
+- Securely manage accounts using authentication
+
+Apart from solving the business problem, this project also demonstrates production-style backend architecture including layered architecture, repository pattern, request validation, JWT authentication, centralized logging, and global exception handling.
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-### 🔐 Authentication
+## 🔐 Authentication
+
 - User Registration
 - Secure Login & Logout
-- Duplicate Email Validation
+- JWT Protected REST APIs
 - Duplicate Username Validation
+- Duplicate Email Validation
 - Smart Username Suggestions
-- Profile Management
-
-### 👤 User Profile
-- View Profile
-- Edit Username
-- Edit Occupation
-- Edit Financial Preference
-
-### 📋 Subscription Management
-- Add Subscription
-- Edit Subscription
-- Delete Subscription
-- Search Subscriptions
-
-### 🤖 Smart Recommendation System
-- Subscription Priority (High / Medium / Low)
-- Personalized Recommendations
-- Smart Subscription Insights
-
-### 📊 Dashboard & Analytics
-- Total Subscriptions
-- Monthly Spending
-- Yearly Spending
-- Subscription Health Score
-- Interactive Charts
-
-### 📤 Export
-- Export Subscription Data to CSV
-
-### 📱 Responsive Design
-- Mobile Friendly
-- Desktop Friendly
 
 ---
 
-## 🛠️ Tech Stack
+## 👤 User Management
 
-### Frontend
+- View Profile
+- Update Username
+- Update Occupation
+- Update Financial Preference
+
+---
+
+## 📋 Subscription Management
+
+- Add Subscription
+- Update Subscription
+- Delete Subscription
+- Search Subscription
+- Subscription Categorization
+
+---
+
+## 🤖 Smart Recommendation System
+
+- Subscription Priority
+- Personalized Recommendations
+- Smart Insights
+- Spending Optimization Suggestions
+
+---
+
+## 📊 Dashboard & Analytics
+
+- Total Active Subscriptions
+- Monthly Spending
+- Yearly Spending
+- Health Score
+- Interactive Charts
+- Spending Overview
+
+---
+
+## 📤 Export
+
+- Export Subscription Details to CSV
+
+---
+
+## 📱 Responsive UI
+
+- Desktop Friendly
+- Mobile Responsive
+- Bootstrap 5 Interface
+
+---
+
+# 🏛️ Backend Architecture
+
+This project follows a layered architecture to improve maintainability, scalability, and separation of concerns.
+
+```
+Browser / REST Client
+          │
+          ▼
++-----------------------+
+|       Routes          |
++-----------------------+
+          │
+          ▼
++-----------------------+
+|     Controllers       |
++-----------------------+
+          │
+          ▼
++-----------------------+
+|     Validators        |
++-----------------------+
+          │
+          ▼
++-----------------------+
+|      Services         |
+|  Business Logic       |
++-----------------------+
+          │
+          ▼
++-----------------------+
+|    Repositories       |
+| Database Operations   |
++-----------------------+
+          │
+          ▼
++-----------------------+
+|    MySQL Database     |
++-----------------------+
+
+      ▲
+      │
+ JWT Authentication
+
+      ▲
+      │
+Global Exception Handler
+
+      ▲
+      │
+Centralized Logging
+```
+
+---
+
+# 🏗️ Design Patterns Used
+
+- Layered Architecture
+- Repository Pattern
+- Service Layer Pattern
+- MVC Architecture
+- Dependency Separation
+- REST API Design
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
 - HTML5
 - CSS3
 - Bootstrap 5
 - JavaScript
 - Jinja2
-
-### Backend
-- Python
-- Flask
-- Flask-Login
-- Flask-SQLAlchemy
-
-### Database
-- MySQL
-
-### Libraries
-- SQLAlchemy
-- PyMySQL
-- python-dotenv
-- Pandas
 - Chart.js
 
 ---
 
-## 📂 Project Structure
+## Backend
+
+- Python
+- Flask
+- Flask-JWT-Extended
+- Flask-Login
+- Flask-SQLAlchemy
+
+---
+
+## Database
+
+- MySQL
+- SQLAlchemy ORM
+
+---
+
+## Validation & Security
+
+- JWT Authentication
+- Password Hashing
+- Request Validation
+- Input Sanitization
+
+---
+
+## Logging
+
+- Python Logging
+- Request Logging
+- Authentication Logs
+- Validation Logs
+- Error Logs
+
+---
+
+## Testing
+
+- Pytest
+
+---
+
+# 📂 Project Structure
 
 ```
 smart-subscription-advisor/
@@ -91,61 +224,116 @@ smart-subscription-advisor/
 ├── README.md
 ├── .gitignore
 │
-├── database/
-├── models/
+├── controllers/
+│
+├── services/
+│
+├── repositories/
+│
 ├── routes/
+│   └── api/
+│
+├── validators/
+│
+├── exceptions/
+│
+├── middleware/
+│
+├── logging_config/
+│
+├── database/
+│
+├── models/
+│
 ├── templates/
+│
 ├── static/
-├── exports/
-└── recommendation/
+│
+├── tests/
+│
+├── logs/
+│
+└── exports/
 ```
 
 ---
 
-## ⚙️ Installation
+# 🔄 Request Flow
 
-### Clone the repository
+```
+Client Request
+      │
+      ▼
+Routes
+      │
+      ▼
+Controllers
+      │
+      ▼
+Validators
+      │
+      ▼
+Services
+      │
+      ▼
+Repositories
+      │
+      ▼
+Database
+
+Response follows the reverse path.
+```
+
+---
+
+# ⚙️ Installation
+
+## Clone Repository
 
 ```bash
 git clone https://github.com/Sathwik797/smart-subscription-advisor.git
 ```
 
-### Move into the project
+## Navigate
 
 ```bash
 cd smart-subscription-advisor
 ```
 
-### Create Virtual Environment
+## Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-### Activate Virtual Environment
+## Activate
 
-Windows
+### Windows
 
 ```bash
 venv\Scripts\activate
 ```
 
-Linux/Mac
+### Linux / macOS
 
 ```bash
 source venv/bin/activate
 ```
 
-### Install dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Create a `.env` file
+---
+
+## Create .env
 
 ```env
 SECRET_KEY=your_secret_key
+
+JWT_SECRET_KEY=your_jwt_secret
 
 DB_HOST=localhost
 DB_PORT=3306
@@ -154,13 +342,15 @@ DB_USER=root
 DB_PASSWORD=your_password
 ```
 
-### Run the application
+---
+
+## Run Application
 
 ```bash
 python app.py
 ```
 
-Open your browser and visit
+Open:
 
 ```
 http://127.0.0.1:5000
@@ -168,87 +358,133 @@ http://127.0.0.1:5000
 
 ---
 
-## 📸 Screenshots
+# 🔐 Authentication
 
-### 🏠 Home Page
+## Web Authentication
 
-(Add Screenshot)
+- Flask Login
+- Session Authentication
 
-### 🔐 Login Page
+## REST APIs
 
-(Add Screenshot)
+- JWT Authentication
+- Protected API Endpoints
 
-### 📝 Registration Page
+---
 
-(Add Screenshot)
+# 🧪 Testing
 
-### 📊 Dashboard
+The application includes testing for:
 
-(Add Screenshot)
+- User Registration
+- User Login
+- JWT Authentication
+- Validation Layer
+- Exception Handling
+- Subscription CRUD
+- Search
+- Dashboard
+- CSV Export
 
-### 📋 Subscription Management
+---
 
-(Add Screenshot)
+# 📊 Logging
 
-### 🤖 Smart Recommendation
+Centralized logging records:
 
-(Add Screenshot)
+- Application Startup
+- Request Lifecycle
+- Authentication Events
+- Validation Errors
+- Exceptions
+- API Access
+- Unauthorized Requests
 
-### 📈 Analytics
+---
 
-(Add Screenshot)
+# 📸 Screenshots
 
-### 👤 User Profile
+## Home
 
 (Add Screenshot)
 
 ---
 
-## 🧪 Testing
+## Login
 
-The application has been tested for:
-
-- ✅ User Registration
-- ✅ Login & Logout
-- ✅ Duplicate Email Validation
-- ✅ Duplicate Username Validation
-- ✅ Username Suggestions
-- ✅ Profile Management
-- ✅ Add/Edit/Delete Subscription
-- ✅ Search Functionality
-- ✅ Recommendation Updates
-- ✅ Smart Insights
-- ✅ Dashboard Analytics
-- ✅ CSV Export
-- ✅ Mobile Responsiveness
+(Add Screenshot)
 
 ---
 
-## 🔮 Future Enhancements
+## Dashboard
 
-- Email Notifications for Renewals
-- Monthly Budget Tracking
-- Payment Gateway Integration
-- Password Reset via Email
-- Notification Preferences
-- Dark Mode
-- AI-based Subscription Cost Optimization
+(Add Screenshot)
 
 ---
 
-## 👨‍💻 Author
+## Subscription Management
+
+(Add Screenshot)
+
+---
+
+## Analytics
+
+(Add Screenshot)
+
+---
+
+## User Profile
+
+(Add Screenshot)
+
+---
+
+## API Testing (Postman)
+
+(Add Screenshot)
+
+---
+
+# 🚀 Future Enhancements
+
+- Email Verification
+- Password Reset
+- Pagination
+- Sorting
+- Filtering
+- Rate Limiting
+- Swagger/OpenAPI Documentation
+- Docker Support
+- CI/CD Pipeline
+- Redis Caching
+- AI-based Cost Optimization
+- Subscription Renewal Notifications
+
+---
+
+# 👨‍💻 Author
 
 **Sathwik Reddy**
 
-GitHub:
+GitHub
+
 https://github.com/Sathwik797
+
+LinkedIn
+
+(Add LinkedIn Profile)
 
 ---
 
-## 📄 License
+# 📄 License
 
 This project is licensed under the MIT License.
 
 ---
 
-⭐ If you found this project useful, consider giving it a star on GitHub.
+# ⭐ Support
+
+If you found this project useful, consider giving it a ⭐ on GitHub.
+
+Contributions, suggestions, and feedback are always welcome!
