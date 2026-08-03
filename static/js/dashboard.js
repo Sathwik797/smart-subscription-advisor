@@ -72,3 +72,16 @@ if (costCanvas) {
     });
 
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    var date = new Date();
+    var target = document.getElementById('dashboardDate');
+
+    if (target) {
+        target.textContent = date.toLocaleDateString(undefined, {
+            weekday: 'long',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+});

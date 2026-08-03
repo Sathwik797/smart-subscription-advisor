@@ -1,324 +1,407 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="container mt-4">
-
-    <div class="row justify-content-center">
-
-        <div class="col-lg-8">
-
-            <div class="card shadow-lg border-0 rounded-4">
-
-                <div class="card-header bg-warning text-dark text-center">
-                    <h3>✏️ Edit Subscription</h3>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_subscription.css') }}">
+    <main class="edit-subscription-page">
+        <div class="edit-subscription-container container">
+            <header class="edit-page-header">
+                <div>
+                    <span class="page-kicker">
+                        <i class="bi bi-pencil-square">
+                        </i>
+                        Subscription workspace
+                    </span>
+                    <h1>
+                        Edit Subscription
+                    </h1>
+                    <p>
+                        Update your subscription details and keep your recurring expenses accurate.
+                    </p>
                 </div>
-
-                <div class="card-body">
-
-                    <form method="POST">
-
-                        <!-- Service Name -->
-                        <div class="mb-3">
-                            <label class="form-label">🎬 Service Name</label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="service_name"
-                                value="{{ subscription.service_name }}"
-                                required>
-                        </div>
-
-                        <!-- Monthly Cost + Category -->
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">💰 Monthly Cost</label>
-
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    name="monthly_cost"
-                                    min="0"
-                                    step="1"
-                                    value="{{ subscription.monthly_cost }}"
-                                    required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">📂 Category</label>
-
-                                <select
-                                    name="category"
-                                    class="form-select"
-                                    required>
-
-                                    <option value="Entertainment"
-                                        {% if subscription.category=="Entertainment" %}selected{% endif %}>
-                                        Entertainment
-                                    </option>
-
-                                    <option value="Music"
-                                        {% if subscription.category=="Music" %}selected{% endif %}>
-                                        Music
-                                    </option>
-
-                                    <option value="Education"
-                                        {% if subscription.category=="Education" %}selected{% endif %}>
-                                        Education
-                                    </option>
-
-                                    <option value="Productivity"
-                                        {% if subscription.category=="Productivity" %}selected{% endif %}>
-                                        Productivity
-                                    </option>
-
-                                    <option value="Gaming"
-                                        {% if subscription.category=="Gaming" %}selected{% endif %}>
-                                        Gaming
-                                    </option>
-
-                                    <option value="Other"
-                                        {% if subscription.category=="Other" %}selected{% endif %}>
-                                        Other
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Start Date + Billing Cycle -->
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    📅 Start Date
-                                </label>
-
-                                <input
-                                    type="date"
-                                    class="form-control"
-                                    name="start_date"
-                                    value="{{ subscription.start_date }}"
-                                    required>
-
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    🔄 Billing Cycle
-                                </label>
-
-                                <select
-                                    name="billing_cycle"
-                                    class="form-select"
-                                    required>
-
-                                    <option value="Monthly"
-                                        {% if subscription.billing_cycle=="Monthly" %}selected{% endif %}>
-                                        Monthly
-                                    </option>
-
-                                    <option value="Yearly"
-                                        {% if subscription.billing_cycle=="Yearly" %}selected{% endif %}>
-                                        Yearly
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Usage -->
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    📈 Usage Frequency
-                                </label>
-
-                                <select
-                                    name="usage_frequency"
-                                    class="form-select"
-                                    required>
-
-                                    <option value="Daily"
-                                        {% if subscription.usage_frequency=="Daily" %}selected{% endif %}>
-                                        Daily
-                                    </option>
-
-                                    <option value="Weekly"
-                                        {% if subscription.usage_frequency=="Weekly" %}selected{% endif %}>
-                                        Weekly
-                                    </option>
-
-                                    <option value="Monthly"
-                                        {% if subscription.usage_frequency=="Monthly" %}selected{% endif %}>
-                                        Monthly
-                                    </option>
-
-                                    <option value="Rarely"
-                                        {% if subscription.usage_frequency=="Rarely" %}selected{% endif %}>
-                                        Rarely
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    ⏱ Hours Used
-                                </label>
-
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    name="usage_hours"
-                                    min="0"
-                                    step="0.5"
-                                    value="{{ subscription.usage_hours }}"
-                                    required>
-
-                            </div>
-
-                        </div>
-
-                        <small class="text-muted d-block mb-3">
-                            Daily → hrs/day |
-                            Weekly → hrs/week |
-                            Monthly/Rarely → hrs/month
-                        </small>
-
-                        <!-- Priority -->
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                ⭐ Calculated Priority
-                            </label>
-
+                <a href="{{ url_for('auth.subscriptions') }}" class="btn back-button">
+                    <i class="bi bi-arrow-left">
+                    </i>
+                    Back to Subscriptions
+                </a>
+            </header>
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-8">
+                    <section class="edit-form-card">
+                        <div class="form-card-heading">
                             <div>
-
+                                <span class="card-kicker">
+                                    Subscription details
+                                </span>
+                                <h2>
+                                    Update
+                                    {{ subscription.service_name }}
+                                </h2>
+                                <p>
+                                    Keep your subscription details accurate and your insights useful.
+                                </p>
+                            </div>
+                            <span class="form-heading-icon">
+                                <i class="bi bi-pencil">
+                                </i>
+                            </span>
+                        </div>
+                        <form method="POST" class="subscription-form">
+                            <div class="form-field">
+                                <label class="form-label" for="service-name">
+                                    Service name
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-grid-1x2">
+                                    </i>
+                                    <input type="text" id="service-name" class="form-control" name="service_name" value="{{ subscription.service_name }}" required>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-field">
+                                        <label class="form-label" for="monthly-cost">
+                                            Monthly cost
+                                        </label>
+                                        <div class="input-icon-wrap currency-wrap">
+                                            <span>
+                                                ₹
+                                            </span>
+                                            <input type="number" id="monthly-cost" class="form-control" name="monthly_cost" min="0" step="1" value="{{ subscription.monthly_cost }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-field">
+                                        <label class="form-label" for="category">
+                                            Category
+                                        </label>
+                                        <div class="input-icon-wrap select-wrap">
+                                            <i class="bi bi-folder2">
+                                            </i>
+                                            <select id="category" name="category" class="form-select" required>
+                                                <option value="Entertainment" {% if subscription.category=="Entertainment" %}selected{% endif %}>
+                                                    Entertainment
+                                                </option>
+                                                <option value="Music" {% if subscription.category=="Music" %}selected{% endif %}>
+                                                    Music
+                                                </option>
+                                                <option value="Education" {% if subscription.category=="Education" %}selected{% endif %}>
+                                                    Education
+                                                </option>
+                                                <option value="Productivity" {% if subscription.category=="Productivity" %}selected{% endif %}>
+                                                    Productivity
+                                                </option>
+                                                <option value="Gaming" {% if subscription.category=="Gaming" %}selected{% endif %}>
+                                                    Gaming
+                                                </option>
+                                                <option value="Other" {% if subscription.category=="Other" %}selected{% endif %}>
+                                                    Other
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-field">
+                                        <label class="form-label" for="start-date">
+                                            Start date
+                                        </label>
+                                        <div class="input-icon-wrap">
+                                            <i class="bi bi-calendar3">
+                                            </i>
+                                            <input type="date" id="start-date" class="form-control" name="start_date" value="{{ subscription.start_date }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-field">
+                                        <label class="form-label" for="billing-cycle">
+                                            Billing cycle
+                                        </label>
+                                        <div class="input-icon-wrap select-wrap">
+                                            <i class="bi bi-arrow-repeat">
+                                            </i>
+                                            <select id="billing-cycle" name="billing_cycle" class="form-select" required>
+                                                <option value="Monthly" {% if subscription.billing_cycle=="Monthly" %}selected{% endif %}>
+                                                    Monthly
+                                                </option>
+                                                <option value="Yearly" {% if subscription.billing_cycle=="Yearly" %}selected{% endif %}>
+                                                    Yearly
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-field">
+                                        <label class="form-label" for="usage-frequency">
+                                            Usage frequency
+                                        </label>
+                                        <div class="input-icon-wrap select-wrap">
+                                            <i class="bi bi-bar-chart">
+                                            </i>
+                                            <select id="usage-frequency" name="usage_frequency" class="form-select" required>
+                                                <option value="Daily" {% if subscription.usage_frequency=="Daily" %}selected{% endif %}>
+                                                    Daily
+                                                </option>
+                                                <option value="Weekly" {% if subscription.usage_frequency=="Weekly" %}selected{% endif %}>
+                                                    Weekly
+                                                </option>
+                                                <option value="Monthly" {% if subscription.usage_frequency=="Monthly" %}selected{% endif %}>
+                                                    Monthly
+                                                </option>
+                                                <option value="Rarely" {% if subscription.usage_frequency=="Rarely" %}selected{% endif %}>
+                                                    Rarely
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-field">
+                                        <label class="form-label" for="usage-hours">
+                                            Hours used
+                                        </label>
+                                        <div class="input-icon-wrap">
+                                            <i class="bi bi-clock">
+                                            </i>
+                                            <input type="number" id="usage-hours" class="form-control" name="usage_hours" min="0" step="0.5" value="{{ subscription.usage_hours }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="usage-note">
+                                <span>
+                                    <i class="bi bi-info-circle">
+                                    </i>
+                                </span>
+                                <p>
+                                    <strong>
+                                        Usage guide:
+                                    </strong>
+                                    Daily = hours/day · Weekly = hours/week · Monthly/Rarely = hours/month.
+                                </p>
+                            </div>
+                            <section class="priority-panel">
+                                <div>
+                                    <span class="card-kicker">
+                                        Calculated priority
+                                    </span>
+                                    <h3>
+                                        Current priority
+                                    </h3>
+                                    <p>
+                                        Automatically calculated from your profile, category, cost and usage.
+                                    </p>
+                                </div>
                                 {% if subscription.priority == "High" %}
-
-                                    <span class="badge bg-success fs-6 px-3 py-2">
-                                        🟢 High
+                                    <span class="priority-badge high">
+                                        <i class="bi bi-arrow-up-circle-fill">
+                                        </i>
+                                        High
                                     </span>
-
                                 {% elif subscription.priority == "Medium" %}
-
-                                    <span class="badge bg-warning text-dark fs-6 px-3 py-2">
-                                        🟡 Medium
+                                    <span class="priority-badge medium">
+                                        <i class="bi bi-dash-circle-fill">
+                                        </i>
+                                        Medium
                                     </span>
-
                                 {% else %}
-
-                                    <span class="badge bg-danger fs-6 px-3 py-2">
-                                        🔴 Low
+                                    <span class="priority-badge low">
+                                        <i class="bi bi-arrow-down-circle-fill">
+                                        </i>
+                                        Low
                                     </span>
-
                                 {% endif %}
-
-                            </div>
-
-                            <small class="text-muted">
-                                Priority is automatically calculated based on your profile, category, cost and usage.
-                            </small>
-
-                        </div>
-
-                        <!-- Smart Subscription Insights -->
-                        <div class="card shadow-sm border-0 mt-4">
-
-                            <div class="card-header bg-primary text-white">
-                                🤖 Smart Subscription Insights
-                            </div>
-
-                            <div class="card-body">
-
-                                <div class="text-center mb-4">
-
-                                    <h2 class="fw-bold">
-                                        {{ insight.score }}/100
-                                    </h2>
-
-                                    {% if insight.priority == "High" %}
-                                        <span class="badge bg-success fs-6">
-                                            High Priority
+                            </section>
+                            <section class="insight-panel">
+                                <div class="insight-head">
+                                    <div>
+                                        <span class="card-kicker">
+                                            Smart subscription insights
                                         </span>
-
-                                    {% elif insight.priority == "Medium" %}
-                                        <span class="badge bg-warning text-dark fs-6">
-                                            Medium Priority
-                                        </span>
-
-                                    {% else %}
-                                        <span class="badge bg-danger fs-6">
-                                            Low Priority
-                                        </span>
-                                    {% endif %}
-
+                                        <h3>
+                                            <i class="bi bi-stars">
+                                            </i>
+                                            Your subscription score
+                                        </h3>
+                                    </div>
+                                    <div class="score-circle">
+                                        <strong>
+                                            {{ insight.score }}
+                                        </strong>
+                                        <small>
+                                            /100
+                                        </small>
+                                    </div>
                                 </div>
-
-                                <hr>
-
-                                <h5>Why?</h5>
-
-                                <ul class="list-group list-group-flush mb-3">
-
-                                    {% for reason in insight.reasons %}
-                                    <li class="list-group-item">
-                                        ✅ {{ reason }}
-                                    </li>
-                                    {% endfor %}
-
-                                </ul>
-
-                                <div class="alert alert-info mb-0">
-
-                                    <strong>Recommendation:</strong><br>
-
-                                    {{ insight.recommendation }}
-
+                                <div class="insight-grid">
+                                    <div>
+                                        <h4>
+                                            Why this matters
+                                        </h4>
+                                        <ul class="insight-reasons list-unstyled">
+                                            {% for reason in insight.reasons %}
+                                                <li>
+                                                    <i class="bi bi-check2">
+                                                    </i>
+                                                    {{ reason }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="recommendation-box">
+                                        <span>
+                                            <i class="bi bi-lightbulb">
+                                            </i>
+                                            Recommendation
+                                        </span>
+                                        <p>
+                                            {{ insight.recommendation }}
+                                        </p>
+                                        {% if insight.priority == "High" %}
+                                            <b class="insight-status high">
+                                                High priority
+                                            </b>
+                                        {% elif insight.priority == "Medium" %}
+                                            <b class="insight-status medium">
+                                                Medium priority
+                                            </b>
+                                        {% else %}
+                                            <b class="insight-status low">
+                                                Low priority
+                                            </b>
+                                        {% endif %}
+                                    </div>
                                 </div>
-
+                            </section>
+                            <div class="form-actions">
+                                <a href="{{ url_for('auth.subscriptions') }}" class="btn cancel-button">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn submit-button">
+                                    <i class="bi bi-check-lg">
+                                    </i>
+                                    Update Subscription
+                                </button>
                             </div>
-
-                        </div>
-
-                        <!-- Button -->
-                        <div class="d-grid mt-4">
-
-                            <button
-                                type="submit"
-                                class="btn btn-warning btn-lg">
-
-                                💾 Update Subscription
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
+                        </form>
+                    </section>
                 </div>
-
+                <aside class="col-lg-4">
+                    <div class="edit-sidebar">
+                        <section class="sidebar-card summary-card">
+                            <span class="sidebar-icon">
+                                <i class="bi bi-receipt">
+                                </i>
+                            </span>
+                            <span class="card-kicker">
+                                Current subscription
+                            </span>
+                            <h2>
+                                Subscription summary
+                            </h2>
+                            <div class="summary-line">
+                                <span>
+                                    Monthly cost
+                                </span>
+                                <strong>
+                                    ₹
+                                    {{ subscription.monthly_cost }}
+                                </strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>
+                                    Category
+                                </span>
+                                <strong>
+                                    {{ subscription.category }}
+                                </strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>
+                                    Billing cycle
+                                </span>
+                                <strong>
+                                    {{ subscription.billing_cycle }}
+                                </strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>
+                                    Usage frequency
+                                </span>
+                                <strong>
+                                    {{ subscription.usage_frequency }}
+                                </strong>
+                            </div>
+                        </section>
+                        <section class="sidebar-card tips-card">
+                            <span class="sidebar-icon orange">
+                                <i class="bi bi-lightbulb">
+                                </i>
+                            </span>
+                            <span class="card-kicker">
+                                Keep it accurate
+                            </span>
+                            <h2>
+                                Quick tips
+                            </h2>
+                            <div class="tip-row">
+                                <span>
+                                    💡
+                                </span>
+                                Review subscriptions regularly
+                            </div>
+                            <div class="tip-row">
+                                <span>
+                                    📅
+                                </span>
+                                Update renewal dates
+                            </div>
+                            <div class="tip-row">
+                                <span>
+                                    💳
+                                </span>
+                                Remove unused services
+                            </div>
+                            <div class="tip-row">
+                                <span>
+                                    📈
+                                </span>
+                                Track monthly spending
+                            </div>
+                        </section>
+                        <section class="security-sidebar">
+                            <span class="card-kicker">
+                                Your information
+                            </span>
+                            <h2>
+                                Secure by design
+                            </h2>
+                            <div>
+                                <i class="bi bi-shield-check">
+                                </i>
+                                JWT protected
+                            </div>
+                            <div>
+                                <i class="bi bi-database-lock">
+                                </i>
+                                Secure database storage
+                            </div>
+                            <div>
+                                <i class="bi bi-person-lock">
+                                </i>
+                                Private dashboard
+                            </div>
+                        </section>
+                    </div>
+                </aside>
             </div>
-
         </div>
-
-    </div>
-
-</div>
-
-<script src="{{ url_for('static', filename='js/add_subscription.js') }}"></script>
-
+    </main>
+    <script src="{{ url_for('static', filename='js/edit_subscription.js') }}">
+    </script>
 {% endblock %}

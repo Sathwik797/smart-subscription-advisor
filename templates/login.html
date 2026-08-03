@@ -1,67 +1,223 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="row justify-content-center">
-    <div class="col-md-5">
-
-        <div class="card shadow-lg border-0 rounded-4 mt-5">
-
-            <div class="card-header bg-success text-white text-center">
-                <h3>🔐 Login</h3>
-            </div>
-
-            <div class="card-body p-4">
-
-                <form method="POST">
-
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            value="{{ email or '' }}"
-                            placeholder="Enter your email"
-                            required>
-                    </div>                   
-
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            placeholder="Enter your password"
-                            required>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <main class="login-page">
+        <div class="login-shell">
+            <section class="login-showcase">
+                <a class="login-brand" href="/">
+                    <span>
+                        <i class="bi bi-wallet2">
+                        </i>
+                    </span>
+                    Smart Subscription Advisor
+                </a>
+                <div class="showcase-copy">
+                    <span class="showcase-kicker">
+                        <i class="bi bi-stars">
+                        </i>
+                        Your financial workspace
+                    </span>
+                    <h1>
+                        Welcome Back
+                    </h1>
+                    <p>
+                        Continue managing your subscriptions with one secure dashboard.
+                    </p>
+                </div>
+                <div class="mini-dashboard" aria-hidden="true">
+                    <div class="mini-topbar">
+                        <span class="mini-mark">
+                            <i class="bi bi-wallet2">
+                            </i>
+                        </span>
+                        <span>
+                            Overview
+                        </span>
+                        <i class="bi bi-three-dots ms-auto">
+                        </i>
                     </div>
-
-                    {% if login_error %}
-                    <div class="alert alert-danger">
-                        Invalid email or password.
+                    <div class="mini-content">
+                        <div class="mini-greeting">
+                            <span>
+                                Monthly spending
+                            </span>
+                            <strong>
+                                ₹4,250
+                            </strong>
+                            <small>
+                                <i class="bi bi-arrow-down">
+                                </i>
+                                8.2% this month
+                            </small>
+                        </div>
+                        <div class="mini-stats">
+                            <div>
+                                <small>
+                                    Subscriptions
+                                </small>
+                                <strong>
+                                    12
+                                </strong>
+                            </div>
+                            <div>
+                                <small>
+                                    Renewing soon
+                                </small>
+                                <strong>
+                                    3
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="mini-chart">
+                            <div class="mini-chart-head">
+                                <b>
+                                    Spending overview
+                                </b>
+                                <span>
+                                    This week
+                                </span>
+                            </div>
+                            <div class="bars">
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                            </div>
+                        </div>
+                        <div class="mini-renewal">
+                            <span>
+                                <i class="bi bi-bell">
+                                </i>
+                            </span>
+                            <div>
+                                <small>
+                                    Upcoming renewal
+                                </small>
+                                <strong>
+                                    Netflix Premium · in 2 days
+                                </strong>
+                            </div>
+                            <b>
+                                ₹649
+                            </b>
+                        </div>
                     </div>
-                    {% endif %}
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-success">
-                            Login
-                        </button>
+                </div>
+                <ul class="showcase-features list-unstyled mb-0">
+                    <li>
+                        <i class="bi bi-check2">
+                        </i>
+                        Smart Expense Tracking
+                    </li>
+                    <li>
+                        <i class="bi bi-check2">
+                        </i>
+                        Subscription Analytics
+                    </li>
+                    <li>
+                        <i class="bi bi-check2">
+                        </i>
+                        Secure Authentication
+                    </li>
+                </ul>
+            </section>
+            <section class="login-form-area">
+                <div class="login-card">
+                    <div class="login-card-heading">
+                        <span class="mobile-brand">
+                            <i class="bi bi-wallet2">
+                            </i>
+                            SmartSub
+                        </span>
+                        <h2>
+                            Welcome back
+                            <span>
+                                👋
+                            </span>
+                        </h2>
+                        <p>
+                            Enter your details to access your dashboard.
+                        </p>
                     </div>
-
-                </form>
-
-                <hr>
-
-                <p class="text-center">
-                    Don't have an account?
-                    <a href="/register">Register</a>
-                </p>
-
-            </div>
-
+                    <form method="POST" class="login-form">
+                        <div class="form-field">
+                            <label class="form-label" for="email">
+                                Email address
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-envelope">
+                                </i>
+                                <input type="email" id="email" name="email" class="form-control" value="{{ email or '' }}" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label mb-0" for="password">
+                                    Password
+                                </label>
+                                <span class="forgot-password" aria-disabled="true">
+                                    Forgot Password?
+                                </span>
+                            </div>
+                            <div class="input-icon-wrap password-wrap">
+                                <i class="bi bi-lock">
+                                </i>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                                <button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false">
+                                    <i class="bi bi-eye">
+                                    </i>
+                                </button>
+                            </div>
+                        </div>
+                        {% if login_error %}
+                            <div class="alert alert-danger login-error" role="alert">
+                                <i class="bi bi-exclamation-circle">
+                                </i>
+                                <span>
+                                    Invalid email or password. Please try again.
+                                </span>
+                            </div>
+                        {% endif %}
+                        <div class="remember-row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember-me">
+                                <label class="form-check-label" for="remember-me">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary login-button">
+                                Login
+                                <i class="bi bi-arrow-right">
+                                </i>
+                            </button>
+                        </div>
+                    </form>
+                    <p class="register-prompt">
+                        Don't have an account?
+                        <a href="/register">
+                            Register
+                        </a>
+                    </p>
+                    <p class="login-security">
+                        <i class="bi bi-shield-check">
+                        </i>
+                        Your information is protected securely.
+                    </p>
+                </div>
+            </section>
         </div>
-
-    </div>
-</div>
-
+    </main>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

@@ -1,181 +1,479 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<!-- Welcome Header -->
-<div class="dashboard-header mb-5">
-    <h1 class="welcome-title">👋 Welcome, {{ current_user.username }}</h1>
-    <p class="welcome-subtitle">Here's an overview of your subscriptions.</p>
-</div>
-
-<!-- Summary Cards -->
-<div class="row g-4 mb-5">
-    
-    <!-- Total Subscriptions Card -->
-    <div class="col-lg-3 col-md-6">
-        <div class="summary-card card-primary">
-            <div class="card-icon">📦</div>
-            <div class="card-content">
-                <h6 class="card-label">Total Subscriptions</h6>
-                <h2 class="card-value">{{ total_subscriptions }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Monthly Spending Card -->
-    <div class="col-lg-3 col-md-6">
-        <div class="summary-card card-success">
-            <div class="card-icon">💰</div>
-            <div class="card-content">
-                <h6 class="card-label">Monthly Spending</h6>
-                <h2 class="card-value">₹{{ total_monthly }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Yearly Spending Card -->
-    <div class="col-lg-3 col-md-6">
-        <div class="summary-card card-warning">
-            <div class="card-icon">📅</div>
-            <div class="card-content">
-                <h6 class="card-label">Yearly Spending</h6>
-                <h2 class="card-value">₹{{ total_yearly }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Health Score Card -->
-    <div class="col-lg-3 col-md-6">
-        <div class="summary-card card-danger">
-            <div class="card-icon">❤️</div>
-            <div class="card-content">
-                <h6 class="card-label">Health Score</h6>
-                <h2 class="card-value">{{ health_score }}<span>/100</span></h2>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Analytics Row -->
-<div class="row g-4 mb-5">
-
-    <!-- Spending by Category -->
-    <div class="col-lg-6">
-        <div class="analytics-card">
-            <div class="card-header-modern">
-                <h5 class="card-title">🥧 Spending by Category</h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas
-                        id="categoryChart"
-                        data-labels='{{ category_labels | tojson }}'
-                        data-values='{{ category_values | tojson }}'>
-                    </canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Monthly Cost by Subscription -->
-    <div class="col-lg-6">
-        <div class="analytics-card">
-            <div class="card-header-modern">
-                <h5 class="card-title">📊 Monthly Cost by Subscription</h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas
-                        id="costChart"
-                        data-labels='{{ subscription_labels | tojson }}'
-                        data-values='{{ subscription_values | tojson }}'>
-                    </canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Insights Row -->
-<div class="row g-4 mb-5">
-
-    <!-- Potential Savings -->
-    <div class="col-lg-6">
-        <div class="insights-card">
-            <div class="card-header-modern">
-                <h5 class="card-title">💰 Potential Savings</h5>
-            </div>
-            <div class="card-body">
-                <div class="savings-grid">
-                    <div class="savings-item">
-                        <h6 class="savings-label">Monthly Savings</h6>
-                        <p class="savings-value">₹{{ potential_monthly_savings }}</p>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <main class="saas-dashboard">
+        <nav class="dashboard-nav navbar navbar-expand-lg" aria-label="Dashboard navigation">
+            <div class="container dashboard-nav-inner">
+                <a class="dashboard-brand" href="/">
+                    <span>
+                        <i class="bi bi-wallet2">
+                        </i>
+                    </span>
+                    Smart Subscription Advisor
+                </a>
+                <button class="navbar-toggler dashboard-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dashboardNav" aria-controls="dashboardNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="bi bi-list">
+                    </i>
+                </button>
+                <div class="collapse navbar-collapse" id="dashboardNav">
+                    <div class="navbar-nav me-auto dashboard-links">
+                        <a class="nav-link active" href="/dashboard">
+                            Dashboard
+                        </a>
+                        <a class="nav-link" href="/subscriptions">
+                            Subscriptions
+                        </a>
+                        <a class="nav-link" href="/profile">
+                            Profile
+                        </a>
                     </div>
-                    <div class="savings-item">
-                        <h6 class="savings-label">Yearly Savings</h6>
-                        <p class="savings-value">₹{{ potential_yearly_savings }}</p>
+                    <div class="dashboard-nav-actions">
+                        <span class="notification-button" title="Notifications">
+                            <i class="bi bi-bell">
+                            </i>
+                            <b>
+                            </b>
+                        </span>
+                        <a class="nav-user" href="/profile">
+                            <span>
+                                {{ current_user.username[:1]|upper }}
+                            </span>
+                            <small>
+                                {{ current_user.username }}
+                            </small>
+                        </a>
+                        <a class="logout-link" href="/logout" title="Logout">
+                            <i class="bi bi-box-arrow-right">
+                            </i>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Upcoming Renewals -->
-    <div class="col-lg-6">
-        <div class="insights-card">
-            <div class="card-header-modern">
-                <h5 class="card-title">📅 Upcoming Renewals</h5>
-            </div>
-            <div class="card-body">
-                {% if upcoming_renewals %}
-                    <div class="renewal-list">
-                        {% for sub in upcoming_renewals %}
-                            <div class="renewal-item">
-                                <div class="renewal-info">
-                                    <h6 class="renewal-service">{{ sub.service_name }}</h6>
-                                    <p class="renewal-category">{{ sub.category }}</p>
+        </nav>
+        <div class="dashboard-content container">
+            <header class="dashboard-header">
+                <div>
+                    <span class="dashboard-eyebrow">
+                        <i class="bi bi-sun">
+                        </i>
+                        Your subscription workspace
+                    </span>
+                    <h1>
+                        Welcome back,
+                        {{ current_user.username }}
+                        <span>
+                            👋
+                        </span>
+                    </h1>
+                    <p>
+                        Here’s a clear view of your recurring spending and what needs attention.
+                    </p>
+                </div>
+                <div class="today-card">
+                    <i class="bi bi-calendar3">
+                    </i>
+                    <div>
+                        <small>
+                            Today
+                        </small>
+                        <strong id="dashboardDate">
+                            Your dashboard is ready
+                        </strong>
+                    </div>
+                </div>
+            </header>
+            <section class="stats-grid" aria-label="Subscription summary">
+                <article class="metric-card spending-card">
+                    <div class="metric-icon">
+                        <i class="bi bi-cash-stack">
+                        </i>
+                    </div>
+                    <div>
+                        <span>
+                            Monthly spending
+                        </span>
+                        <strong>
+                            ₹
+                            {{ total_monthly }}
+                        </strong>
+                        <small>
+                            <i class="bi bi-graph-up-arrow">
+                            </i>
+                            Active recurring costs
+                        </small>
+                    </div>
+                    <i class="bi bi-three-dots metric-menu">
+                    </i>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-icon purple">
+                        <i class="bi bi-collection">
+                        </i>
+                    </div>
+                    <div>
+                        <span>
+                            Total subscriptions
+                        </span>
+                        <strong>
+                            {{ total_subscriptions }}
+                        </strong>
+                        <small>
+                            <i class="bi bi-check-circle">
+                            </i>
+                            All tracked in one place
+                        </small>
+                    </div>
+                    <i class="bi bi-three-dots metric-menu">
+                    </i>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-icon orange">
+                        <i class="bi bi-calendar-event">
+                        </i>
+                    </div>
+                    <div>
+                        <span>
+                            Upcoming renewals
+                        </span>
+                        <strong>
+                            {{ upcoming_renewals|length }}
+                        </strong>
+                        <small>
+                            <i class="bi bi-clock">
+                            </i>
+                            Due in the next 7 days
+                        </small>
+                    </div>
+                    <i class="bi bi-three-dots metric-menu">
+                    </i>
+                </article>
+                <article class="metric-card savings-card">
+                    <div class="metric-icon green">
+                        <i class="bi bi-piggy-bank">
+                        </i>
+                    </div>
+                    <div>
+                        <span>
+                            Potential savings
+                        </span>
+                        <strong>
+                            ₹
+                            {{ potential_monthly_savings }}
+                        </strong>
+                        <small>
+                            <i class="bi bi-arrow-down-right">
+                            </i>
+                            Per month if optimized
+                        </small>
+                    </div>
+                    <i class="bi bi-three-dots metric-menu">
+                    </i>
+                </article>
+            </section>
+            <div class="row g-4 dashboard-main-row">
+                <div class="col-xl-9">
+                    <section class="row g-4">
+                        <div class="col-lg-7">
+                            <article class="dashboard-card chart-card">
+                                <div class="dashboard-card-head">
+                                    <div>
+                                        <span class="card-kicker">
+                                            Analytics
+                                        </span>
+                                        <h2>
+                                            Monthly cost breakdown
+                                        </h2>
+                                    </div>
+                                    <span class="card-filter">
+                                        All subscriptions
+                                        <i class="bi bi-chevron-down">
+                                        </i>
+                                    </span>
                                 </div>
-                                <div class="renewal-date">{{ sub.renewal_date }}</div>
+                                <div class="chart-container">
+                                    <canvas id="costChart" data-labels='{{ subscription_labels | tojson }}' data-values='{{ subscription_values | tojson }}'>
+                                    </canvas>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col-lg-5">
+                            <article class="dashboard-card chart-card category-card">
+                                <div class="dashboard-card-head">
+                                    <div>
+                                        <span class="card-kicker">
+                                            Analytics
+                                        </span>
+                                        <h2>
+                                            Spending by category
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="categoryChart" data-labels='{{ category_labels | tojson }}' data-values='{{ category_values | tojson }}'>
+                                    </canvas>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+                    <section class="dashboard-card subscriptions-card">
+                        <div class="dashboard-card-head">
+                            <div>
+                                <span class="card-kicker">
+                                    Keep an eye on
+                                </span>
+                                <h2>
+                                    Upcoming renewals
+                                </h2>
                             </div>
+                            <a class="card-link" href="/subscriptions">
+                                View all
+                                <i class="bi bi-arrow-right">
+                                </i>
+                            </a>
+                        </div>
+                        {% if upcoming_renewals %}
+                            <div class="subscription-table">
+                                <div class="subscription-table-head">
+                                    <span>
+                                        Service
+                                    </span>
+                                    <span>
+                                        Category
+                                    </span>
+                                    <span>
+                                        Renewal date
+                                    </span>
+                                    <span>
+                                        Status
+                                    </span>
+                                </div>
+                                {% for sub in upcoming_renewals %}
+                                    <div class="subscription-row">
+                                        <div class="service-cell">
+                                            <span class="service-avatar">
+                                                {{ sub.service_name[:1]|upper }}
+                                            </span>
+                                            <strong>
+                                                {{ sub.service_name }}
+                                            </strong>
+                                        </div>
+                                        <span class="category-label">
+                                            {{ sub.category }}
+                                        </span>
+                                        <span class="renewal-date">
+                                            <i class="bi bi-calendar3">
+                                            </i>
+                                            {{ sub.renewal_date }}
+                                        </span>
+                                        <span class="status-badge">
+                                            <i class="bi bi-clock">
+                                            </i>
+                                            Upcoming
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-dashboard">
+                                <i class="bi bi-calendar-check">
+                                </i>
+                                <strong>
+                                    Nothing renewing soon
+                                </strong>
+                                <p>
+                                    No subscriptions are due in the next 7 days.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </section>
+                    <section class="recommendations-section">
+                        <div class="section-heading">
+                            <div>
+                                <span class="card-kicker">
+                                    Personalized insights
+                                </span>
+                                <h2>
+                                    <i class="bi bi-lightbulb-fill">
+                                    </i>
+                                    Smart recommendations
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="recommendation-list">
+                            {% if recommendations %}
+                            {% for rec in recommendations %}
+                            <article class="recommendation-card">
+                                <span class="recommendation-icon">
+                                    <i class="bi bi-stars">
+                                    </i>
+                                </span>
+                                <div>
+                                    <h3>
+                                        {{ rec.service }}
+                                    </h3>
+                                    <p>
+                                        <b>
+                                            Reason:
+                                        </b>
+                                        {{ rec.reason }}
+                                    </p>
+                                    <p>
+                                        <b>
+                                            Recommendation:
+                                        </b>
+                                        {{ rec.recommendation }}
+                                    </p>
+                                </div>
+                            </article>
                         {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-muted text-center py-3">No subscriptions renewing in the next 7 days.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Smart Recommendations -->
-<div class="mb-5">
-    <div class="recommendations-header mb-4">
-        <h5 class="recommendations-title">💡 Smart AI Recommendations</h5>
-    </div>
-    
-    {% if recommendations %}
-        <div class="recommendations-grid">
-            {% for rec in recommendations %}
-                <div class="recommendation-card" style="border-left-color: {{ rec.color | default('#0d6efd') }}">
-                    <div class="recommendation-content">
-                        <h6 class="recommendation-service">{{ rec.service }}</h6>
-                        <p class="recommendation-reason"><strong>Reason:</strong> {{ rec.reason }}</p>
-                        <p class="recommendation-text"><strong>Recommendation:</strong> {{ rec.recommendation }}</p>
-                    </div>
+                    {% else %}
+                        <article class="recommendation-card">
+                            <span class="recommendation-icon">
+                                <i class="bi bi-lightbulb">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    Keep optimizing
+                                </h3>
+                                <p>
+                                    Monitor upcoming renewals and review unused subscriptions to spot savings.
+                                </p>
+                            </div>
+                        </article>
+                    {% endif %}
                 </div>
-            {% endfor %}
+            </section>
         </div>
-    {% else %}
-        <div class="empty-state">
-            <p class="text-muted">No recommendations available at this time.</p>
-        </div>
-    {% endif %}
+        <aside class="col-xl-3">
+            <div class="dashboard-sidebar">
+                <section class="quick-actions dashboard-card">
+                    <span class="card-kicker">
+                        Shortcuts
+                    </span>
+                    <h2>
+                        Quick actions
+                    </h2>
+                    <a href="/add-subscription" class="quick-action primary">
+                        <i class="bi bi-plus-lg">
+                        </i>
+                        Add subscription
+                    </a>
+                    <a href="/subscriptions" class="quick-action">
+                        <i class="bi bi-grid-3x3-gap">
+                        </i>
+                        View all
+                    </a>
+                    <a href="/export-csv" class="quick-action">
+                        <i class="bi bi-download">
+                        </i>
+                        Export CSV
+                    </a>
+                    <a href="/profile" class="quick-action">
+                        <i class="bi bi-person">
+                        </i>
+                        Profile
+                    </a>
+                </section>
+                <section class="health-card">
+                    <div class="health-ring">
+                        <span>
+                            {{ health_score }}
+                        </span>
+                        <small>
+                            /100
+                        </small>
+                    </div>
+                    <div>
+                        <span class="card-kicker">
+                            Subscription health
+                        </span>
+                        <h2>
+                            Looking good
+                        </h2>
+                        <p>
+                            Keep reviewing renewals to maintain control.
+                        </p>
+                    </div>
+                </section>
+                <section class="activity-card dashboard-card">
+                    <div class="dashboard-card-head">
+                        <div>
+                            <span class="card-kicker">
+                                At a glance
+                            </span>
+                            <h2>
+                                Recent activity
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="activity-list">
+                        <div>
+                            <span class="activity-icon purple">
+                                <i class="bi bi-arrow-repeat">
+                                </i>
+                            </span>
+                            <p>
+                                <b>
+                                    Renewals monitored
+                                </b>
+                                <small>
+                                    Your upcoming charges are up to date.
+                                </small>
+                            </p>
+                        </div>
+                        <div>
+                            <span class="activity-icon green">
+                                <i class="bi bi-plus-lg">
+                                </i>
+                            </span>
+                            <p>
+                                <b>
+                                    Subscriptions tracked
+                                </b>
+                                <small>
+                                    {{ total_subscriptions }}
+                                    services in your workspace.
+                                </small>
+                            </p>
+                        </div>
+                        <div>
+                            <span class="activity-icon orange">
+                                <i class="bi bi-bell">
+                                </i>
+                            </span>
+                            <p>
+                                <b>
+                                    Renewal reminders
+                                </b>
+                                <small>
+                                    Alerts are ready for upcoming renewals.
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                <section class="yearly-card">
+                    <span>
+                        <i class="bi bi-calendar2-check">
+                        </i>
+                        Annual view
+                    </span>
+                    <strong>
+                        ₹
+                        {{ total_yearly }}
+                    </strong>
+                    <small>
+                        Total yearly subscription cost
+                    </small>
+                </section>
+            </div>
+        </aside>
+    </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}">
+</script>
 {% endblock %}

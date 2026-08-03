@@ -1,0 +1,99 @@
+.app-navbar {
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid var(--color-border);
+    min-height: 72px;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    backdrop-filter: blur(16px);
+}
+
+.app-brand {
+    align-items: center;
+    color: var(--color-text);
+    display: inline-flex;
+    font-size: 1.125rem;
+    font-weight: 800;
+    gap: var(--space-1);
+    letter-spacing: -0.04em;
+}
+
+.app-brand:hover {
+    color: var(--color-text);
+}
+
+.app-brand-mark {
+    align-items: center;
+    background: linear-gradient(135deg, var(--color-primary), #8c70fd);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    display: inline-flex;
+    height: 30px;
+    justify-content: center;
+    width: 30px;
+}
+
+.app-navigation {
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.app-navigation .nav-link {
+    color: var(--color-muted);
+    font-size: var(--font-size-caption);
+    font-weight: 700;
+    padding: 8px 10px;
+}
+
+.app-navigation .nav-link:hover {
+    color: var(--color-primary);
+}
+
+.app-notification,
+.app-avatar {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.app-notification {
+    background: #f4f5f9;
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    height: 34px;
+    width: 34px;
+}
+
+.app-avatar {
+    background: linear-gradient(135deg, #fde5cc, #eba675);
+    border-radius: 50%;
+    color: #864f30;
+    font-size: var(--font-size-caption);
+    font-weight: 800;
+    height: 32px;
+    text-decoration: none;
+    width: 32px;
+}
+
+.app-logout {
+    color: #d45d67 !important;
+}
+
+.app-nav-register {
+    min-height: 38px;
+}
+
+.app-content {
+    min-height: calc(100vh - 72px);
+}
+
+.app-flash-container {
+    padding-top: var(--space-2);
+}
+
+@media (max-width: 991.98px) {
+    .app-navigation {
+        align-items: flex-start;
+        padding: var(--space-2) 0;
+    }
+}

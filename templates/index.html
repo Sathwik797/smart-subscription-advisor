@@ -1,68 +1,476 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="text-center py-5">
-
-    <h1 class="display-4 fw-bold">
-        Subscription Assistant
-    </h1>
-
-    <p class="lead text-muted">
-        Track, organize, and manage all your subscriptions in one place.
-    </p>
-
-    <div class="mt-4">
-        <a href="/login" class="btn btn-primary btn-lg m-2">
-            🔐 Login
-        </a>
-
-        <a href="/register" class="btn btn-success btn-lg m-2">
-            📝 Register
-        </a>
-
-        <a href="/dashboard" class="btn btn-warning btn-lg m-2">
-            📊 Dashboard
-        </a>
-
-        <a href="/add-subscription" class="btn btn-info btn-lg m-2">
-            ➕ Add Subscription
-        </a>
-    </div>
-
-</div>
-
-<hr class="my-5">
-
-<div class="row text-center">
-
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h4>💰 Track Expenses</h4>
-                <p>Monitor your monthly and yearly subscription spending.</p>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <main class="landing-page">
+        <nav class="landing-nav navbar navbar-expand-lg" aria-label="Landing page navigation">
+            <div class="container landing-nav-container">
+                <a class="navbar-brand landing-brand" href="/">
+                    <span class="brand-mark">
+                        <i class="bi bi-wallet2">
+                        </i>
+                    </span>
+                    Smart
+                    <span>
+                        Sub
+                    </span>
+                </a>
+                <button class="navbar-toggler landing-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="bi bi-list">
+                    </i>
+                </button>
+                <div class="collapse navbar-collapse" id="landingNav">
+                    <div class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        <a class="nav-link" href="/">
+                            Home
+                        </a>
+                        <a class="nav-link" href="#features">
+                            Features
+                        </a>
+                        <a class="nav-link" href="/login">
+                            Login
+                        </a>
+                        <a class="btn btn-primary landing-register" href="/register">
+                            Register
+                            <i class="bi bi-arrow-up-right">
+                            </i>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h4>⏰ Renewal Reminders</h4>
-                <p>Stay updated with upcoming renewal dates and avoid surprises.</p>
+        </nav>
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <div class="eyebrow">
+                            <i class="bi bi-stars">
+                            </i>
+                            Subscription management, simplified
+                        </div>
+                        <h1>
+                            Take Control of
+                            <br>
+                            <span>
+                                Your Subscriptions
+                            </span>
+                        </h1>
+                        <p class="hero-copy">
+                            Bring every recurring expense into one calm, intelligent workspace. Track spending, stay ahead of renewals, and make every subscription earn its place.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3 hero-actions">
+                            <a href="/register" class="btn btn-primary btn-lg">
+                                Get Started
+                                <i class="bi bi-arrow-right">
+                                </i>
+                            </a>
+                            <a href="/login" class="btn btn-light btn-lg">
+                                Login
+                                <i class="bi bi-box-arrow-in-right">
+                                </i>
+                            </a>
+                        </div>
+                        <div class="hero-trust">
+                            <i class="bi bi-shield-check">
+                            </i>
+                            Secure by design
+                            <span>
+                            </span>
+                            Clear financial visibility
+                        </div>
+                        <div class="hero-utility-links">
+                            <a href="/dashboard">
+                                <i class="bi bi-grid-1x2">
+                                </i>
+                                View dashboard
+                            </a>
+                            <a href="/add-subscription">
+                                <i class="bi bi-plus-circle">
+                                </i>
+                                Add a subscription
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="dashboard-wrap">
+                            <div class="dashboard-glow">
+                            </div>
+                            <div class="dashboard-preview">
+                                <div class="preview-topbar">
+                                    <div class="preview-logo">
+                                        <i class="bi bi-wallet2">
+                                        </i>
+                                    </div>
+                                    <span>
+                                        Overview
+                                    </span>
+                                    <div class="preview-avatar">
+                                        AM
+                                    </div>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="preview-heading">
+                                        <div>
+                                            <small>
+                                                Good morning, Alex
+                                            </small>
+                                            <strong>
+                                                Your financial overview
+                                            </strong>
+                                        </div>
+                                        <button class="preview-add">
+                                            <i class="bi bi-plus-lg">
+                                            </i>
+                                            Add new
+                                        </button>
+                                    </div>
+                                    <div class="metric-grid">
+                                        <div class="metric-card spending">
+                                            <span>
+                                                Monthly spending
+                                            </span>
+                                            <strong>
+                                                $184.50
+                                            </strong>
+                                            <small>
+                                                <i class="bi bi-arrow-down">
+                                                </i>
+                                                8.2% vs last month
+                                            </small>
+                                        </div>
+                                        <div class="metric-card">
+                                            <span>
+                                                Total subscriptions
+                                            </span>
+                                            <strong>
+                                                12
+                                            </strong>
+                                            <small>
+                                                Across 6 categories
+                                            </small>
+                                        </div>
+                                        <div class="metric-card renewals">
+                                            <span>
+                                                Upcoming renewals
+                                            </span>
+                                            <strong>
+                                                3
+                                            </strong>
+                                            <small>
+                                                <i class="bi bi-calendar3">
+                                                </i>
+                                                Next 7 days
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="preview-charts">
+                                        <div class="chart-card">
+                                            <div class="chart-title">
+                                                Spending overview
+                                                <span>
+                                                    Monthly
+                                                </span>
+                                            </div>
+                                            <div class="bar-chart">
+                                                <i>
+                                                </i>
+                                                <i>
+                                                </i>
+                                                <i>
+                                                </i>
+                                                <i>
+                                                </i>
+                                                <i>
+                                                </i>
+                                                <i>
+                                                </i>
+                                                <i>
+                                                </i>
+                                            </div>
+                                            <div class="chart-days">
+                                                <span>
+                                                    M
+                                                </span>
+                                                <span>
+                                                    T
+                                                </span>
+                                                <span>
+                                                    W
+                                                </span>
+                                                <span>
+                                                    T
+                                                </span>
+                                                <span>
+                                                    F
+                                                </span>
+                                                <span>
+                                                    S
+                                                </span>
+                                                <span>
+                                                    S
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="chart-card category-chart">
+                                            <div class="chart-title">
+                                                By category
+                                            </div>
+                                            <div class="donut">
+                                                <span>
+                                                    $184
+                                                </span>
+                                            </div>
+                                            <div class="legend">
+                                                <small>
+                                                    <b>
+                                                    </b>
+                                                    Entertainment
+                                                </small>
+                                                <small>
+                                                    <b>
+                                                    </b>
+                                                    Productivity
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="recent-card">
+                                        <div class="chart-title">
+                                            Recent subscriptions
+                                            <a href="/subscriptions">
+                                                View all
+                                            </a>
+                                        </div>
+                                        <div class="recent-row">
+                                            <span class="service-icon netflix">
+                                                N
+                                            </span>
+                                            <b>
+                                                Netflix
+                                            </b>
+                                            <small>
+                                                Entertainment
+                                            </small>
+                                            <strong>
+                                                $15.49
+                                            </strong>
+                                        </div>
+                                        <div class="recent-row">
+                                            <span class="service-icon spotify">
+                                                <i class="bi bi-spotify">
+                                                </i>
+                                            </span>
+                                            <b>
+                                                Spotify
+                                            </b>
+                                            <small>
+                                                Music
+                                            </small>
+                                            <strong>
+                                                $10.99
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="float-card float-renewal">
+                                <i class="bi bi-bell-fill">
+                                </i>
+                                <div>
+                                    <small>
+                                        Renewing soon
+                                    </small>
+                                    <strong>
+                                        Notion in 2 days
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="float-card float-saved">
+                                <i class="bi bi-graph-down-arrow">
+                                </i>
+                                <div>
+                                    <small>
+                                        Potential savings
+                                    </small>
+                                    <strong>
+                                        $32.00 / mo
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h4>📂 Smart Organization</h4>
-                <p>Search, filter, sort, and categorize subscriptions easily.</p>
+        </section>
+        <section id="features" class="section-space features-section">
+            <div class="container">
+                <div class="section-intro text-center">
+                    <span class="section-kicker">
+                        Everything in one place
+                    </span>
+                    <h2>
+                        Make subscription management feel effortless.
+                    </h2>
+                    <p>
+                        Powerful tools for a clearer view of recurring spending, without the spreadsheet headache.
+                    </p>
+                </div>
+                <div class="row g-4">
+                    {% set features = [('bi-cash-coin', 'Expense Tracking', 'See exactly where your money goes each month.'), ('bi-bar-chart-line', 'Analytics Dashboard', 'Understand trends with clear, actionable insights.'), ('bi-lightbulb', 'Smart Recommendations', 'Spot subscriptions that may no longer serve you.'), ('bi-bell', 'Renewal Alerts', 'Know what is renewing before charges surprise you.'), ('bi-file-earmark-arrow-down', 'CSV Export', 'Take your subscription data wherever you need it.'), ('bi-shield-lock', 'Secure Authentication', 'Your account is protected with secure access controls.')] %}
+                    {% for icon, title, copy in features %}
+                        <div class="col-md-6 col-lg-4">
+                            <article class="feature-card h-100">
+                                <div class="feature-icon">
+                                    <i class="bi {{ icon }}">
+                                    </i>
+                                </div>
+                                <h3>
+                                    {{ title }}
+                                </h3>
+                                <p>
+                                    {{ copy }}
+                                </p>
+                                <i class="bi bi-arrow-up-right feature-arrow">
+                                </i>
+                            </article>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-    </div>
-
-</div>
-
+        </section>
+        <section class="section-space comparison-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-5">
+                        <span class="section-kicker">
+                            A better way
+                        </span>
+                        <h2>
+                            Why choose Smart Subscription Advisor?
+                        </h2>
+                        <p class="section-copy">
+                            Stop piecing together bills, renewal dates, and spend from scattered places. One focused dashboard gives you the full picture.
+                        </p>
+                        <a href="/register" class="text-link">
+                            Start organizing today
+                            <i class="bi bi-arrow-right">
+                            </i>
+                        </a>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="comparison-card">
+                            <div class="comparison-head">
+                                <span>
+                                </span>
+                                <strong>
+                                    Traditional tracking
+                                </strong>
+                                <strong class="advisor-label">
+                                    SmartSub advisor
+                                </strong>
+                            </div>
+                            {% set compare = [('Visibility', 'Scattered across apps', 'One complete overview'), ('Renewals', 'Easy to miss', 'Helpful advance alerts'), ('Insights', 'Manual calculations', 'Clear spending analytics'), ('Decisions', 'Guesswork', 'Smart recommendations')] %}
+                            {% for label, old, new in compare %}
+                                <div class="comparison-row">
+                                    <span>
+                                        {{ label }}
+                                    </span>
+                                    <p>
+                                        <i class="bi bi-x-circle">
+                                        </i>
+                                        {{ old }}
+                                    </p>
+                                    <p>
+                                        <i class="bi bi-check-circle-fill">
+                                        </i>
+                                        {{ new }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-space engineering-section">
+            <div class="container">
+                <div class="engineering-panel">
+                    <div class="row align-items-center g-4">
+                        <div class="col-lg-4">
+                            <span class="section-kicker">
+                                Built with care
+                            </span>
+                            <h2>
+                                Engineering you can count on.
+                            </h2>
+                            <p>
+                                Thoughtful backend foundations keep your data reliable, secure, and ready to grow.
+                            </p>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="tech-grid">
+                                {% set techs = [('bi-layers', 'Layered Architecture'), ('bi-key', 'JWT Authentication'), ('bi-diagram-3', 'Repository Pattern'), ('bi-patch-check', 'Request Validation'), ('bi-life-preserver', 'Global Exception Handling'), ('bi-journal-text', 'Centralized Logging'), ('bi-braces-asterisk', 'REST APIs')] %}
+                                {% for icon, name in techs %}
+                                    <div class="tech-pill">
+                                        <i class="bi {{ icon }}">
+                                        </i>
+                                        {{ name }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-panel text-center">
+                    <div class="cta-orb orb-one">
+                    </div>
+                    <div class="cta-orb orb-two">
+                    </div>
+                    <span class="section-kicker">
+                        Start today
+                    </span>
+                    <h2>
+                        Ready to simplify your subscriptions?
+                    </h2>
+                    <p>
+                        Create your account and turn recurring expenses into clear, confident decisions.
+                    </p>
+                    <a href="/register" class="btn btn-light btn-lg">
+                        Create your account
+                        <i class="bi bi-arrow-right">
+                        </i>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <footer class="landing-footer">
+            <div class="container d-flex flex-column flex-md-row justify-content-between gap-3">
+                <a class="landing-brand" href="/">
+                    <span class="brand-mark">
+                        <i class="bi bi-wallet2">
+                        </i>
+                    </span>
+                    Smart
+                    <span>
+                        Sub
+                    </span>
+                </a>
+                <small>
+                    © 2026 Smart Subscription Advisor. Built for clarity.
+                </small>
+                <div>
+                    <a href="/login">
+                        Login
+                    </a>
+                    <a href="/register">
+                        Register
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 {% endblock %}

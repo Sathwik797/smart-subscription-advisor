@@ -1,218 +1,319 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="row justify-content-center">
-    <div class="col-md-6">
-
-        <div class="card shadow-lg border-0 rounded-4 mt-5">
-
-            <div class="card-header bg-primary text-white text-center">
-                <h3>📝 Register</h3>
-            </div>
-
-            <div class="card-body p-4">
-
-                <form method="POST">
-
-                    <!-- Username -->
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            class="form-control"
-                            value="{{ form_data.username if form_data else '' }}"
-                            placeholder="Enter your username"
-                            required>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <main class="register-page">
+        <div class="register-shell">
+            <section class="register-showcase">
+                <a class="register-brand" href="/">
+                    <span>
+                        <i class="bi bi-wallet2">
+                        </i>
+                    </span>
+                    Smart Subscription Advisor
+                </a>
+                <div class="showcase-copy">
+                    <span class="showcase-kicker">
+                        <i class="bi bi-stars">
+                        </i>
+                        Your financial workspace
+                    </span>
+                    <h1>
+                        Start Smarter Today
+                    </h1>
+                    <p>
+                        Create your account and take complete control of your subscriptions.
+                    </p>
+                </div>
+                <div class="mini-dashboard" aria-hidden="true">
+                    <div class="mini-topbar">
+                        <span class="mini-mark">
+                            <i class="bi bi-wallet2">
+                            </i>
+                        </span>
+                        <span>
+                            Overview
+                        </span>
+                        <i class="bi bi-three-dots ms-auto">
+                        </i>
                     </div>
-
-                    {% if username_error %}
-                    <div class="text-danger mt-1">
-                        {{ username_error }}
-                    </div>
-                    {% endif %}
-
-                    {% if suggestions %}
-
-                    <div class="mt-2">
-
-                        <small class="text-muted">
-                            Suggested usernames:
-                        </small>
-
-                        <div class="mt-1">
-
-                            {% for suggestion in suggestions %}
-
-                                <span
-                                    class="badge bg-primary me-2 suggestion-chip"
-                                    style="cursor:pointer;"
-                                    onclick="selectUsername('{{ suggestion }}')">
-
-                                    {{ suggestion }}
-
-                                </span>
-
-                            {% endfor %}
-
+                    <div class="mini-content">
+                        <div class="mini-greeting">
+                            <span>
+                                Monthly spending
+                            </span>
+                            <strong>
+                                $184.50
+                            </strong>
+                            <small>
+                                <i class="bi bi-arrow-down">
+                                </i>
+                                8.2% this month
+                            </small>
                         </div>
-
+                        <div class="mini-stats">
+                            <div>
+                                <small>
+                                    Subscriptions
+                                </small>
+                                <strong>
+                                    12
+                                </strong>
+                            </div>
+                            <div>
+                                <small>
+                                    Renewing soon
+                                </small>
+                                <strong>
+                                    3
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="mini-chart">
+                            <div class="mini-chart-head">
+                                <b>
+                                    Spending overview
+                                </b>
+                                <span>
+                                    This week
+                                </span>
+                            </div>
+                            <div class="bars">
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                                <i>
+                                </i>
+                            </div>
+                        </div>
+                        <div class="mini-renewal">
+                            <span>
+                                <i class="bi bi-bell">
+                                </i>
+                            </span>
+                            <div>
+                                <small>
+                                    Upcoming renewal
+                                </small>
+                                <strong>
+                                    Notion Pro · in 2 days
+                                </strong>
+                            </div>
+                            <b>
+                                $10
+                            </b>
+                        </div>
                     </div>
-
-                    {% endif %}
-
-                    <!-- Email -->
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            value="{{ form_data.email if form_data else '' }}"
-                            placeholder="Enter your email"
-                            required>
+                </div>
+                <ul class="showcase-features list-unstyled mb-0">
+                    <li>
+                        <i class="bi bi-check2">
+                        </i>
+                        Smart Expense Tracking
+                    </li>
+                    <li>
+                        <i class="bi bi-check2">
+                        </i>
+                        Subscription Analytics
+                    </li>
+                    <li>
+                        <i class="bi bi-check2">
+                        </i>
+                        Renewal Reminders
+                    </li>
+                </ul>
+            </section>
+            <section class="register-form-area">
+                <div class="register-card">
+                    <div class="register-card-heading">
+                        <span class="mobile-brand">
+                            <i class="bi bi-wallet2">
+                            </i>
+                            SmartSub
+                        </span>
+                        <h2>
+                            Create account
+                            <span>
+                                ✨
+                            </span>
+                        </h2>
+                        <p>
+                            Start making smarter subscription decisions today.
+                        </p>
                     </div>
-
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            placeholder="Create a password"
-                            required>
-                    </div>
-
-                    <!-- Confirm Password -->
-                    <div class="mb-3">
-                        <label class="form-label">Confirm Password</label>
-                        <input
-                            type="password"
-                            name="confirm_password"
-                            class="form-control"
-                            placeholder="Confirm your password"
-                            required>
-                    </div>
-
-                    <!-- Occupation -->
-                    <div class="mb-3">
-                        <label class="form-label">Occupation</label>
-
-                        <select
-                            name="occupation"
-                            class="form-select"
-                            required>
-
-                            <option value="" disabled
-                                {% if not form_data or not form_data.occupation %}selected{% endif %}>
-                                Select your occupation
-                            </option>
-
-                            <option value="Student"
-                                {% if form_data and form_data.occupation == "Student" %}selected{% endif %}>
-                                🎓 Student
-                            </option>
-
-                            <option value="Software Developer"
-                                {% if form_data and form_data.occupation == "Software Developer" %}selected{% endif %}>
-                                💻 Software Developer
-                            </option>
-
-                            <option value="AI/ML Engineer"
-                                {% if form_data and form_data.occupation == "AI/ML Engineer" %}selected{% endif %}>
-                                🤖 AI/ML Engineer
-                            </option>
-
-                            <option value="Designer"
-                                {% if form_data and form_data.occupation == "Designer" %}selected{% endif %}>
-                                🎨 Designer
-                            </option>
-
-                            <option value="Business Owner"
-                                {% if form_data and form_data.occupation == "Business Owner" %}selected{% endif %}>
-                                📈 Business Owner
-                            </option>
-
-                            <option value="Other"
-                                {% if form_data and form_data.occupation == "Other" %}selected{% endif %}>
-                                Other
-                            </option>
-
-                        </select>
-                    </div>
-
-                    <!-- Financial Preference -->
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Financial Preference
-                        </label>
-
-                        <select
-                            name="financial_preference"
-                            class="form-select"
-                            required>
-
-                            <option value="" disabled
-                                {% if not form_data or not form_data.financial_preference %}selected{% endif %}>
-                                Choose your financial style
-                            </option>
-
-                            <option value="Money Saver"
-                                {% if form_data and form_data.financial_preference == "Money Saver" %}selected{% endif %}>
-                                💰 Money Saver
-                            </option>
-
-                            <option value="Balanced"
-                                {% if form_data and form_data.financial_preference == "Balanced" %}selected{% endif %}>
-                                ⚖️ Balanced
-                            </option>
-
-                            <option value="Premium"
-                                {% if form_data and form_data.financial_preference == "Premium" %}selected{% endif %}>
-                                💎 Premium
-                            </option>
-
-                        </select>
-
-                    </div>
-                        <small class="text-muted">
-                            This helps us personalize future subscription recommendations.
-                        </small>
-                    </div>
-
-                    <!-- Register Button -->
-                    <div class="d-grid">
-                        <button
-                            type="submit"
-                            class="btn btn-primary btn-lg">
-                            Register
-                        </button>
-                    </div>
-
-                </form>
-
-                <hr>
-
-                <p class="text-center mb-0">
-                    Already have an account?
-                    <a href="/login">Login</a>
-                </p>
-
-            </div>
-
+                    <form method="POST" class="register-form">
+                        <div class="form-field">
+                            <label class="form-label" for="username">
+                                Full name
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-person">
+                                </i>
+                                <input type="text" id="username" name="username" class="form-control" value="{{ form_data.username if form_data else '' }}" placeholder="Enter your full name" required>
+                            </div>
+                            {% if username_error %}
+                                <div class="alert alert-danger field-error" role="alert">
+                                    <i class="bi bi-exclamation-circle">
+                                    </i>
+                                    {{ username_error }}
+                                </div>
+                            {% endif %}
+                            {% if suggestions %}
+                                <div class="suggestions">
+                                    <small>
+                                        Suggested usernames
+                                    </small>
+                                    <div>
+                                        {% for suggestion in suggestions %}
+                                            <button class="suggestion-chip" type="button" onclick="selectUsername('{{ suggestion }}')">
+                                                {{ suggestion }}
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label" for="email">
+                                Email address
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-envelope">
+                                </i>
+                                <input type="email" id="email" name="email" class="form-control" value="{{ form_data.email if form_data else '' }}" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label" for="password">
+                                Password
+                            </label>
+                            <div class="input-icon-wrap password-wrap">
+                                <i class="bi bi-lock">
+                                </i>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+                                <button class="password-toggle" type="button" data-target="password" aria-label="Show password" aria-pressed="false">
+                                    <i class="bi bi-eye">
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="strength-meter" aria-live="polite">
+                                <div class="strength-bars">
+                                    <i>
+                                    </i>
+                                    <i>
+                                    </i>
+                                    <i>
+                                    </i>
+                                </div>
+                                <span>
+                                    Use 8 or more characters
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label" for="confirm-password">
+                                Confirm password
+                            </label>
+                            <div class="input-icon-wrap password-wrap">
+                                <i class="bi bi-shield-lock">
+                                </i>
+                                <input type="password" id="confirm-password" name="confirm_password" class="form-control" placeholder="Confirm your password" required>
+                                <button class="password-toggle" type="button" data-target="confirm-password" aria-label="Show password" aria-pressed="false">
+                                    <i class="bi bi-eye">
+                                    </i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-field select-field">
+                            <label class="form-label" for="occupation">
+                                Occupation
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-briefcase">
+                                </i>
+                                <select id="occupation" name="occupation" class="form-select" required>
+                                    <option value="" disabled {% if not form_data or not form_data.occupation %}selected{% endif %}>
+                                        Select your occupation
+                                    </option>
+                                    <option value="Student" {% if form_data and form_data.occupation == "Student" %}selected{% endif %}>
+                                        🎓 Student
+                                    </option>
+                                    <option value="Software Developer" {% if form_data and form_data.occupation == "Software Developer" %}selected{% endif %}>
+                                        💻 Software Developer
+                                    </option>
+                                    <option value="AI/ML Engineer" {% if form_data and form_data.occupation == "AI/ML Engineer" %}selected{% endif %}>
+                                        🤖 AI/ML Engineer
+                                    </option>
+                                    <option value="Designer" {% if form_data and form_data.occupation == "Designer" %}selected{% endif %}>
+                                        🎨 Designer
+                                    </option>
+                                    <option value="Business Owner" {% if form_data and form_data.occupation == "Business Owner" %}selected{% endif %}>
+                                        📈 Business Owner
+                                    </option>
+                                    <option value="Other" {% if form_data and form_data.occupation == "Other" %}selected{% endif %}>
+                                        Other
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-field select-field">
+                            <label class="form-label" for="financial-preference">
+                                Financial preference
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-sliders">
+                                </i>
+                                <select id="financial-preference" name="financial_preference" class="form-select" required>
+                                    <option value="" disabled {% if not form_data or not form_data.financial_preference %}selected{% endif %}>
+                                        Choose your financial style
+                                    </option>
+                                    <option value="Money Saver" {% if form_data and form_data.financial_preference == "Money Saver" %}selected{% endif %}>
+                                        💰 Money Saver
+                                    </option>
+                                    <option value="Balanced" {% if form_data and form_data.financial_preference == "Balanced" %}selected{% endif %}>
+                                        ⚖️ Balanced
+                                    </option>
+                                    <option value="Premium" {% if form_data and form_data.financial_preference == "Premium" %}selected{% endif %}>
+                                        💎 Premium
+                                    </option>
+                                </select>
+                            </div>
+                            <small class="preference-help">
+                                <i class="bi bi-info-circle">
+                                </i>
+                                This helps us personalize future subscription recommendations.
+                            </small>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary register-button">
+                                Create Account
+                                <i class="bi bi-arrow-right">
+                                </i>
+                            </button>
+                        </div>
+                    </form>
+                    <p class="login-prompt">
+                        Already have an account?
+                        <a href="/login">
+                            Login
+                        </a>
+                    </p>
+                    <p class="register-security">
+                        <i class="bi bi-shield-check">
+                        </i>
+                        Your information is protected securely.
+                    </p>
+                </div>
+            </section>
         </div>
-
-    </div>
-</div>
-
-<script>
-function selectUsername(username) {
-    document.getElementById("username").value = username;
-}
-</script>
-
-{% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+        {% endblock %}

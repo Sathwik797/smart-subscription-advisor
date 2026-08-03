@@ -1,297 +1,500 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="card shadow-lg border-0 rounded-4">
-
-    <div class="card-body">
-
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <div>
-                <h2 class="fw-bold mb-1">
-                    📦 My Subscriptions
-                </h2>
-
-                <p class="text-muted mb-0">
-                    Manage all your subscriptions in one place.
-                </p>
-            </div>
-
-            <div>
-
-                <a href="{{ url_for('auth.add_subscription') }}"
-                   class="btn btn-success">
-
-                    ➕ Add
-
-                </a>
-
-                <a href="/export-csv"
-                   class="btn btn-outline-secondary">
-
-                    📥 Export
-
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- Filters -->
-        <form method="GET">
-
-            <div class="row g-2 mb-4">
-
-                <div class="col-lg-5">
-
-                    <input
-                        type="text"
-                        name="search"
-                        class="form-control"
-                        placeholder="🔍 Search subscription..."
-                        value="{{ search }}">
-
-                </div>
-
-                <div class="col-lg-3">
-
-                    <select
-                        name="category"
-                        class="form-select">
-
-                        <option value="">All Categories</option>
-
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Education">Education</option>
-                        <option value="Music">Music</option>
-                        <option value="Productivity">Productivity</option>
-                        <option value="Gaming">Gaming</option>
-                        <option value="Other">Other</option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-lg-2">
-
-                    <select
-                        name="sort"
-                        class="form-select">
-
-                        <option value="">Sort By</option>
-                        <option value="renewal">Renewal Date</option>
-                        <option value="cost">Monthly Cost</option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-lg-2 d-grid">
-
-                    <button
-                        class="btn btn-primary">
-
-                        Search
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </form>
-
-        <!-- Table -->
-
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
-
-                <thead class="table-primary">
-
-                    <tr>
-
-                        <th>Service</th>
-                        <th>Category</th>
-                        <th>Monthly</th>
-                        <th>Priority</th>
-                        <th>Usage</th>
-                        <th>Renewal</th>
-                        <th class="text-center">Actions</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                {% for subscription in subscriptions.items %}
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-
-                                {{ subscription.service_name }}
-
-                            </strong>
-
-                        </td>
-
-                        <td>
-
-                            <span class="badge bg-info text-dark">
-
-                                {{ subscription.category }}
-
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            ₹{{ "%.0f"|format(subscription.monthly_cost) }}
-
-                        </td>
-
-                        <td>
-
-                            {% if subscription.priority=="High" %}
-
-                                <span class="badge bg-success">
-
-                                    High
-
-                                </span>
-
-                            {% elif subscription.priority=="Medium" %}
-
-                                <span class="badge bg-warning text-dark">
-
-                                    Medium
-
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-danger">
-
-                                    Low
-
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-
-                            <strong>
-
-                                {{ subscription.usage_frequency }}
-
-                            </strong>
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                {{ subscription.usage_hours }} hrs
-
-                            </small>
-
-                        </td>
-
-                        <td>
-
-                            {{ subscription.renewal_date.strftime("%d %b %Y") }}
-
-                        </td>
-
-                        <td class="text-center">
-
-                            <a href="/edit-subscription/{{ subscription.id }}"
-                               class="btn btn-sm btn-outline-warning">
-
-                                ✏️
-
-                            </a>
-
-                            <a href="/delete-subscription/{{ subscription.id }}"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('Delete this subscription?')">
-
-                                🗑️
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <!-- Pagination -->
-
-        <nav class="mt-4">
-
-            <ul class="pagination justify-content-center">
-
-                {% if subscriptions.has_prev %}
-
-                    <li class="page-item">
-
-                        <a class="page-link"
-                           href="{{ url_for('auth.subscriptions',page=subscriptions.prev_num,search=search,category=category,sort=sort) }}">
-
-                            Previous
-
-                        </a>
-
-                    </li>
-
-                {% endif %}
-
-                <li class="page-item active">
-
-                    <span class="page-link">
-
-                        {{ subscriptions.page }}
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/subscriptions.css') }}">
+    <main class="subscriptions-page">
+        <div class="subscriptions-container container">
+            <header class="subscriptions-header">
+                <div>
+                    <span class="page-kicker">
+                        <i class="bi bi-grid-1x2">
+                        </i>
+                        Subscription workspace
                     </span>
-
-                </li>
-
-                {% if subscriptions.has_next %}
-
-                    <li class="page-item">
-
-                        <a class="page-link"
-                           href="{{ url_for('auth.subscriptions',page=subscriptions.next_num,search=search,category=category,sort=sort) }}">
-
-                            Next
-
-                        </a>
-
-                    </li>
-
-                {% endif %}
-
-            </ul>
-
-        </nav>
-
-    </div>
-
-</div>
-
+                    <h1>
+                        My Subscriptions
+                    </h1>
+                    <p>
+                        Manage, organize and monitor all your recurring subscriptions.
+                    </p>
+                </div>
+                <div class="header-actions">
+                    <a href="/export-csv" class="btn export-button">
+                        <i class="bi bi-download">
+                        </i>
+                        <span>
+                            Export CSV
+                        </span>
+                    </a>
+                    <a href="{{ url_for('auth.add_subscription') }}" class="btn add-button">
+                        <i class="bi bi-plus-lg">
+                        </i>
+                        Add Subscription
+                    </a>
+                </div>
+            </header>
+            <section class="subscription-stats" aria-label="Subscription summary">
+                <article class="subscription-stat">
+                    <span class="stat-icon purple">
+                        <i class="bi bi-cash-stack">
+                        </i>
+                    </span>
+                    <div>
+                        <small>
+                            Monthly spending
+                        </small>
+                        <strong>
+                            ₹—
+                        </strong>
+                        <em>
+                            <i class="bi bi-info-circle">
+                            </i>
+                            Available in dashboard
+                        </em>
+                    </div>
+                </article>
+                <article class="subscription-stat">
+                    <span class="stat-icon blue">
+                        <i class="bi bi-calendar2-week">
+                        </i>
+                    </span>
+                    <div>
+                        <small>
+                            Yearly spending
+                        </small>
+                        <strong>
+                            ₹—
+                        </strong>
+                        <em>
+                            <i class="bi bi-info-circle">
+                            </i>
+                            Available in dashboard
+                        </em>
+                    </div>
+                </article>
+                <article class="subscription-stat">
+                    <span class="stat-icon green">
+                        <i class="bi bi-collection">
+                        </i>
+                    </span>
+                    <div>
+                        <small>
+                            Active subscriptions
+                        </small>
+                        <strong>
+                            {{ subscriptions.total }}
+                        </strong>
+                        <em>
+                            <i class="bi bi-check-circle">
+                            </i>
+                            Across all pages
+                        </em>
+                    </div>
+                </article>
+                <article class="subscription-stat">
+                    <span class="stat-icon orange">
+                        <i class="bi bi-bell">
+                        </i>
+                    </span>
+                    <div>
+                        <small>
+                            Upcoming renewals
+                        </small>
+                        <strong>
+                            —
+                        </strong>
+                        <em>
+                            <i class="bi bi-clock">
+                            </i>
+                            See your dashboard
+                        </em>
+                    </div>
+                </article>
+            </section>
+            <div class="row g-4 align-items-start">
+                <div class="col-xl-9">
+                    <section class="subscriptions-card filter-card">
+                        <div class="section-card-heading">
+                            <div>
+                                <span class="card-kicker">
+                                    Find subscriptions
+                                </span>
+                                <h2>
+                                    Search & filters
+                                </h2>
+                            </div>
+                            <span class="filter-note">
+                                <i class="bi bi-funnel">
+                                </i>
+                                Filter your list
+                            </span>
+                        </div>
+                        <form method="GET" class="subscription-filter-form">
+                            <div class="search-field">
+                                <i class="bi bi-search">
+                                </i>
+                                <input type="text" name="search" class="form-control" placeholder="Search subscriptions..." value="{{ search }}">
+                            </div>
+                            <select name="category" class="form-select" aria-label="Filter by category">
+                                <option value="">
+                                    All categories
+                                </option>
+                                <option value="Entertainment" {% if category == 'Entertainment' %}selected{% endif %}>
+                                    Entertainment
+                                </option>
+                                <option value="Education" {% if category == 'Education' %}selected{% endif %}>
+                                    Education
+                                </option>
+                                <option value="Music" {% if category == 'Music' %}selected{% endif %}>
+                                    Music
+                                </option>
+                                <option value="Productivity" {% if category == 'Productivity' %}selected{% endif %}>
+                                    Productivity
+                                </option>
+                                <option value="Gaming" {% if category == 'Gaming' %}selected{% endif %}>
+                                    Gaming
+                                </option>
+                                <option value="Other" {% if category == 'Other' %}selected{% endif %}>
+                                    Other
+                                </option>
+                            </select>
+                            <select class="form-select ui-only-filter" aria-label="Filter by status" title="Status filtering is not available yet">
+                                <option>
+                                    All statuses
+                                </option>
+                                <option>
+                                    Active
+                                </option>
+                                <option>
+                                    Upcoming
+                                </option>
+                                <option>
+                                    Expired
+                                </option>
+                            </select>
+                            <select name="sort" class="form-select" aria-label="Sort subscriptions">
+                                <option value="">
+                                    Sort by
+                                </option>
+                                <option value="renewal" {% if sort == 'renewal' %}selected{% endif %}>
+                                    Renewal date
+                                </option>
+                                <option value="cost" {% if sort == 'cost' %}selected{% endif %}>
+                                    Monthly cost
+                                </option>
+                            </select>
+                            <button class="btn filter-button" type="submit">
+                                Apply
+                                <i class="bi bi-arrow-right">
+                                </i>
+                            </button>
+                        </form>
+                    </section>
+                    <section class="subscriptions-card list-card">
+                        <div class="section-card-heading">
+                            <div>
+                                <span class="card-kicker">
+                                    Your services
+                                </span>
+                                <h2>
+                                    Subscription list
+                                </h2>
+                            </div>
+                            <span class="list-count">
+                                {{ subscriptions.total }}
+                                total
+                            </span>
+                        </div>
+                        {% if subscriptions.items %}
+                            <div class="table-responsive subscription-table-wrap">
+                                <table class="table subscription-table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Service
+                                            </th>
+                                            <th>
+                                                Category
+                                            </th>
+                                            <th>
+                                                Billing cycle
+                                            </th>
+                                            <th>
+                                                Renewal date
+                                            </th>
+                                            <th>
+                                                Monthly cost
+                                            </th>
+                                            <th>
+                                                Status
+                                            </th>
+                                            <th class="text-end">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for subscription in subscriptions.items %}
+                                            <tr>
+                                                <td>
+                                                    <div class="service-cell">
+                                                        <span class="service-icon">
+                                                            {{ subscription.service_name[:1]|upper }}
+                                                        </span>
+                                                        <div>
+                                                            <strong>
+                                                                {{ subscription.service_name }}
+                                                            </strong>
+                                                            <small>
+                                                                <i class="bi bi-bar-chart">
+                                                                </i>
+                                                                {{ subscription.usage_frequency }}
+                                                                ·
+                                                                {{ subscription.usage_hours }}
+                                                                hrs
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="category-badge">
+                                                        {{ subscription.category }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="cycle-label">
+                                                        <i class="bi bi-arrow-repeat">
+                                                        </i>
+                                                        Monthly
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="renewal-label">
+                                                        <i class="bi bi-calendar3">
+                                                        </i>
+                                                        {{ subscription.renewal_date.strftime("%d %b %Y") }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <strong class="monthly-cost">
+                                                        ₹
+                                                        {{ "%.0f"|format(subscription.monthly_cost) }}
+                                                    </strong>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge active">
+                                                        <i class="bi bi-check-circle-fill">
+                                                        </i>
+                                                        Active
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="row-actions justify-content-end">
+                                                        <a href="/edit-subscription/{{ subscription.id }}" class="action-button edit-action" title="Edit {{ subscription.service_name }}" aria-label="Edit {{ subscription.service_name }}">
+                                                            <i class="bi bi-pencil">
+                                                            </i>
+                                                        </a>
+                                                        <a href="/delete-subscription/{{ subscription.id }}" class="action-button delete-action" title="Delete {{ subscription.service_name }}" aria-label="Delete {{ subscription.service_name }}" onclick="return confirm('Delete this subscription?')">
+                                                            <i class="bi bi-trash3">
+                                                            </i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="empty-subscriptions">
+                                <span class="empty-icon">
+                                    <i class="bi bi-folder-plus">
+                                    </i>
+                                </span>
+                                <h3>
+                                    No subscriptions yet
+                                </h3>
+                                <p>
+                                    Start tracking your recurring expenses by adding your first subscription.
+                                </p>
+                                <a href="{{ url_for('auth.add_subscription') }}" class="btn add-button">
+                                    <i class="bi bi-plus-lg">
+                                    </i>
+                                    Add Subscription
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% if subscriptions.has_prev or subscriptions.has_next %}
+                            <nav class="subscription-pagination" aria-label="Subscription pages">
+                                <ul class="pagination mb-0">
+                                    {% if subscriptions.has_prev %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('auth.subscriptions',page=subscriptions.prev_num,search=search,category=category,sort=sort) }}">
+                                                <i class="bi bi-arrow-left">
+                                                </i>
+                                                Previous
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            {{ subscriptions.page }}
+                                        </span>
+                                    </li>
+                                    {% if subscriptions.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('auth.subscriptions',page=subscriptions.next_num,search=search,category=category,sort=sort) }}">
+                                                Next
+                                                <i class="bi bi-arrow-right">
+                                                </i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    </section>
+                </div>
+                <aside class="col-xl-3">
+                    <div class="subscriptions-sidebar">
+                        <section class="quick-stats-card">
+                            <span class="card-kicker">
+                                At a glance
+                            </span>
+                            <h2>
+                                Quick stats
+                            </h2>
+                            <div class="quick-stat">
+                                <span>
+                                    <i class="bi bi-arrow-up-right">
+                                    </i>
+                                    Most expensive
+                                </span>
+                                <strong>
+                                    —
+                                </strong>
+                                <small>
+                                    Not available on this view
+                                </small>
+                            </div>
+                            <div class="quick-stat">
+                                <span>
+                                    <i class="bi bi-arrow-down-right">
+                                    </i>
+                                    Most affordable
+                                </span>
+                                <strong>
+                                    —
+                                </strong>
+                                <small>
+                                    Not available on this view
+                                </small>
+                            </div>
+                            <div class="quick-stat">
+                                <span>
+                                    <i class="bi bi-calculator">
+                                    </i>
+                                    Average monthly cost
+                                </span>
+                                <strong>
+                                    —
+                                </strong>
+                                <small>
+                                    Not available on this view
+                                </small>
+                            </div>
+                            <div class="quick-stat">
+                                <span>
+                                    <i class="bi bi-clock-history">
+                                    </i>
+                                    Renewing this week
+                                </span>
+                                <strong>
+                                    —
+                                </strong>
+                                <small>
+                                    See dashboard for details
+                                </small>
+                            </div>
+                        </section>
+                        <section class="sidebar-promo">
+                            <i class="bi bi-lightning-charge-fill">
+                            </i>
+                            <span>
+                                Stay organized
+                            </span>
+                            <p>
+                                Keep your list fresh and save more each month.
+                            </p>
+                            <a href="{{ url_for('auth.add_subscription') }}">
+                                Add a subscription
+                                <i class="bi bi-arrow-right">
+                                </i>
+                            </a>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+            <section class="tips-section">
+                <div class="tips-heading">
+                    <span class="card-kicker">
+                        Build better habits
+                    </span>
+                    <h2>
+                        Subscription tips
+                    </h2>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <article class="tip-card">
+                            <span>
+                                <i class="bi bi-lightbulb">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    Review unused subscriptions
+                                </h3>
+                                <p>
+                                    Set a monthly reminder to check which services you still use.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-md-4">
+                        <article class="tip-card">
+                            <span class="calendar">
+                                <i class="bi bi-calendar2-check">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    Consider annual plans
+                                </h3>
+                                <p>
+                                    Switch yearly when it makes sense to unlock a better rate.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-md-4">
+                        <article class="tip-card">
+                            <span class="bell">
+                                <i class="bi bi-bell">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    Enable renewal reminders
+                                </h3>
+                                <p>
+                                    Review upcoming charges before they turn into surprises.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/subscriptions.js') }}"></script>
 {% endblock %}
