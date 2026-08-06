@@ -48,16 +48,21 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 }
 
 .profile-container {
-    padding-top: 43px;
-    padding-bottom: 65px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 24px;
+    padding-bottom: 48px;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 .profile-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 20px;
-    margin-bottom: 30px;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .page-kicker,.card-kicker {
@@ -76,9 +81,9 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 }
 
 .profile-header h1 {
-    margin: 8px 0 6px;
+    margin: 4px 0 2px;
     color: #202b45;
-    font-size: clamp(1.85rem,3.4vw,2.55rem);
+    font-size: clamp(1.5rem,2.8vw,2.1rem);
     font-weight: 800;
     letter-spacing: -.055em;
 }
@@ -86,7 +91,7 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 .profile-header p {
     margin: 0;
     color: #79859a;
-    font-size: .91rem;
+    font-size: .88rem;
 }
 
 .profile-page .btn {
@@ -101,10 +106,10 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 }
 
 .edit-profile-button {
-    padding: 11px 14px;
+    padding: 9px 13px;
     border: 0;
     background: #635bff;
-    box-shadow: 0 9px 19px rgba(99,91,255,.22);
+    box-shadow: 0 8px 18px rgba(99,91,255,.2);
     color: #fff;
 }
 
@@ -117,29 +122,29 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 .profile-hero-card {
     display: flex;
     align-items: center;
-    gap: 18px;
-    min-height: 168px;
-    margin-bottom: 20px;
-    padding: 28px;
+    gap: 14px;
+    min-height: 110px;
+    margin-bottom: 16px;
+    padding: 16px 20px;
     overflow: hidden;
     border: 1px solid #e4e5fc;
-    border-radius: 17px;
+    border-radius: 14px;
     background: radial-gradient(circle at 90% 10%,rgba(160,151,255,.25),transparent 27%),linear-gradient(125deg,#29255d,#5145af);
-    box-shadow: 0 16px 32px rgba(53,43,123,.16);
+    box-shadow: 0 12px 24px rgba(53,43,123,.14);
     color: #fff;
 }
 
 .profile-avatar {
     position: relative;
     display: grid;
-    flex: 0 0 80px;
-    height: 80px;
+    flex: 0 0 64px;
+    height: 64px;
     place-items: center;
-    border: 3px solid rgba(255,255,255,.3);
+    border: 2px solid rgba(255,255,255,.3);
     border-radius: 50%;
     background: linear-gradient(135deg,#ffd8b7,#e99566);
     color: #794329;
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 800;
 }
 
@@ -148,14 +153,14 @@ body:has(.profile-page) > .container.mt-4 > .alert {
     right: 0;
     bottom: 0;
     display: grid;
-    width: 23px;
-    height: 23px;
+    width: 20px;
+    height: 20px;
     place-items: center;
-    border: 3px solid #4c40a4;
+    border: 2px solid #4c40a4;
     border-radius: 50%;
     background: #3bc596;
     color: #fff;
-    font-size: .6rem;
+    font-size: .55rem;
 }
 
 .profile-primary {
@@ -172,10 +177,10 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 }
 
 .profile-primary h2 {
-    margin: 4px 0;
+    margin: 2px 0;
     overflow: hidden;
     color: #fff;
-    font-size: 1.55rem;
+    font-size: 1.35rem;
     font-weight: 800;
     letter-spacing: -.04em;
     text-overflow: ellipsis;
@@ -185,7 +190,7 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 .profile-primary > p {
     margin: 0;
     color: #e0ddf7;
-    font-size: .82rem;
+    font-size: .8rem;
 }
 
 .profile-primary > p i {
@@ -196,11 +201,11 @@ body:has(.profile-page) > .container.mt-4 > .alert {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 .profile-meta > span {
-    padding: 5px 7px;
+    padding: 4px 6px;
     border-radius: 6px;
     background: rgba(255,255,255,.1);
     color: #dcd8fa;
@@ -219,8 +224,8 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 
 .hero-edit-link {
     display: grid;
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     place-items: center;
     border-radius: 8px;
     background: rgba(255,255,255,.12);
@@ -234,11 +239,11 @@ body:has(.profile-page) > .container.mt-4 > .alert {
 }
 
 .profile-card,.completion-card,.profile-stats-card {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     border: 1px solid #e7eaf2;
-    border-radius: 14px;
+    border-radius: 12px;
     background: rgba(255,255,255,.86);
-    box-shadow: 0 6px 18px rgba(38,50,75,.045);
+    box-shadow: 0 5px 16px rgba(38,50,75,.04);
 }
 
 .card-heading {
@@ -246,7 +251,7 @@ body:has(.profile-page) > .container.mt-4 > .alert {
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
-    padding: 20px 21px 0;
+    padding: 16px 18px 0;
 }
 
 .card-heading h2,.completion-card h2,.profile-stats-card h2 {

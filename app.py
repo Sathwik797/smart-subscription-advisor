@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, render_template, request
+import os
+from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
 
@@ -13,8 +14,13 @@ from routes.auth import auth
 from routes import subscription  # noqa: F401
 
 
+from utils.currency import format_inr
+
 app = Flask(__name__)
 app.config.from_object(Config)
+
+app.jinja_env.filters['inr'] = format_inr
+app.jinja_env.globals['format_inr'] = format_inr
 
 db.init_app(app)
 
@@ -25,6 +31,10 @@ setattr(login_manager, "login_view", "auth.login")
 
 # JWT is enabled alongside Flask-Login for future REST API usage.
 jwt = JWTManager(app)
+
+from middleware.rate_limiter import limiter
+limiter.init_app(app)
+
 
 
 @jwt.unauthorized_loader
@@ -58,9 +68,16 @@ with app.app_context():
 def home():
     return render_template("index.html")
 
+@app.route('/favicon.ico')
+def favicon():
+    images_dir = os.path.join(app.root_path, 'static', 'images')
+    if os.path.exists(os.path.join(images_dir, 'favicon.ico')):
+        return send_from_directory(images_dir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

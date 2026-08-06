@@ -45,16 +45,21 @@ body:has(.edit-subscription-page)>.container.mt-4>.alert {
 }
 
 .edit-subscription-container {
-    padding-top: 43px;
-    padding-bottom: 65px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 24px;
+    padding-bottom: 48px;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 .edit-page-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 20px;
-    margin-bottom: 30px;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .page-kicker,.card-kicker {

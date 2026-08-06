@@ -29,11 +29,11 @@ class SubscriptionRepository:
 
     @staticmethod
     def get_subscription_by_id(subscription_id):
-        return Subscription.query.get(subscription_id)
+        return db.session.get(Subscription, subscription_id)
 
     @staticmethod
     def get_subscription_or_404(subscription_id):
-        return Subscription.query.get_or_404(subscription_id)
+        return db.get_or_404(Subscription, subscription_id)
 
     @staticmethod
     def paginate_subscriptions(query, page):

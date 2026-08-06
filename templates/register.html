@@ -42,7 +42,7 @@
                                 Monthly spending
                             </span>
                             <strong>
-                                $184.50
+                                ₹184.50
                             </strong>
                             <small>
                                 <i class="bi bi-arrow-down">
@@ -108,7 +108,7 @@
                                 </strong>
                             </div>
                             <b>
-                                $10
+                                ₹10
                             </b>
                         </div>
                     </div>
@@ -181,6 +181,12 @@
                                 </div>
                             {% endif %}
                         </div>
+                        {% if general_error %}
+                            <div class="alert alert-danger field-error mb-3" role="alert">
+                                <i class="bi bi-exclamation-circle"></i>
+                                {{ general_error }}
+                            </div>
+                        {% endif %}
                         <div class="form-field">
                             <label class="form-label" for="email">
                                 Email address
@@ -191,6 +197,17 @@
                                 <input type="email" id="email" name="email" class="form-control" value="{{ form_data.email if form_data else '' }}" placeholder="you@example.com" required>
                             </div>
                         </div>
+                        <div class="form-field">
+                            <label class="form-label" for="mobile_number">
+                                Mobile Number
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-phone">
+                                </i>
+                                <input type="tel" id="mobile_number" name="mobile_number" class="form-control" value="{{ form_data.mobile_number if form_data else '' }}" placeholder="10-digit mobile number (e.g. 9876543210)" pattern="[6-9][0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9" required>
+                            </div>
+                        </div>
+
                         <div class="form-field">
                             <label class="form-label" for="password">
                                 Password

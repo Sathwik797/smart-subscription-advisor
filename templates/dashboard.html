@@ -2,54 +2,6 @@
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <main class="saas-dashboard">
-        <nav class="dashboard-nav navbar navbar-expand-lg" aria-label="Dashboard navigation">
-            <div class="container dashboard-nav-inner">
-                <a class="dashboard-brand" href="/">
-                    <span>
-                        <i class="bi bi-wallet2">
-                        </i>
-                    </span>
-                    Smart Subscription Advisor
-                </a>
-                <button class="navbar-toggler dashboard-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dashboardNav" aria-controls="dashboardNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="bi bi-list">
-                    </i>
-                </button>
-                <div class="collapse navbar-collapse" id="dashboardNav">
-                    <div class="navbar-nav me-auto dashboard-links">
-                        <a class="nav-link active" href="/dashboard">
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="/subscriptions">
-                            Subscriptions
-                        </a>
-                        <a class="nav-link" href="/profile">
-                            Profile
-                        </a>
-                    </div>
-                    <div class="dashboard-nav-actions">
-                        <span class="notification-button" title="Notifications">
-                            <i class="bi bi-bell">
-                            </i>
-                            <b>
-                            </b>
-                        </span>
-                        <a class="nav-user" href="/profile">
-                            <span>
-                                {{ current_user.username[:1]|upper }}
-                            </span>
-                            <small>
-                                {{ current_user.username }}
-                            </small>
-                        </a>
-                        <a class="logout-link" href="/logout" title="Logout">
-                            <i class="bi bi-box-arrow-right">
-                            </i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
         <div class="dashboard-content container">
             <header class="dashboard-header">
                 <div>

@@ -1,11 +1,15 @@
 .app-navbar {
     background: rgba(255, 255, 255, 0.9);
     border-bottom: 1px solid var(--color-border);
-    min-height: 72px;
+    min-height: 60px;
     position: sticky;
     top: 0;
     z-index: 1030;
     backdrop-filter: blur(16px);
+}
+
+.container {
+    max-width: 1280px;
 }
 
 .app-brand {
@@ -42,7 +46,7 @@
     color: var(--color-muted);
     font-size: var(--font-size-caption);
     font-weight: 700;
-    padding: 8px 10px;
+    padding: 6px 10px;
 }
 
 .app-navigation .nav-link:hover {
@@ -80,11 +84,11 @@
 }
 
 .app-nav-register {
-    min-height: 38px;
+    min-height: 36px;
 }
 
 .app-content {
-    min-height: calc(100vh - 72px);
+    min-height: calc(100vh - 60px);
 }
 
 .app-flash-container {

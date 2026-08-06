@@ -10,12 +10,16 @@ from flask_login import login_required
 from controllers.auth_controller import (
     dashboard as dashboard_controller,
     edit_profile as edit_profile_controller,
+    forgot_password as forgot_password_controller,
     login as login_controller,
     logout as logout_controller,
     profile as profile_controller,
     register as register_controller,
+    resend_verification as resend_verification_controller,
+    reset_password as reset_password_controller,
+    verify_email as verify_email_controller,
 )
-
+from middleware.rate_limiter import limiter
 
 auth = Blueprint("auth", __name__)
 
@@ -26,8 +30,33 @@ def register():
 
 
 @auth.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute")
 def login():
     return login_controller()
+
+
+@auth.route("/verify-email/<token>", methods=["GET"])
+@limiter.limit("20 per minute")
+def verify_email(token):
+    return verify_email_controller(token)
+
+
+@auth.route("/resend-verification", methods=["GET", "POST"])
+@limiter.limit("3 per hour")
+def resend_verification():
+    return resend_verification_controller()
+
+
+@auth.route("/forgot-password", methods=["GET", "POST"])
+@limiter.limit("5 per hour")
+def forgot_password():
+    return forgot_password_controller()
+
+
+@auth.route("/reset-password/<token>", methods=["GET", "POST"])
+@limiter.limit("10 per hour")
+def reset_password(token):
+    return reset_password_controller(token)
 
 
 @auth.route("/dashboard")

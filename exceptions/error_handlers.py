@@ -5,6 +5,7 @@ API requests while leaving HTML pages to behave as before.
 """
 
 from flask import jsonify, request
+from werkzeug.exceptions import HTTPException
 
 from logging_config.logger import logger as app_logger
 from .exceptions import (
@@ -56,6 +57,12 @@ def register_error_handlers(app):
         if request.path.startswith("/api"):
             return jsonify({"success": False, "message": error.message}), error.status_code
         return jsonify({"success": False, "message": error.message}), error.status_code
+
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(error):
+        if request.path.startswith("/api"):
+            return jsonify({"success": False, "message": error.description}), error.code
+        return jsonify({"success": False, "message": error.description}), error.code
 
     @app.errorhandler(Exception)
     def handle_unexpected_error(error):

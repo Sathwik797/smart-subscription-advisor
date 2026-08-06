@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <main class="login-page">
+        <div class="login-shell">
+            <section class="login-showcase">
+                <a class="login-brand" href="/">
+                    <span>
+                        <i class="bi bi-wallet2"></i>
+                    </span>
+                    Smart Subscription Advisor
+                </a>
+                <div class="showcase-copy">
+                    <span class="showcase-kicker">
+                        <i class="bi bi-envelope-at"></i>
+                        Verification
+                    </span>
+                    <h1>Resend Verification Email</h1>
+                    <p>Enter your email address to receive a fresh account verification link.</p>
+                </div>
+            </section>
+            <section class="login-form-area">
+                <div class="login-card">
+                    <div class="login-card-heading">
+                        <span class="mobile-brand">
+                            <i class="bi bi-wallet2"></i> SmartSub
+                        </span>
+                        <h2>Resend Email ✉️</h2>
+                        <p>We'll dispatch a new verification link to your email address.</p>
+                    </div>
+                    <form method="POST" class="login-form">
+                        <div class="form-field">
+                            <label class="form-label" for="email">Email address</label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-envelope"></i>
+                                <input type="email" id="email" name="email" class="form-control" value="{{ email or '' }}" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary login-button">
+                                Resend Verification Link <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <p class="register-prompt mt-4">
+                        Already verified? <a href="{{ url_for('auth.login') }}">Go to Login</a>
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+{% endblock %}

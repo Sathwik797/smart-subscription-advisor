@@ -23,7 +23,20 @@ class UserRepository:
 
     @staticmethod
     def get_user_by_id(user_id):
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
+
+    @staticmethod
+    def get_user_by_mobile_number(mobile_number):
+        return User.query.filter_by(mobile_number=mobile_number).first()
+
+    @staticmethod
+    def get_user_by_verification_token(token):
+        return User.query.filter_by(verification_token=token).first()
+
+    @staticmethod
+    def get_user_by_reset_token(token):
+        return User.query.filter_by(reset_token=token).first()
+
 
     @staticmethod
     def save_user(user):

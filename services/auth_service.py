@@ -5,16 +5,25 @@ calls without directly handling HTTP requests.
 """
 
 import random
-from datetime import date, timedelta
+import secrets
+from datetime import datetime, date, timedelta
 
 from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from exceptions.exceptions import AuthenticationException, BusinessLogicException, DatabaseException, ResourceNotFoundException, ValidationException
+from exceptions.exceptions import (
+    AuthenticationException,
+    BusinessLogicException,
+    DatabaseException,
+    ResourceNotFoundException,
+    ValidationException,
+)
 from logging_config.logger import logger
 from models.user import User
 from repositories.subscription_repository import SubscriptionRepository
 from repositories.user_repository import UserRepository
+from services.email_service import email_service
+from services.otp_service import otp_service
 from utils.insights_engine import generate_insight
 
 
@@ -24,6 +33,8 @@ class AuthService:
     def __init__(self):
         self.user_repository = UserRepository()
         self.subscription_repository = SubscriptionRepository()
+        self.email_service = email_service
+        self.otp_service = otp_service
 
     def generate_username_suggestions(self, username):
         """Generate alternative usernames when a chosen username is taken."""
@@ -53,8 +64,8 @@ class AuthService:
 
         return suggestions
 
-    def register_user(self, username, email, password, occupation, financial_preference):
-        """Create a new user account after validating for duplicates."""
+    def register_user(self, username, email, mobile_number, password, occupation, financial_preference, base_url="http://localhost:5000"):
+        """Create a new user account with email verification token."""
         if self.user_repository.get_user_by_username(username):
             logger.warning("Registration failed: username already exists")
             raise ValidationException(f'Username "{username}" is already taken.')
@@ -63,29 +74,122 @@ class AuthService:
             logger.warning("Registration failed: email already exists")
             raise ValidationException("An account with this email already exists.")
 
+        if self.user_repository.get_user_by_mobile_number(mobile_number):
+            logger.warning("Registration failed: mobile number already exists")
+            raise ValidationException("An account with this mobile number already exists.")
+
         hashed_password = generate_password_hash(password)
+        verification_token = secrets.token_urlsafe(32)
+        verification_expiry = datetime.utcnow() + timedelta(hours=24)
+
         user = User(
             username=username,
             email=email,
+            mobile_number=mobile_number,
             password=hashed_password,
             occupation=occupation,
             financial_preference=financial_preference,
+            email_verified=False,
+            verification_token=verification_token,
+            verification_token_expiry=verification_expiry,
         )
         try:
             self.user_repository.save_user(user)
+            logger.info("Registration completed successfully")
         except Exception as exc:
             logger.error("Database failure while creating user account")
             raise DatabaseException("Unable to create user account") from exc
+
+        verification_url = f"{base_url.rstrip('/')}/verify-email/{verification_token}"
+        self.email_service.send_verification_email(email, verification_url)
+        logger.info("Verification email sent")
         return user
 
+    def verify_email(self, token):
+        """Verify an email token, activate user account, and clear token."""
+        if not token:
+            logger.warning("Verification failed: empty token provided")
+            raise ValidationException("Invalid or expired verification link.")
+
+        user = self.user_repository.get_user_by_verification_token(token)
+        if not user:
+            logger.warning("Verification failed: token not found")
+            raise ValidationException("Invalid or expired verification link.")
+
+        if user.verification_token_expiry and user.verification_token_expiry < datetime.utcnow():
+            logger.warning("Verification failed: token expired")
+            raise ValidationException("Invalid or expired verification link.")
+
+        user.email_verified = True
+        user.verification_token = None
+        user.verification_token_expiry = None
+        self.user_repository.update_user(user)
+        logger.info("Verification completed")
+        return user
+
+    def resend_verification(self, email, base_url="http://localhost:5000"):
+        """Resend a new verification email for an unverified account."""
+        user = self.user_repository.get_user_by_email(email)
+        if not user or user.email_verified:
+            logger.info("Resend verification requested for non-existent or already verified email")
+            return True
+
+        verification_token = secrets.token_urlsafe(32)
+        user.verification_token = verification_token
+        user.verification_token_expiry = datetime.utcnow() + timedelta(hours=24)
+        self.user_repository.update_user(user)
+
+        verification_url = f"{base_url.rstrip('/')}/verify-email/{verification_token}"
+        self.email_service.send_verification_email(email, verification_url)
+        logger.info("Resend verification email sent")
+        return True
+
     def authenticate_user(self, email, password):
-        """Authenticate a user by email and password."""
+        """Authenticate a user by email and password, enforcing email verification."""
         user = self.user_repository.get_user_by_email(email)
         if user and check_password_hash(user.password, password):
+            if not user.email_verified:
+                logger.warning("Authentication failed: unverified email")
+                raise AuthenticationException("Please verify your email before logging in.")
             logger.info("User authenticated successfully")
             return user
         logger.warning("Authentication failed")
         raise AuthenticationException("Invalid email or password.")
+
+    def request_password_reset(self, email, base_url="http://localhost:5000"):
+        """Initiate password reset by generating reset token (30-min expiry)."""
+        user = self.user_repository.get_user_by_email(email)
+        if not user:
+            logger.info("Password reset requested for non-existent email")
+            return True
+
+        reset_token = secrets.token_urlsafe(32)
+        user.reset_token = reset_token
+        user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
+        self.user_repository.update_user(user)
+
+        reset_url = f"{base_url.rstrip('/')}/reset-password/{reset_token}"
+        self.email_service.send_password_reset_email(email, reset_url)
+        logger.info("Password reset requested")
+        return True
+
+    def reset_password(self, token, new_password):
+        """Reset user password using a valid reset token."""
+        if not token:
+            logger.warning("Password reset failed: empty token provided")
+            raise ValidationException("Invalid or expired password reset link.")
+
+        user = self.user_repository.get_user_by_reset_token(token)
+        if not user or not user.reset_token_expiry or user.reset_token_expiry < datetime.utcnow():
+            logger.warning("Password reset failed: invalid or expired token")
+            raise ValidationException("Invalid or expired password reset link.")
+
+        user.password = generate_password_hash(new_password)
+        user.reset_token = None
+        user.reset_token_expiry = None
+        self.user_repository.update_user(user)
+        logger.info("Password reset completed")
+        return user
 
     def get_dashboard_data(self, user):
         """Prepare dashboard statistics and insights for the current user."""
@@ -186,8 +290,10 @@ class AuthService:
             "id": user.id,
             "username": user.username,
             "email": user.email,
+            "mobile_number": user.mobile_number,
             "occupation": user.occupation,
             "financial_preference": user.financial_preference,
+            "email_verified": user.email_verified,
         }
 
     def login_with_jwt(self, email, password):

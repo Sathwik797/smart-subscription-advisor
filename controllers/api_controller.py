@@ -36,30 +36,38 @@ def api_register():
     payload = request.get_json(silent=True) or {}
     username = (payload.get("username") or "").strip()
     email = (payload.get("email") or "").strip()
+    mobile_number = (payload.get("mobile_number") or "").strip()
     password = payload.get("password") or ""
     occupation = (payload.get("occupation") or "").strip()
     financial_preference = (payload.get("financial_preference") or "").strip()
 
     try:
         auth_validator.validate_registration(
-        {
-            "username": username,
-            "email": email,
-            "password": password,
-            "confirm_password": payload.get("confirm_password"),
-        }
-    )
+            {
+                "username": username,
+                "email": email,
+                "mobile_number": mobile_number,
+                "password": password,
+                "confirm_password": payload.get("confirm_password"),
+            }
+        )
 
         user = auth_service.register_user(
-        username=username,
-        email=email,
-        password=password,
-        occupation=occupation,
-        financial_preference=financial_preference,
-    )
+            username=username,
+            email=email,
+            mobile_number=mobile_number,
+            password=password,
+            occupation=occupation,
+            financial_preference=financial_preference,
+            base_url=request.host_url,
+        )
 
         logger.info("API registration completed successfully")
-        return json_success("Registration successful", {"user": auth_service.get_user_profile_data(user.id)}, status_code=201)
+        return json_success(
+            "Registration successful. Please verify your email address.",
+            {"user": auth_service.get_user_profile_data(user.id)},
+            status_code=201,
+        )
     except ValidationException as exc:
         logger.warning("API registration validation failed: %s", str(exc))
         raise
@@ -80,6 +88,41 @@ def api_login():
 
     logger.info("API login completed successfully")
     return json_success("Login successful", token_data, status_code=200)
+
+
+def api_verify_email(token):
+    """Verify email via API endpoint."""
+    auth_service.verify_email(token)
+    return json_success("Email verified successfully", status_code=200)
+
+
+def api_resend_verification():
+    """Resend verification email via API."""
+    payload = request.get_json(silent=True) or {}
+    email = (payload.get("email") or "").strip()
+    auth_validator.validate_email(email)
+    auth_service.resend_verification(email, base_url=request.host_url)
+    return json_success("If an unverified account with that email exists, a verification link has been sent.", status_code=200)
+
+
+def api_forgot_password():
+    """Request password reset via API."""
+    payload = request.get_json(silent=True) or {}
+    email = (payload.get("email") or "").strip()
+    auth_validator.validate_forgot_password({"email": email})
+    auth_service.request_password_reset(email, base_url=request.host_url)
+    return json_success("If an account with that email exists, a password reset link has been sent.", status_code=200)
+
+
+def api_reset_password(token):
+    """Reset password via API."""
+    payload = request.get_json(silent=True) or {}
+    password = payload.get("password") or ""
+    confirm_password = payload.get("confirm_password") or ""
+    auth_validator.validate_reset_password({"password": password, "confirm_password": confirm_password})
+    auth_service.reset_password(token, password)
+    return json_success("Password reset successful", status_code=200)
+
 
 
 @jwt_required()

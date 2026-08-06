@@ -18,13 +18,16 @@ def register():
     if request.method == "POST":
         username = request.form.get("username", "")
         email = request.form.get("email", "")
+        mobile_number = request.form.get("mobile_number", "")
         password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
         occupation = request.form.get("occupation", "")
         financial_preference = request.form.get("financial_preference", "")
 
         form_data = {
             "username": username,
             "email": email,
+            "mobile_number": mobile_number,
             "occupation": occupation,
             "financial_preference": financial_preference,
         }
@@ -34,16 +37,19 @@ def register():
                 {
                     "username": username,
                     "email": email,
+                    "mobile_number": mobile_number,
                     "password": password,
-                    "confirm_password": request.form.get("confirm_password"),
+                    "confirm_password": confirm_password,
                 }
             )
             auth_service.register_user(
                 username=username,
                 email=email,
+                mobile_number=mobile_number,
                 password=password,
                 occupation=occupation,
                 financial_preference=financial_preference,
+                base_url=request.host_url,
             )
         except ValidationException as exc:
             logger.warning("Registration failed: %s", str(exc))
@@ -57,10 +63,10 @@ def register():
                     suggestions=auth_service.generate_username_suggestions(username),
                 )
             flash(str(exc), "danger")
-            return redirect(url_for("auth.register"))
+            return render_template("register.html", form_data=form_data, general_error=str(exc))
 
-        logger.info("Registration completed successfully")
-        flash("Registration successful! Please log in.", "success")
+        logger.info("Registration request completed")
+        flash("Registration successful! Please check your email to verify your account before logging in.", "success")
         return redirect(url_for("auth.login"))
 
     return render_template("register.html")
@@ -75,8 +81,17 @@ def login():
         try:
             auth_validator.validate_login({"email": email, "password": password})
             user = auth_service.authenticate_user(email, password)
-        except AuthenticationException:
-            logger.warning("Login failed")
+        except AuthenticationException as exc:
+            logger.warning("Login failed: %s", str(exc))
+            err_msg = str(exc)
+            if "verify your email" in err_msg.lower():
+                return render_template(
+                    "login.html",
+                    email=email,
+                    login_error="Please verify your email before logging in.",
+                    show_resend=True,
+                    unverified_email=email,
+                )
             return render_template(
                 "login.html",
                 email=email,
@@ -89,6 +104,71 @@ def login():
         return redirect(url_for("auth.dashboard"))
 
     return render_template("login.html")
+
+
+def verify_email(token):
+    """Handle verification URL link clicks."""
+    try:
+        auth_service.verify_email(token)
+        flash("Email verified successfully! Please log in.", "success")
+        return render_template("verification_status.html", success=True, message="Your email address has been verified successfully!")
+    except ValidationException as exc:
+        logger.warning("Verification endpoint failed: %s", str(exc))
+        return render_template("verification_status.html", success=False, message=str(exc))
+
+
+def resend_verification():
+    """Handle resend verification email requests."""
+    if request.method == "POST":
+        email = request.form.get("email", "")
+        try:
+            auth_validator.validate_email(email)
+            auth_service.resend_verification(email, base_url=request.host_url)
+        except ValidationException as exc:
+            flash(str(exc), "danger")
+            return render_template("resend_verification.html", email=email)
+
+        flash("If an unverified account with that email exists, a verification link has been sent.", "success")
+        return redirect(url_for("auth.login"))
+
+    email = request.args.get("email", "")
+    return render_template("resend_verification.html", email=email)
+
+
+def forgot_password():
+    """Handle forgot password requests."""
+    if request.method == "POST":
+        email = request.form.get("email", "")
+        try:
+            auth_validator.validate_forgot_password({"email": email})
+            auth_service.request_password_reset(email, base_url=request.host_url)
+        except ValidationException as exc:
+            flash(str(exc), "danger")
+            return render_template("forgot_password.html", email=email)
+
+        flash("If an account with that email exists, a password reset link has been sent.", "success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("forgot_password.html")
+
+
+def reset_password(token):
+    """Handle password reset with token."""
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        try:
+            auth_validator.validate_reset_password({"password": password, "confirm_password": confirm_password})
+            auth_service.reset_password(token, password)
+        except ValidationException as exc:
+            flash(str(exc), "danger")
+            return render_template("reset_password.html", token=token, reset_error=str(exc))
+
+        flash("Password reset successful! Please log in with your new password.", "success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("reset_password.html", token=token)
 
 
 def dashboard():
@@ -152,5 +232,3 @@ def logout():
     logger.info("User logout completed")
     flash("Logged out successfully.", "success")
     return redirect(url_for("auth.login"))
-
-

@@ -12,12 +12,21 @@ from routes.auth import auth
 import routes.subscription  # noqa: F401
 
 
+from flask_login import LoginManager
+
 @pytest.fixture
 def app():
     app = Flask(__name__, template_folder=str(Path(__file__).resolve().parents[1] / "templates"))
     app.secret_key = "test"
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    @login_manager.user_loader
+    def load_user(user_id):
+        return None
     app.register_blueprint(auth)
     return app
+
+
 
 
 def test_auth_registration_invalid_payload_is_rejected_before_service(app):
