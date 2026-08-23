@@ -25,16 +25,26 @@ class Config:
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
 
-    DB_HOST = os.getenv("DB_HOST")
-    DB_PORT = os.getenv("DB_PORT", "3306")
-    DB_NAME = os.getenv("DB_NAME")
-    DB_USER = os.getenv("DB_USER")
-    DB_PASSWORD = quote_plus(os.getenv("DB_PASSWORD"))
+    DEBUG = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}"
-        f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    )
+    # Database connection: support full DATABASE_URL or individual DB parameters
+    DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("SQLALCHEMY_DATABASE_URI")
+    if DATABASE_URL:
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        SQLALCHEMY_DATABASE_URI = DATABASE_URL
+    else:
+        DB_HOST = os.getenv("DB_HOST", "localhost")
+        DB_PORT = os.getenv("DB_PORT", "3306")
+        DB_NAME = os.getenv("DB_NAME", "smart_subscription_advisor")
+        DB_USER = os.getenv("DB_USER", "root")
+        db_password_raw = os.getenv("DB_PASSWORD", "")
+        DB_PASSWORD = quote_plus(db_password_raw) if db_password_raw else ""
+
+        SQLALCHEMY_DATABASE_URI = (
+            f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}"
+            f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

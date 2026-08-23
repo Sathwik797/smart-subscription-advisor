@@ -1,31 +1,42 @@
-# Virtual Environment
+# Virtual Environments
 venv/
 env/
+.venv/
+ENV/
 
-# Python
+# Python Bytecode & Cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.pyd
 
-# Database
+# Database Files
 *.db
+*.sqlite
+*.sqlite3
 
-# Environment Variables
+# Environment Variables & Secrets
 .env
+.env.*
+!.env.example
+*.pem
+*.key
 
-# IDE
+# IDE & Editor Files
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS Files
+# Operating System Files
 .DS_Store
 Thumbs.db
 
-# Pytest
+# Testing & Coverage
 .pytest_cache/
-
-# Logs
-*.log
+.coverage
+htmlcov/
 
 # Logs
 logs/
-*.log
+*.log
