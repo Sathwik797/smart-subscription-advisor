@@ -12,17 +12,14 @@ from routes.auth import auth
 import routes.subscription  # noqa: F401
 
 
-from flask_login import LoginManager
+from flask_jwt_extended import JWTManager
 
 @pytest.fixture
 def app():
     app = Flask(__name__, template_folder=str(Path(__file__).resolve().parents[1] / "templates"))
-    app.secret_key = "test"
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-    @login_manager.user_loader
-    def load_user(user_id):
-        return None
+    app.secret_key = "test-secret-that-is-at-least-32-bytes-long"
+    app.config["JWT_SECRET_KEY"] = "test-secret-that-is-at-least-32-bytes-long"
+    JWTManager(app)
     app.register_blueprint(auth)
     return app
 

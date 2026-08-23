@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 from flask import Flask
-from flask_login import LoginManager
+from flask_jwt_extended import JWTManager
 
 from config import Config
 from database.db import db
@@ -20,7 +20,8 @@ from services.auth_service import AuthService
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
-    SECRET_KEY = "test-secret"
+    SECRET_KEY = "test-secret-that-is-at-least-32-bytes-long"
+    JWT_SECRET_KEY = "test-secret-that-is-at-least-32-bytes-long"
     WTF_CSRF_ENABLED = False
 
 
@@ -30,12 +31,7 @@ def app():
     app.config.from_object(TestConfig)
 
     db.init_app(app)
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return db.session.get(User, int(user_id))
+    JWTManager(app)
 
     app.register_blueprint(auth)
     app.register_blueprint(api_auth, url_prefix="/api")

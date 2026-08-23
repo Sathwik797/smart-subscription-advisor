@@ -17,6 +17,14 @@ class Config:
     except (TypeError, ValueError):
         JWT_ACCESS_TOKEN_EXPIRES = 3600
 
+    # JWT Cookie settings for browser/server-rendered requests
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
+    JWT_COOKIE_SECURE = os.getenv("JWT_COOKIE_SECURE", "False").lower() in ("true", "1", "t")
+    JWT_COOKIE_HTTPONLY = True
+    JWT_COOKIE_SAMESITE = "Lax"
+    JWT_COOKIE_CSRF_PROTECT = False
+    JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
+
     DB_HOST = os.getenv("DB_HOST")
     DB_PORT = os.getenv("DB_PORT", "3306")
     DB_NAME = os.getenv("DB_NAME")

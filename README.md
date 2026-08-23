@@ -176,7 +176,6 @@ Centralized Logging
 - Python
 - Flask
 - Flask-JWT-Extended
-- Flask-Login
 - Flask-SQLAlchemy
 
 ---

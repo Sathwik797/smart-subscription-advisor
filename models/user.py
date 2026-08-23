@@ -1,7 +1,6 @@
 from database.db import db
-from flask_login import UserMixin
-
-class User(UserMixin, db.Model):
+ 
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -14,5 +13,17 @@ class User(UserMixin, db.Model):
     verification_token_expiry = db.Column(db.DateTime, nullable=True)
     reset_token = db.Column(db.String(255), nullable=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_active(self):
+        return True
 
    

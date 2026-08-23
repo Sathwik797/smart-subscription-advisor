@@ -4,7 +4,7 @@ Routes stay thin and delegate request handling to controller functions while
 keeping the existing URL structure intact.
 """
 
-from flask_login import login_required
+from middleware.auth import login_required
 
 from controllers.subscription_controller import (
     add_subscription as add_subscription_controller,

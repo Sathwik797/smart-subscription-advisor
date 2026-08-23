@@ -5,10 +5,11 @@ business work to services, and return the appropriate Flask response.
 """
 
 from flask import flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
+from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
 
 from exceptions.exceptions import AuthenticationException, ValidationException
 from logging_config.logger import logger
+from middleware.auth import current_user
 from services.auth_service import auth_service
 from validators.auth_validator import auth_validator
 
@@ -98,10 +99,12 @@ def login():
                 login_error="Invalid email or password.",
             )
 
-        login_user(user)
         logger.info("User login successful")
         flash("Login successful!", "success")
-        return redirect(url_for("auth.dashboard"))
+        response = redirect(url_for("auth.dashboard"))
+        access_token = create_access_token(identity=str(user.id))
+        set_access_cookies(response, access_token)
+        return response
 
     return render_template("login.html")
 
@@ -228,7 +231,8 @@ def edit_profile():
 
 def logout():
     """Handle user logout requests."""
-    logout_user()
     logger.info("User logout completed")
     flash("Logged out successfully.", "success")
-    return redirect(url_for("auth.login"))
+    response = redirect(url_for("auth.login"))
+    unset_jwt_cookies(response)
+    return response

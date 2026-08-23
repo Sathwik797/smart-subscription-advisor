@@ -5,7 +5,7 @@ business logic remains in the service layer.
 """
 
 from flask import Blueprint
-from flask_login import login_required
+from middleware.auth import current_user, login_required
 
 from controllers.auth_controller import (
     dashboard as dashboard_controller,
@@ -22,6 +22,12 @@ from controllers.auth_controller import (
 from middleware.rate_limiter import limiter
 
 auth = Blueprint("auth", __name__)
+
+
+@auth.app_context_processor
+def inject_current_user():
+    return dict(current_user=current_user)
+
 
 
 @auth.route("/register", methods=["GET", "POST"])

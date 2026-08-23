@@ -5,7 +5,7 @@ delegate business work to services, and return Flask responses.
 """
 
 from flask import Response, flash, redirect, render_template, request, url_for
-from flask_login import current_user
+from middleware.auth import current_user
 
 from exceptions.exceptions import ValidationException
 from logging_config.logger import logger

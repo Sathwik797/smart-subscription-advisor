@@ -1,11 +1,11 @@
 import os
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_jwt_extended import JWTManager
-from flask_login import LoginManager
 
 from config import Config
 from database.db import db
 from logging_config.logger import log_request_data, logger
+from middleware.auth import current_user, resolve_current_user
 from models.subscription import Subscription
 from models.user import User
 from routes.api import api
@@ -24,13 +24,17 @@ app.jinja_env.globals['format_inr'] = format_inr
 
 db.init_app(app)
 
-# Flask-Login remains active for server-rendered HTML pages.
-login_manager = LoginManager()
-login_manager.init_app(app)
-setattr(login_manager, "login_view", "auth.login")
-
-# JWT is enabled alongside Flask-Login for future REST API usage.
+# JWT authentication is active across all endpoints and web pages.
 jwt = JWTManager(app)
+
+@app.before_request
+def load_logged_in_user():
+    resolve_current_user()
+
+@app.context_processor
+def inject_current_user():
+    return dict(current_user=current_user)
+
 
 from middleware.rate_limiter import limiter
 limiter.init_app(app)
@@ -75,9 +79,6 @@ def favicon():
         return send_from_directory(images_dir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@login_manager.user_loader
-def load_user(user_id):
-    return db.session.get(User, int(user_id))
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
+
