@@ -497,4 +497,6 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/subscriptions.js') }}"></script>
+    {% set chatbot_page = 'subscriptions' %}
+    {% include "partials/chatbot.html" %}
 {% endblock %}

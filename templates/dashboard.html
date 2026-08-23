@@ -428,4 +428,6 @@
 </script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}">
 </script>
+{% set chatbot_page = 'dashboard' %}
+{% include "partials/chatbot.html" %}
 {% endblock %}
