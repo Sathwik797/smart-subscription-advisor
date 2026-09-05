@@ -41,9 +41,18 @@ class Config:
         db_password_raw = os.getenv("DB_PASSWORD", "")
         DB_PASSWORD = quote_plus(db_password_raw) if db_password_raw else ""
 
+        # Cloud MySQL / TiDB Cloud requires SSL connection
+        ssl_query = ""
+        db_ssl = os.getenv("DB_SSL", "").lower() in ("true", "1", "t")
+        if db_ssl or "tidbcloud.com" in DB_HOST:
+            if os.path.exists("/etc/ssl/certs/ca-certificates.crt"):
+                ssl_query = "?ssl_ca=/etc/ssl/certs/ca-certificates.crt"
+            else:
+                ssl_query = "?ssl_verify_cert=true"
+
         SQLALCHEMY_DATABASE_URI = (
             f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}"
-            f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+            f"@{DB_HOST}:{DB_PORT}/{DB_NAME}{ssl_query}"
         )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

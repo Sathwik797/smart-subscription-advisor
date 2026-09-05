@@ -1,281 +1,278 @@
-def calculate_priority(
-    occupation,
-    financial_preference,
-    category,
-    monthly_cost,
-    usage_frequency,
-    usage_hours
-):
+"""Recommendation engine: Multi-dimensional evidence evaluation for subscriptions.
+
+Phase 3.4B Architecture:
+- Evaluates multi-dimensional evidence (utilization, financial impact, category context, confidence, preference).
+- Avoids treating estimated usage hours as scientific telemetry.
+- Replaces raw 'Rarely -> Cancel' jumps with confidence-weighted review/cancel decisions.
+- Integrates user financial preference (Money Saver vs Balanced vs Premium/Convenience).
+- Acts as the single authoritative decision model consumed across insights and intelligence layers.
+"""
+
+from typing import Any, Dict, List, Optional
+
+INTERACTIVE_CATEGORIES = {"Entertainment", "Music", "Gaming"}
+UTILITY_CATEGORIES = {"Cloud Storage", "Productivity", "Education"}
+
+
+def evaluate_subscription_evidence(
+    category: str = "Other",
+    monthly_cost: float = 0.0,
+    usage_frequency: str | None = None,
+    usage_hours: float | None = None,
+    days_until_renewal: int | None = None,
+    total_monthly_spend: float = 0.0,
+    financial_preference: str | None = "Balanced",
+) -> Dict[str, Any]:
+    """
+    Evaluate multidimensional evidence for a single subscription.
+
+    Returns an internal decision dictionary:
+    {
+        "score": int (0-100),
+        "priority": "High" | "Medium" | "Low",
+        "action": "keep" | "review" | "rotate" | "cancel",
+        "color": "success" | "warning" | "danger" | "info",
+        "confidence": "high" | "moderate" | "low",
+        "category_type": "interactive" | "utility" | "general",
+        "reasons": List[str],
+        "signals": List[str],
+        "recommendation": str
+    }
+    """
+    monthly_cost = max(0.0, float(monthly_cost or 0.0))
+    usage_freq = usage_frequency or "Monthly"
+    has_hours_provided = usage_hours is not None and usage_hours > 0
+    raw_hours = float(usage_hours) if has_hours_provided else 0.0
+    pref = financial_preference or "Balanced"
+
+    # 1. Category Classification
+    if category in INTERACTIVE_CATEGORIES:
+        category_type = "interactive"
+    elif category in UTILITY_CATEGORIES:
+        category_type = "utility"
+    else:
+        category_type = "general"
+
+    # 2. Daily active hours estimation
+    if usage_freq == "Daily":
+        daily_hours = raw_hours if has_hours_provided else 1.0
+    elif usage_freq == "Weekly":
+        daily_hours = (raw_hours / 7.0) if has_hours_provided else (1.0 / 7.0)
+    elif usage_freq == "Monthly":
+        daily_hours = (raw_hours / 30.0) if has_hours_provided else (1.0 / 30.0)
+    else:  # Rarely
+        daily_hours = (raw_hours / 30.0) if has_hours_provided else 0.0
+
+    # 3. Evidence Confidence
+    # Distinguish estimated user inputs from strong reported engagement
+    if has_hours_provided and usage_frequency is not None:
+        confidence = "high"
+    elif usage_frequency is not None:
+        confidence = "moderate"
+    else:
+        confidence = "low"
+
+    # 4. Multi-dimensional Scoring
     score = 0
+    reasons: List[str] = []
+    signals: List[str] = []
 
-    # -----------------------------------
-    # Convert usage to daily hours
-    # -----------------------------------
-    if usage_frequency == "Daily":
-        daily_usage = usage_hours
-    elif usage_frequency == "Weekly":
-        daily_usage = usage_hours / 7
-    elif usage_frequency == "Monthly":
-        daily_usage = usage_hours / 30
-    else:
-        daily_usage = usage_hours / 30
+    if category_type == "interactive":
+        # Interactive media (Streaming, Gaming, Music)
+        if usage_freq == "Daily":
+            score += 45
+            if daily_hours >= 2.0:
+                score += 35
+                reasons.append(f"Actively used (~{raw_hours:.1f} hrs/day).")
+            elif daily_hours >= 0.5:
+                score += 25
+                reasons.append(f"Regularly used (~{raw_hours:.1f} hrs/day).")
+            else:
+                score += 15
+                reasons.append("Daily access with light screen time.")
+        elif usage_freq == "Weekly":
+            score += 30
+            if daily_hours >= 0.3:
+                score += 20
+                reasons.append(f"Weekly entertainment (~{raw_hours:.1f} hrs/week).")
+            else:
+                score += 10
+                reasons.append("Occasional weekly entertainment.")
+        elif usage_freq == "Monthly":
+            score += 15
+            reasons.append("Accessed on a monthly basis.")
+            signals.append("moderate_utilization")
+        else:  # Rarely
+            score += 0
+            signals.append("low_utilization")
+            reasons.append("Low engagement reported.")
 
-    # -----------------------------------
-    # 1. Usage Frequency (30)
-    # -----------------------------------
-    frequency_scores = {
-        "Daily": 30,
-        "Weekly": 20,
-        "Monthly": 10,
-        "Rarely": 0
-    }
+        # Cost-per-hour efficiency check for interactive media
+        if daily_hours > 0:
+            cph = monthly_cost / (daily_hours * 30.0)
+            if cph <= 15.0:
+                score += 20
+                reasons.append(f"High value-for-money (₹{cph:.1f}/hr).")
+            elif cph <= 40.0:
+                score += 10
+            elif cph > 80.0:
+                signals.append("high_cost_per_hour")
+                reasons.append(f"High cost per active hour (₹{cph:.1f}/hr).")
 
-    score += frequency_scores.get(usage_frequency, 0)
+    elif category_type == "utility":
+        # Passive / Utility infrastructure (Cloud Storage, Productivity, Work Tools)
+        # Background tools deliver continuous utility without requiring screen time
+        score += 50
+        reasons.append(f"{category} provides continuous background utility.")
 
-    # -----------------------------------
-    # 2. Daily Usage Hours (25)
-    # -----------------------------------
-    if daily_usage >= 3:
-        score += 25
-    elif daily_usage >= 2:
-        score += 20
-    elif daily_usage >= 1:
-        score += 15
-    elif daily_usage >= 0.5:
-        score += 10
-
-    # -----------------------------------
-    # 3. Category Value (15)
-    # -----------------------------------
-    category_scores = {
-        "Education": 15,
-        "Productivity": 15,
-        "Health": 12,
-        "Cloud Storage": 10,
-        "Entertainment": 8,
-        "Music": 7,
-        "Gaming": 6,
-        "Other": 5
-    }
-
-    score += category_scores.get(category, 5)
-
-    # -----------------------------------
-    # 4. Monthly Cost (15)
-    # -----------------------------------
-    if monthly_cost <= 300:
-        score += 15
-    elif monthly_cost <= 700:
-        score += 12
-    elif monthly_cost <= 1000:
-        score += 8
-    elif monthly_cost <= 2000:
-        score += 4
-
-    # -----------------------------------
-    # 5. Occupation Bonus (10)
-    # -----------------------------------
-    occupation_bonus = 3
-
-    if occupation == "Student":
-
-        if category == "Education":
-            occupation_bonus = 10
-
-        elif category == "Productivity":
-            occupation_bonus = 8
-
-    elif occupation == "Software Developer":
-
-        if category == "Productivity":
-            occupation_bonus = 10
-
-        elif category == "Education":
-            occupation_bonus = 8
-
-        elif category == "Cloud Storage":
-            occupation_bonus = 8
-
-    elif occupation == "Teacher":
-
-        if category == "Education":
-            occupation_bonus = 10
-
-    elif occupation == "Business":
-
-        if category == "Productivity":
-            occupation_bonus = 10
-
-    score += occupation_bonus
-    
-    # -----------------------------------
-    # 6. Value for Money (5)
-    # -----------------------------------
-
-    # Cost per hour of daily usage
-    if daily_usage > 0:
-        value_ratio = monthly_cost / (daily_usage * 30)
-    else:
-        value_ratio = float("inf")
-
-    # Lower cost per hour = better value
-    if value_ratio <= 10:
-        score += 5
-
-    elif value_ratio <= 20:
-        score += 3
-
-    elif value_ratio <= 40:
-        score += 1
-
-    else:
-        score -= 2
-
-    # -----------------------------------
-    # 7. Financial Preference (5)
-    # -----------------------------------
-    if financial_preference == "Money Saver":
-
-        if monthly_cost <= 700:
-            score += 5
-        else:
+        if usage_freq == "Daily":
+            score += 35
+            reasons.append(f"Core daily tool ({raw_hours:.1f} hrs/day)." if has_hours_provided else "Core daily tool.")
+        elif usage_freq == "Weekly":
+            score += 25
+            reasons.append("Regularly utilized work/utility service.")
+        elif usage_freq == "Monthly":
+            score += 10
+            reasons.append("Periodic background maintenance or sync.")
+        else:  # Rarely
             score -= 5
+            signals.append("passive_infrequent_access")
+            reasons.append("Infrequently accessed background service; confirm active storage/account requirement.")
 
-    elif financial_preference == "Balanced":
-        score += 3
+        # High usage hours bonus for work tools (e.g. AWS, IDEs, Notion)
+        if daily_hours >= 2.0:
+            score += 15
 
-    elif financial_preference == "Premium":
+    else:
+        # General / Other category (Gym, offline memberships, general services)
+        score += 45
+        if usage_freq == "Daily":
+            score += 40
+            reasons.append("Actively utilized recurring service.")
+        elif usage_freq == "Weekly":
+            score += 25
+            reasons.append("Regularly used service.")
+        elif usage_freq == "Monthly":
+            score += 10
+            reasons.append("Monthly recurring service.")
+        else:  # Rarely
+            score -= 25
+            signals.append("low_utilization")
+            reasons.append("Infrequently utilized service.")
+
+    # 5. Financial Impact & Portfolio Share
+    if total_monthly_spend > 0:
+        portfolio_share = (monthly_cost / total_monthly_spend) * 100.0
+        if portfolio_share >= 35.0 and total_monthly_spend >= 1000.0:
+            signals.append("high_portfolio_share")
+            reasons.append(f"Represents {portfolio_share:.0f}% of total subscription budget.")
+
+    # 6. Renewal Proximity Signal
+    if days_until_renewal is not None and 0 <= days_until_renewal <= 7:
+        signals.append("imminent_renewal")
+        if days_until_renewal <= 1:
+            signals.append("renewal_tomorrow")
+
+    # 7. Financial Preference Influence
+    # - "Money Saver": increases scrutiny on underutilized services
+    # - "Premium" / "Convenience": values continuity, avoids eager cancellation advice
+    if pref == "Money Saver":
+        if "low_utilization" in signals:
+            score -= 10
+            reasons.append("Optimization prioritized under Money Saver profile.")
+    elif pref in ("Premium", "Convenience"):
         score += 5
 
-    # Cap score
-    # -----------------------------------
-    # Final Score
-    # -----------------------------------
-    score = max(0, min(score, 100))
+    # Clamp score
+    final_score = max(0, min(100, score))
 
-    # -----------------------------------
-    # Priority
-    # -----------------------------------
-    if score >= 80:
+    # 8. Priority & Action Determination
+    if final_score >= 70:
         priority = "High"
-    elif score >= 50:
+        action = "keep"
+        color = "success"
+        recommendation = "Keep this subscription. It delivers reliable value."
+    elif final_score >= 40:
         priority = "Medium"
+        action = "review"
+        color = "warning"
+        recommendation = "Review tier or billing cycle periodically to maintain efficiency."
     else:
         priority = "Low"
+        # Reserve 'cancel' for strong multi-signal evidence:
+        # Low utilization + interactive (or general) + non-trivial cost
+        if "low_utilization" in signals and (category_type == "interactive" or category_type == "general"):
+            if pref == "Money Saver" or monthly_cost >= 300.0:
+                action = "cancel"
+                color = "danger"
+                recommendation = f"Consider cancelling or downgrading to save ₹{monthly_cost:.2f}/month."
+            else:
+                action = "review"
+                color = "warning"
+                recommendation = f"Low utilization recorded. Review before next billing cycle to save ₹{monthly_cost:.2f}/month."
+        else:
+            action = "review"
+            color = "warning"
+            recommendation = "Review whether this subscription is still needed for your current workflow."
 
-    # -----------------------------------
-    # Reasons
-    # -----------------------------------
-    reasons = []
-
-    # Usage
-    if usage_frequency == "Daily":
-        reasons.append(f"Used daily for about {usage_hours} hour(s).")
-    elif usage_frequency == "Weekly":
-        reasons.append(f"Used weekly for about {usage_hours} hour(s).")
-    elif usage_frequency == "Monthly":
-        reasons.append(f"Used monthly for about {usage_hours} hour(s).")
-    else:
-        reasons.append("Rarely used.")
-
-    # Category
-    reasons.append(f"{category} subscription.")
-
-    # Cost
-    if monthly_cost <= 700:
-        reasons.append("Good value for money.")
-    elif monthly_cost <= 1500:
-        reasons.append("Moderately priced subscription.")
-    else:
-        reasons.append("High monthly cost.")
-
-    # Occupation
-    reasons.append(f"Relevant for a {occupation}.")
-
-    # -----------------------------------
-    # Recommendation
-    # -----------------------------------
-    if priority == "High":
-        recommendation = "Keep this subscription. It provides strong value."
-
-    elif priority == "Medium":
-        recommendation = (
-            "Review this subscription occasionally to ensure it is worth the cost."
-        )
-
-    else:
-        recommendation = (
-            "Consider cancelling or downgrading this subscription to save money."
-        )
-
-    # -----------------------------------
-    # Return Complete Insight
-    # -----------------------------------
     return {
-        "score": score,
+        "score": final_score,
         "priority": priority,
+        "action": action,
+        "color": color,
+        "confidence": confidence,
+        "category_type": category_type,
         "reasons": reasons,
-        "recommendation": recommendation
+        "signals": signals,
+        "recommendation": recommendation,
     }
 
-def get_recommendation(
-    priority,
-    financial_preference,
-    monthly_cost,
-    usage_frequency,
-    usage_hours
-):
-    """
-    Returns a recommendation message and color.
-    """
 
-    # Convert usage to daily hours
-    if usage_frequency == "Daily":
-        daily_usage = usage_hours
-    elif usage_frequency == "Weekly":
-        daily_usage = usage_hours / 7
-    elif usage_frequency == "Monthly":
-        daily_usage = usage_hours / 30
-    else:
-        daily_usage = usage_hours / 30
-
-    # Low priority
-    if priority == "Low":
-        return {
-            "color": "danger",
-            "message": (
-                f"Low priority and limited usage. "
-                f"Consider cancelling to save ₹{monthly_cost:.2f}/month."
-            )
-        }
-
-    # Money Saver + expensive subscription
-    if (
-        financial_preference == "Money Saver"
-        and monthly_cost > 1000
-        and daily_usage < 1
-    ):
-        return {
-            "color": "warning",
-            "message": (
-                "This subscription is expensive compared to your usage. "
-                "Review whether it's still worth keeping."
-            )
-        }
-
-    # Medium priority
-    if priority == "Medium":
-        return {
-            "color": "warning",
-            "message": (
-                "Moderate value subscription. Review it occasionally."
-            )
-        }
-
-    # High priority
+def calculate_priority(
+    occupation: str | None = None,
+    financial_preference: str | None = "Balanced",
+    category: str = "Other",
+    monthly_cost: float = 0.0,
+    usage_frequency: str | None = None,
+    usage_hours: float | None = None,
+) -> Dict[str, Any]:
+    """Backward-compatible wrapper returning score, priority, reasons, recommendation."""
+    evidence = evaluate_subscription_evidence(
+        category=category,
+        monthly_cost=monthly_cost,
+        usage_frequency=usage_frequency,
+        usage_hours=usage_hours,
+        financial_preference=financial_preference,
+    )
     return {
-        "color": "success",
-        "message": (
-            "Frequently used and valuable. Recommended to keep."
-        )
+        "score": evidence["score"],
+        "priority": evidence["priority"],
+        "reasons": evidence["reasons"],
+        "recommendation": evidence["recommendation"],
+        "action": evidence["action"],
+        "color": evidence["color"],
+        "is_interactive": evidence["category_type"] == "interactive",
+    }
+
+
+def get_recommendation(
+    priority: str,
+    financial_preference: str | None = "Balanced",
+    monthly_cost: float = 0.0,
+    usage_frequency: str | None = None,
+    usage_hours: float | None = None,
+    category: str = "Other",
+) -> Dict[str, Any]:
+    """Backward-compatible wrapper returning message, action, and color."""
+    evidence = evaluate_subscription_evidence(
+        category=category,
+        monthly_cost=monthly_cost,
+        usage_frequency=usage_frequency,
+        usage_hours=usage_hours,
+        financial_preference=financial_preference,
+    )
+    return {
+        "color": evidence["color"],
+        "action": evidence["action"],
+        "message": evidence["recommendation"],
     }

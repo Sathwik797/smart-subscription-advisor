@@ -9,6 +9,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from exceptions.exceptions import ValidationException
 from logging_config.logger import logger
+from services.ai_reasoning_service import ai_reasoning_service
 from services.auth_service import auth_service
 from services.subscription_service import subscription_service
 from validators.auth_validator import auth_validator
@@ -208,3 +209,13 @@ def delete_api_subscription(subscription_id):
     logger.info("API subscription deleted")
 
     return json_success("Subscription deleted successfully", None, 200)
+
+
+@jwt_required()
+def api_intelligence():
+    """Return hybrid subscription intelligence (deterministic facts + AI reasoning) via JWT."""
+    user_id = get_jwt_identity()
+    user = auth_service.get_user_by_id(user_id)
+
+    intelligence_data = ai_reasoning_service.get_reasoned_intelligence(user)
+    return json_success("Intelligence fetched successfully", intelligence_data)

@@ -1,90 +1,67 @@
-def generate_insight(subscription, financial_preference):
+"""Insights engine: Formats evidence-based decisions into structured insight cards.
+
+Phase 3.4B Architecture:
+- Uses evaluate_subscription_evidence as the authoritative evaluation engine.
+- Formats reasons, actions, and recommendations consistently across dashboard and API.
+"""
+
+from typing import Any, Dict
+
+from utils.recommendation_engine import evaluate_subscription_evidence
+
+
+def generate_insight(
+    subscription: Any,
+    financial_preference: str | None = None,
+    total_monthly_spend: float = 0.0,
+) -> Dict[str, Any]:
     """
-    Generates insight for a subscription.
+    Generate a standardized insight card for a specific subscription.
 
     Returns:
     {
-        service,
-        reason,
-        recommendation,
-        color,
-        score
+        "service": str,
+        "reason": str,
+        "recommendation": str,
+        "color": "success" | "warning" | "danger" | "info",
+        "action": "keep" | "review" | "rotate" | "cancel",
+        "confidence": "high" | "moderate" | "low",
+        "score": int (0-100),
+        "priority": "High" | "Medium" | "Low"
     }
     """
+    category = getattr(subscription, "category", "Other")
+    monthly_cost = float(getattr(subscription, "monthly_cost", 0.0) or 0.0)
+    usage_freq = getattr(subscription, "usage_frequency", None)
+    usage_hrs = getattr(subscription, "usage_hours", None)
 
-    # Convert usage to average daily hours
-    if subscription.usage_frequency == "Daily":
-        daily_usage = subscription.usage_hours
-    elif subscription.usage_frequency == "Weekly":
-        daily_usage = subscription.usage_hours / 7
-    elif subscription.usage_frequency == "Monthly":
-        daily_usage = subscription.usage_hours / 30
-    else:
-        daily_usage = subscription.usage_hours / 30
+    # Calculate days until renewal if available
+    days_left = None
+    if getattr(subscription, "renewal_date", None):
+        from datetime import date
+        days_left = (subscription.renewal_date - date.today()).days
 
-    score = 0
+    evidence = evaluate_subscription_evidence(
+        category=category,
+        monthly_cost=monthly_cost,
+        usage_frequency=usage_freq,
+        usage_hours=usage_hrs,
+        days_until_renewal=days_left,
+        total_monthly_spend=total_monthly_spend,
+        financial_preference=financial_preference,
+    )
 
-    # Low priority
-    if subscription.priority == "Low":
-        score += 100
-
-    elif subscription.priority == "Medium":
-        score += 50
-
-    # Expensive subscription
-    if subscription.monthly_cost >= 1000:
-        score += 30
-
-    # Very low usage
-    if daily_usage < 0.5:
-        score += 30
-
-    # Money Saver users
-    if financial_preference == "Money Saver":
-        score += 20
-
-    # Decide recommendation
-    if score >= 120:
-
-        color = "danger"
-
-        reason = (
-            f"High monthly cost (₹{subscription.monthly_cost:.2f}) "
-            f"and low usage ({daily_usage:.2f} hrs/day)."
-        )
-
-        recommendation = (
-            f"Consider cancelling to save ₹{subscription.monthly_cost:.2f}/month."
-        )
-
-    elif score >= 70:
-
-        color = "warning"
-
-        reason = (
-            f"Moderate usage ({daily_usage:.2f} hrs/day)."
-        )
-
-        recommendation = (
-            "Review whether this subscription still provides enough value."
-        )
-
-    else:
-
-        color = "success"
-
-        reason = (
-            f"Frequently used ({daily_usage:.2f} hrs/day)."
-        )
-
-        recommendation = (
-            "Keep this subscription."
-        )
+    service_name = getattr(subscription, "service_name", "Unknown")
+    reason_str = " · ".join(evidence["reasons"]) if evidence["reasons"] else f"{category} subscription."
 
     return {
-        "service": subscription.service_name,
-        "reason": reason,
-        "recommendation": recommendation,
-        "color": color,
-        "score": score
+        "service": service_name,
+        "reason": reason_str,
+        "recommendation": evidence["recommendation"],
+        "color": evidence["color"],
+        "action": evidence["action"],
+        "confidence": evidence["confidence"],
+        "score": evidence["score"],
+        "priority": evidence["priority"],
+        "signals": evidence["signals"],
     }

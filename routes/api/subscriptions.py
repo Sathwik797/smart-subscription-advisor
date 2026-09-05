@@ -3,6 +3,7 @@
 from flask import Blueprint
 
 from controllers.api_controller import (
+    api_intelligence,
     api_profile,
     api_subscriptions,
     create_api_subscription,
@@ -11,6 +12,11 @@ from controllers.api_controller import (
 )
 
 api_subscriptions_bp = Blueprint("api_subscriptions", __name__)
+
+
+@api_subscriptions_bp.route("/intelligence", methods=["GET"])
+def intelligence():
+    return api_intelligence()
 
 
 @api_subscriptions_bp.route("/profile", methods=["GET"])
