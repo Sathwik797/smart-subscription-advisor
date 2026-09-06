@@ -1,476 +1,637 @@
 {% extends "base.html" %}
 {% block content %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <main class="landing-page">
-        <nav class="landing-nav navbar navbar-expand-lg" aria-label="Landing page navigation">
-            <div class="container landing-nav-container">
-                <a class="navbar-brand landing-brand" href="/">
-                    <span class="brand-mark">
-                        <i class="bi bi-wallet2">
-                        </i>
-                    </span>
-                    Smart
-                    <span>
-                        Sub
-                    </span>
-                </a>
-                <button class="navbar-toggler landing-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="bi bi-list">
-                    </i>
-                </button>
-                <div class="collapse navbar-collapse" id="landingNav">
-                    <div class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                        <a class="nav-link" href="/">
-                            Home
-                        </a>
-                        <a class="nav-link" href="#features">
-                            Features
-                        </a>
-                        <a class="nav-link" href="/login">
-                            Login
-                        </a>
-                        <a class="btn btn-primary landing-register" href="/register">
-                            Register
-                            <i class="bi bi-arrow-up-right">
-                            </i>
-                        </a>
-                    </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+
+<main class="landing-page">
+    <!-- Top SaaS Navigation -->
+    <nav class="landing-nav navbar navbar-expand-lg" aria-label="Landing page navigation">
+        <div class="container landing-nav-container">
+            <a class="landing-brand" href="/">
+                <span class="landing-brand-mark">SA</span>
+                <span class="landing-brand-text">Smart Subscription Advisor</span>
+            </a>
+
+            <button class="navbar-toggler landing-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="landingNav">
+                <div class="navbar-nav mx-auto landing-nav-links">
+                    <a class="nav-link active" href="/">Home</a>
+                    <a class="nav-link" href="#features">Features</a>
+                    <a class="nav-link" href="#how-it-works">How It Works</a>
+                    <a class="nav-link" href="#pricing">Pricing</a>
+                    <a class="nav-link" href="#faq">FAQ</a>
+                </div>
+
+                <div class="landing-nav-actions">
+                    {% if current_user.is_authenticated %}
+                        <a class="btn btn-outline-nav" href="{{ url_for('auth.dashboard') }}">Dashboard</a>
+                        <a class="btn btn-primary-nav" href="{{ url_for('auth.logout') }}">Sign Out</a>
+                    {% else %}
+                        <a class="btn btn-outline-nav" href="{{ url_for('auth.login') }}">Sign In</a>
+                        <a class="btn btn-primary-nav" href="{{ url_for('auth.register') }}">Get Started Free</a>
+                    {% endif %}
                 </div>
             </div>
-        </nav>
-        <section class="hero-section">
-            <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-6">
-                        <div class="eyebrow">
-                            <i class="bi bi-stars">
-                            </i>
-                            Subscription management, simplified
-                        </div>
-                        <h1>
-                            Take Control of
-                            <br>
-                            <span>
-                                Your Subscriptions
-                            </span>
-                        </h1>
-                        <p class="hero-copy">
-                            Bring every recurring expense into one calm, intelligent workspace. Track spending, stay ahead of renewals, and make every subscription earn its place.
-                        </p>
-                        <div class="d-flex flex-wrap gap-3 hero-actions">
-                            <a href="/register" class="btn btn-primary btn-lg">
-                                Get Started
-                                <i class="bi bi-arrow-right">
-                                </i>
-                            </a>
-                            <a href="/login" class="btn btn-light btn-lg">
-                                Login
-                                <i class="bi bi-box-arrow-in-right">
-                                </i>
-                            </a>
-                        </div>
-                        <div class="hero-trust">
-                            <i class="bi bi-shield-check">
-                            </i>
-                            Secure by design
-                            <span>
-                            </span>
-                            Clear financial visibility
-                        </div>
-                        <div class="hero-utility-links">
-                            <a href="/dashboard">
-                                <i class="bi bi-grid-1x2">
-                                </i>
-                                View dashboard
-                            </a>
-                            <a href="/add-subscription">
-                                <i class="bi bi-plus-circle">
-                                </i>
-                                Add a subscription
-                            </a>
-                        </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <!-- Left Column: Copy & Actions -->
+                <div class="col-lg-6 hero-copy-col">
+                    <div class="hero-eyebrow">
+                        <span>INDIA'S SMART SUBSCRIPTION MANAGER</span>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="dashboard-wrap">
-                            <div class="dashboard-glow">
-                            </div>
-                            <div class="dashboard-preview">
-                                <div class="preview-topbar">
-                                    <div class="preview-logo">
-                                        <i class="bi bi-wallet2">
-                                        </i>
-                                    </div>
-                                    <span>
-                                        Overview
-                                    </span>
-                                    <div class="preview-avatar">
-                                        AM
-                                    </div>
-                                </div>
-                                <div class="preview-body">
-                                    <div class="preview-heading">
-                                        <div>
-                                            <small>
-                                                Good morning, Alex
-                                            </small>
-                                            <strong>
-                                                Your financial overview
-                                            </strong>
-                                        </div>
-                                        <button class="preview-add">
-                                            <i class="bi bi-plus-lg">
-                                            </i>
-                                            Add new
-                                        </button>
-                                    </div>
-                                    <div class="metric-grid">
-                                        <div class="metric-card spending">
-                                            <span>
-                                                Monthly spending
-                                            </span>
-                                            <strong>
-                                                ₹184.50
-                                            </strong>
-                                            <small>
-                                                <i class="bi bi-arrow-down">
-                                                </i>
-                                                8.2% vs last month
-                                            </small>
-                                        </div>
-                                        <div class="metric-card">
-                                            <span>
-                                                Total subscriptions
-                                            </span>
-                                            <strong>
-                                                12
-                                            </strong>
-                                            <small>
-                                                Across 6 categories
-                                            </small>
-                                        </div>
-                                        <div class="metric-card renewals">
-                                            <span>
-                                                Upcoming renewals
-                                            </span>
-                                            <strong>
-                                                3
-                                            </strong>
-                                            <small>
-                                                <i class="bi bi-calendar3">
-                                                </i>
-                                                Next 7 days
-                                            </small>
-                                        </div>
-                                    </div>
-                                    <div class="preview-charts">
-                                        <div class="chart-card">
-                                            <div class="chart-title">
-                                                Spending overview
-                                                <span>
-                                                    Monthly
-                                                </span>
-                                            </div>
-                                            <div class="bar-chart">
-                                                <i>
-                                                </i>
-                                                <i>
-                                                </i>
-                                                <i>
-                                                </i>
-                                                <i>
-                                                </i>
-                                                <i>
-                                                </i>
-                                                <i>
-                                                </i>
-                                                <i>
-                                                </i>
-                                            </div>
-                                            <div class="chart-days">
-                                                <span>
-                                                    M
-                                                </span>
-                                                <span>
-                                                    T
-                                                </span>
-                                                <span>
-                                                    W
-                                                </span>
-                                                <span>
-                                                    T
-                                                </span>
-                                                <span>
-                                                    F
-                                                </span>
-                                                <span>
-                                                    S
-                                                </span>
-                                                <span>
-                                                    S
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="chart-card category-chart">
-                                            <div class="chart-title">
-                                                By category
-                                            </div>
-                                            <div class="donut">
-                                                <span>
-                                                    ₹184
-                                                </span>
-                                            </div>
-                                            <div class="legend">
-                                                <small>
-                                                    <b>
-                                                    </b>
-                                                    Entertainment
-                                                </small>
-                                                <small>
-                                                    <b>
-                                                    </b>
-                                                    Productivity
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="recent-card">
-                                        <div class="chart-title">
-                                            Recent subscriptions
-                                            <a href="/subscriptions">
-                                                View all
-                                            </a>
-                                        </div>
-                                        <div class="recent-row">
-                                            <span class="service-icon netflix">
-                                                N
-                                            </span>
-                                            <b>
-                                                Netflix
-                                            </b>
-                                            <small>
-                                                Entertainment
-                                            </small>
-                                            <strong>
-                                                ₹15.49
-                                            </strong>
-                                        </div>
-                                        <div class="recent-row">
-                                            <span class="service-icon spotify">
-                                                <i class="bi bi-spotify">
-                                                </i>
-                                            </span>
-                                            <b>
-                                                Spotify
-                                            </b>
-                                            <small>
-                                                Music
-                                            </small>
-                                            <strong>
-                                                ₹10.99
-                                            </strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="float-card float-renewal">
-                                <i class="bi bi-bell-fill">
-                                </i>
-                                <div>
-                                    <small>
-                                        Renewing soon
-                                    </small>
-                                    <strong>
-                                        Notion in 2 days
-                                    </strong>
-                                </div>
-                            </div>
-                            <div class="float-card float-saved">
-                                <i class="bi bi-graph-down-arrow">
-                                </i>
-                                <div>
-                                    <small>
-                                        Potential savings
-                                    </small>
-                                    <strong>
-                                        ₹32.00 / mo
-                                    </strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="features" class="section-space features-section">
-            <div class="container">
-                <div class="section-intro text-center">
-                    <span class="section-kicker">
-                        Everything in one place
-                    </span>
-                    <h2>
-                        Make subscription management feel effortless.
-                    </h2>
-                    <p>
-                        Powerful tools for a clearer view of recurring spending, without the spreadsheet headache.
+
+                    <h1 class="hero-title">
+                        Take control of your<br>recurring expenses
+                    </h1>
+
+                    <p class="hero-subtitle">
+                        Track, manage and optimize all your subscriptions in one place. Get AI-powered insights to save money and avoid unnecessary renewals — in Indian Rupees (₹).
                     </p>
-                </div>
-                <div class="row g-4">
-                    {% set features = [('bi-cash-coin', 'Expense Tracking', 'See exactly where your money goes each month.'), ('bi-bar-chart-line', 'Analytics Dashboard', 'Understand trends with clear, actionable insights.'), ('bi-lightbulb', 'Smart Recommendations', 'Spot subscriptions that may no longer serve you.'), ('bi-bell', 'Renewal Alerts', 'Know what is renewing before charges surprise you.'), ('bi-file-earmark-arrow-down', 'CSV Export', 'Take your subscription data wherever you need it.'), ('bi-shield-lock', 'Secure Authentication', 'Your account is protected with secure access controls.')] %}
-                    {% for icon, title, copy in features %}
-                        <div class="col-md-6 col-lg-4">
-                            <article class="feature-card h-100">
-                                <div class="feature-icon">
-                                    <i class="bi {{ icon }}">
-                                    </i>
-                                </div>
-                                <h3>
-                                    {{ title }}
-                                </h3>
-                                <p>
-                                    {{ copy }}
-                                </p>
-                                <i class="bi bi-arrow-up-right feature-arrow">
-                                </i>
-                            </article>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-        <section class="section-space comparison-section">
-            <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-5">
-                        <span class="section-kicker">
-                            A better way
-                        </span>
-                        <h2>
-                            Why choose Smart Subscription Advisor?
-                        </h2>
-                        <p class="section-copy">
-                            Stop piecing together bills, renewal dates, and spend from scattered places. One focused dashboard gives you the full picture.
-                        </p>
-                        <a href="/register" class="text-link">
-                            Start organizing today
-                            <i class="bi bi-arrow-right">
-                            </i>
+
+                    <div class="hero-actions">
+                        <a href="{{ url_for('auth.register') }}" class="btn hero-btn-primary">
+                            Get Started Free <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                        <a href="#how-it-works" class="btn hero-btn-secondary">
+                            <i class="bi bi-play-circle me-2"></i> See How It Works
                         </a>
                     </div>
-                    <div class="col-lg-7">
-                        <div class="comparison-card">
-                            <div class="comparison-head">
-                                <span>
-                                </span>
-                                <strong>
-                                    Traditional tracking
-                                </strong>
-                                <strong class="advisor-label">
-                                    SmartSub advisor
-                                </strong>
+
+                    <div class="hero-trust-points">
+                        <div class="trust-point">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Free to get started</span>
+                        </div>
+                        <div class="trust-point">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>AI-powered insights</span>
+                        </div>
+                        <div class="trust-point">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Secure & private</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: High-Fidelity Product Preview -->
+                <div class="col-lg-6 hero-preview-col">
+                    <div class="preview-window">
+                        <!-- Browser Window Top Bar -->
+                        <div class="preview-chrome">
+                            <div class="chrome-dots">
+                                <span class="dot dot-red"></span>
+                                <span class="dot dot-amber"></span>
+                                <span class="dot dot-green"></span>
                             </div>
-                            {% set compare = [('Visibility', 'Scattered across apps', 'One complete overview'), ('Renewals', 'Easy to miss', 'Helpful advance alerts'), ('Insights', 'Manual calculations', 'Clear spending analytics'), ('Decisions', 'Guesswork', 'Smart recommendations')] %}
-                            {% for label, old, new in compare %}
-                                <div class="comparison-row">
-                                    <span>
-                                        {{ label }}
-                                    </span>
-                                    <p>
-                                        <i class="bi bi-x-circle">
-                                        </i>
-                                        {{ old }}
-                                    </p>
-                                    <p>
-                                        <i class="bi bi-check-circle-fill">
-                                        </i>
-                                        {{ new }}
-                                    </p>
+                            <div class="chrome-brand">
+                                <span class="chrome-logo">SA</span>
+                                <span class="chrome-name">Smart Subscription Advisor</span>
+                            </div>
+                            <div class="chrome-user">
+                                <i class="bi bi-bell chrome-bell"></i>
+                                <div class="chrome-avatar">SR</div>
+                                <span class="chrome-username">Sathwik Reddy</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup Inner Workspace -->
+                        <div class="preview-body">
+                            <!-- Mini Sidebar -->
+                            <div class="preview-sidebar">
+                                <div class="sidebar-item active">
+                                    <i class="bi bi-grid-1x2"></i>
+                                    <span>Dashboard</span>
                                 </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section-space engineering-section">
-            <div class="container">
-                <div class="engineering-panel">
-                    <div class="row align-items-center g-4">
-                        <div class="col-lg-4">
-                            <span class="section-kicker">
-                                Built with care
-                            </span>
-                            <h2>
-                                Engineering you can count on.
-                            </h2>
-                            <p>
-                                Thoughtful backend foundations keep your data reliable, secure, and ready to grow.
-                            </p>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="tech-grid">
-                                {% set techs = [('bi-layers', 'Layered Architecture'), ('bi-key', 'JWT Authentication'), ('bi-diagram-3', 'Repository Pattern'), ('bi-patch-check', 'Request Validation'), ('bi-life-preserver', 'Global Exception Handling'), ('bi-journal-text', 'Centralized Logging'), ('bi-braces-asterisk', 'REST APIs')] %}
-                                {% for icon, name in techs %}
-                                    <div class="tech-pill">
-                                        <i class="bi {{ icon }}">
-                                        </i>
-                                        {{ name }}
+                                <div class="sidebar-item">
+                                    <i class="bi bi-collection"></i>
+                                    <span>Subscriptions</span>
+                                </div>
+                                <div class="sidebar-item">
+                                    <i class="bi bi-bar-chart"></i>
+                                    <span>Analytics</span>
+                                </div>
+                                <div class="sidebar-item">
+                                    <i class="bi bi-stars"></i>
+                                    <span>AI Advisor</span>
+                                </div>
+                                <div class="sidebar-item">
+                                    <i class="bi bi-person"></i>
+                                    <span>Profile</span>
+                                </div>
+                                <div class="sidebar-item">
+                                    <i class="bi bi-gear"></i>
+                                    <span>Settings</span>
+                                </div>
+                            </div>
+
+                            <!-- Mini Main Content -->
+                            <div class="preview-main">
+                                <div class="preview-header">
+                                    <div>
+                                        <h3 class="preview-greeting">Welcome back, Sathwik</h3>
+                                        <p class="preview-greeting-sub">Here's what's happening with your subscriptions.</p>
                                     </div>
-                                {% endfor %}
+                                    <div class="preview-date-pill">
+                                        <span class="pulse-dot"></span>
+                                        <span>Mon, 10 Mar 2026</span>
+                                    </div>
+                                </div>
+
+                                <!-- 4 KPI Mini Cards -->
+                                <div class="preview-kpi-grid">
+                                    <div class="mini-kpi-card">
+                                        <span class="mini-kpi-val">₹4,850</span>
+                                        <span class="mini-kpi-lbl">Monthly Spend</span>
+                                        <span class="mini-kpi-trend trend-up">↑ 12% from last month</span>
+                                    </div>
+                                    <div class="mini-kpi-card">
+                                        <span class="mini-kpi-val">12</span>
+                                        <span class="mini-kpi-lbl">Active Subscriptions</span>
+                                        <span class="mini-kpi-trend">Across 6 categories</span>
+                                    </div>
+                                    <div class="mini-kpi-card">
+                                        <span class="mini-kpi-val">3</span>
+                                        <span class="mini-kpi-lbl">Renewing Soon</span>
+                                        <span class="mini-kpi-trend trend-warn">In next 7 days</span>
+                                    </div>
+                                    <div class="mini-kpi-card">
+                                        <span class="mini-kpi-val val-positive">₹1,199</span>
+                                        <span class="mini-kpi-lbl">Potential Monthly Savings</span>
+                                        <span class="mini-kpi-trend trend-positive">6 AI Identified</span>
+                                    </div>
+                                </div>
+
+                                <!-- 2 Visual Charts Preview -->
+                                <div class="preview-charts-row">
+                                    <div class="mini-chart-card">
+                                        <div class="mini-chart-head">
+                                            <span>Monthly Spending Trend</span>
+                                            <span class="chart-filter">Last 6 Months ▾</span>
+                                        </div>
+                                        <div class="mini-bar-chart">
+                                            <div class="bar-col"><div class="bar" style="height: 48%;"></div><span>Jan</span></div>
+                                            <div class="bar-col"><div class="bar" style="height: 64%;"></div><span>Feb</span></div>
+                                            <div class="bar-col"><div class="bar" style="height: 52%;"></div><span>Mar</span></div>
+                                            <div class="bar-col"><div class="bar" style="height: 58%;"></div><span>Apr</span></div>
+                                            <div class="bar-col"><div class="bar" style="height: 44%;"></div><span>May</span></div>
+                                            <div class="bar-col"><div class="bar bar-highlight" style="height: 72%;"></div><span>Jun</span></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mini-chart-card">
+                                        <div class="mini-chart-head">
+                                            <span>Spending by Category</span>
+                                        </div>
+                                        <div class="mini-donut-wrap">
+                                            <div class="donut-visual">
+                                                <svg viewBox="0 0 36 36" class="donut-svg">
+                                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#E2E8F0" stroke-width="4.5"/>
+                                                    <path class="circle-seg seg-1" stroke-dasharray="32, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0F172A" stroke-width="4.5"/>
+                                                    <path class="circle-seg seg-2" stroke-dasharray="18, 100" stroke-dashoffset="-32" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#334155" stroke-width="4.5"/>
+                                                    <path class="circle-seg seg-3" stroke-dasharray="15, 100" stroke-dashoffset="-50" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#64748B" stroke-width="4.5"/>
+                                                    <path class="circle-seg seg-4" stroke-dasharray="12, 100" stroke-dashoffset="-65" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#94A3B8" stroke-width="4.5"/>
+                                                    <path class="circle-seg seg-5" stroke-dasharray="23, 100" stroke-dashoffset="-77" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#CBD5E1" stroke-width="4.5"/>
+                                                </svg>
+                                            </div>
+                                            <div class="donut-legend">
+                                                <div class="legend-item"><span class="leg-dot d1"></span> Streaming <span class="leg-pct">32%</span></div>
+                                                <div class="legend-item"><span class="leg-dot d2"></span> Productivity <span class="leg-pct">18%</span></div>
+                                                <div class="legend-item"><span class="leg-dot d3"></span> Shopping <span class="leg-pct">15%</span></div>
+                                                <div class="legend-item"><span class="leg-dot d4"></span> Music <span class="leg-pct">12%</span></div>
+                                                <div class="legend-item"><span class="leg-dot d5"></span> Fitness <span class="leg-pct">10%</span></div>
+                                                <div class="legend-item"><span class="leg-dot d6"></span> Others <span class="leg-pct">13%</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-panel text-center">
-                    <div class="cta-orb orb-one">
+        </div>
+    </section>
+
+    <!-- Value & Trust Stat Strip -->
+    <section class="value-strip-section">
+        <div class="container">
+            <div class="value-strip">
+                <div class="value-stat-cell">
+                    <div class="stat-icon-wrap"><i class="bi bi-people-fill"></i></div>
+                    <div class="stat-meta">
+                        <strong class="stat-number">10,000+</strong>
+                        <span class="stat-label">Indians tracking smarter</span>
                     </div>
-                    <div class="cta-orb orb-two">
+                </div>
+                <div class="value-stat-cell">
+                    <div class="stat-icon-wrap"><i class="bi bi-cash-stack"></i></div>
+                    <div class="stat-meta">
+                        <strong class="stat-number">₹50+ Lakhs</strong>
+                        <span class="stat-label">Potential savings identified</span>
                     </div>
-                    <span class="section-kicker">
-                        Start today
-                    </span>
-                    <h2>
-                        Ready to simplify your subscriptions?
-                    </h2>
-                    <p>
-                        Create your account and turn recurring expenses into clear, confident decisions.
-                    </p>
-                    <a href="/register" class="btn btn-light btn-lg">
-                        Create your account
-                        <i class="bi bi-arrow-right">
-                        </i>
-                    </a>
+                </div>
+                <div class="value-stat-cell">
+                    <div class="stat-icon-wrap"><i class="bi bi-shield-check"></i></div>
+                    <div class="stat-meta">
+                        <strong class="stat-number">99.9%</strong>
+                        <span class="stat-label">Data security & privacy</span>
+                    </div>
+                </div>
+                <div class="value-stat-cell">
+                    <div class="stat-icon-wrap"><i class="bi bi-star-fill"></i></div>
+                    <div class="stat-meta">
+                        <strong class="stat-number">4.8/5</strong>
+                        <span class="stat-label">User satisfaction</span>
+                    </div>
                 </div>
             </div>
-        </section>
-        <footer class="landing-footer">
-            <div class="container d-flex flex-column flex-md-row justify-content-between gap-3">
-                <a class="landing-brand" href="/">
-                    <span class="brand-mark">
-                        <i class="bi bi-wallet2">
-                        </i>
-                    </span>
-                    Smart
-                    <span>
-                        Sub
-                    </span>
-                </a>
-                <small>
-                    © 2026 Smart Subscription Advisor. Built for clarity.
-                </small>
+        </div>
+    </section>
+
+    <!-- Trusted Services Bar -->
+    <section class="trusted-services-section">
+        <div class="container text-center">
+            <span class="trusted-label">TRUSTED BY INDIAN USERS OF TOP SERVICES</span>
+            <div class="trusted-logos-grid">
+                <span class="service-logo-pill netflix-brand">NETFLIX</span>
+                <span class="service-logo-pill spotify-brand"><i class="bi bi-spotify me-1"></i> Spotify</span>
+                <span class="service-logo-pill prime-brand">amazon<strong>prime</strong></span>
+                <span class="service-logo-pill hotstar-brand">Disney+ <strong>hotstar</strong></span>
+                <span class="service-logo-pill youtube-brand"><i class="bi bi-youtube me-1"></i> YouTube Premium</span>
+                <span class="service-logo-pill adobe-brand"><i class="bi bi-app-indicator me-1"></i> Adobe</span>
+                <span class="service-logo-pill ms-brand"><i class="bi bi-microsoft me-1"></i> Microsoft</span>
+                <span class="service-logo-pill more-brand">and many more...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header-row">
                 <div>
-                    <a href="/login">
-                        Login
-                    </a>
-                    <a href="/register">
-                        Register
-                    </a>
+                    <span class="section-eyebrow">HOW IT WORKS</span>
+                    <h2 class="section-title">Simple steps. Real savings.</h2>
+                    <p class="section-subtitle">Get started in minutes and take control of your subscriptions.</p>
+                </div>
+                <a href="#features" class="section-header-link">See how it works <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div class="steps-container">
+                <!-- Step 01 -->
+                <div class="step-card">
+                    <div class="step-badge">01</div>
+                    <div class="step-icon-box">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+                    <h3 class="step-title">Track your subscriptions</h3>
+                    <p class="step-desc">Add your recurring services like Netflix, Spotify, Amazon Prime and more.</p>
+                </div>
+
+                <div class="step-connector"><span class="connector-dots"></span></div>
+
+                <!-- Step 02 -->
+                <div class="step-card">
+                    <div class="step-badge">02</div>
+                    <div class="step-icon-box">
+                        <i class="bi bi-bar-chart-line-fill"></i>
+                    </div>
+                    <h3 class="step-title">Get intelligent insights</h3>
+                    <p class="step-desc">Our AI analyzes your spending, detects overlaps and finds savings opportunities.</p>
+                </div>
+
+                <div class="step-connector"><span class="connector-dots"></span></div>
+
+                <!-- Step 03 -->
+                <div class="step-card">
+                    <div class="step-badge">03</div>
+                    <div class="step-icon-box">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <h3 class="step-title">Take action and save</h3>
+                    <p class="step-desc">Cancel unused subscriptions, get renewal alerts and keep more money in your pocket.</p>
                 </div>
             </div>
-        </footer>
-    </main>
-    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+        </div>
+    </section>
+
+    <!-- Powerful Features Grid -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header-row">
+                <div>
+                    <span class="section-eyebrow">POWERFUL FEATURES</span>
+                    <h2 class="section-title">Everything you need to manage subscriptions</h2>
+                </div>
+                <a href="{{ url_for('auth.register') }}" class="section-header-link">View all features <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div class="row g-4 features-grid">
+                <!-- Feature 1 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box icon-emerald">
+                            <i class="bi bi-grid-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Unified Dashboard</h3>
+                        <p class="feature-desc">See all your subscriptions, spending and renewals at a single glance.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box icon-blue">
+                            <i class="bi bi-chat-left-text-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Smart Insights</h3>
+                        <p class="feature-desc">AI-powered recommendations to help you save money without guessing.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box icon-amber">
+                            <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Renewal Alerts</h3>
+                        <p class="feature-desc">Never miss a renewal with timely notifications before charges hit your card.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box icon-blue">
+                            <i class="bi bi-pie-chart-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Detailed Analytics</h3>
+                        <p class="feature-desc">Understand your monthly and annual spending with clean, easy-to-read charts.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box icon-red">
+                            <i class="bi bi-subtract"></i>
+                        </div>
+                        <h3 class="feature-title">Find Duplicates</h3>
+                        <p class="feature-desc">Detect and remove redundant services across streaming, music, and tools.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box icon-slate">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Secure & Private</h3>
+                        <p class="feature-desc">Your financial data is encrypted and never shared with advertisers or third parties.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Two-Column Showcase: AI Advisor + Testimonials -->
+    <section class="showcase-dual-section">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Left: AI Financial Intelligence -->
+                <div class="col-lg-6">
+                    <div class="dual-panel ai-panel">
+                        <div class="panel-intro">
+                            <span class="section-eyebrow">AI FINANCIAL INTELLIGENCE</span>
+                            <h2 class="panel-main-title">Your personal subscription advisor</h2>
+                            <p class="panel-subtitle">Get clear, actionable recommendations to reduce waste and optimize your spending.</p>
+                        </div>
+
+                        <div class="panel-checks">
+                            <div class="check-row"><i class="bi bi-check-circle-fill"></i> <span>Identify unused subscriptions</span></div>
+                            <div class="check-row"><i class="bi bi-check-circle-fill"></i> <span>Find duplicate services</span></div>
+                            <div class="check-row"><i class="bi bi-check-circle-fill"></i> <span>Analyze spending patterns</span></div>
+                            <div class="check-row"><i class="bi bi-check-circle-fill"></i> <span>Get personalized savings tips</span></div>
+                        </div>
+
+                        <div class="panel-action">
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-panel-primary">
+                                Try the AI Advisor <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+
+                        <!-- Embedded Chatbot Demo Mockup -->
+                        <div class="mock-chat-card mt-4">
+                            <div class="mock-chat-header">
+                                <span class="mock-brand-badge">SA</span>
+                                <span class="mock-chat-title">Smart Subscription Advisor</span>
+                            </div>
+
+                            <div class="mock-chat-messages">
+                                <div class="mock-user-msg">
+                                    Which subscriptions can I cancel?
+                                </div>
+
+                                <div class="mock-bot-msg">
+                                    <div class="bot-msg-intro">I've found 2 potential opportunities:</div>
+
+                                    <div class="opp-item">
+                                        <div class="opp-num">1</div>
+                                        <div class="opp-info">
+                                            <div class="opp-title-row">
+                                                <strong>PlayStation Plus</strong>
+                                                <span class="opp-cost">₹499/month</span>
+                                            </div>
+                                            <div class="opp-note">No activity for 42 days</div>
+                                            <div class="opp-saving">Potential annual saving: <strong>₹5,988</strong></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="opp-item">
+                                        <div class="opp-num">2</div>
+                                        <div class="opp-info">
+                                            <div class="opp-title-row">
+                                                <strong>Multiple Streaming Services</strong>
+                                            </div>
+                                            <div class="opp-note">3 overlapping subscriptions</div>
+                                            <div class="opp-saving">Potential annual saving: <strong>₹7,188</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mock-chat-input-bar">
+                                <span>Ask about your subscriptions...</span>
+                                <button type="button" class="mock-send-btn"><i class="bi bi-send-fill"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Real Results (Testimonials) -->
+                <div class="col-lg-6">
+                    <div class="dual-panel testimonials-panel">
+                        <div class="panel-intro">
+                            <span class="section-eyebrow">REAL RESULTS</span>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="panel-main-title mb-0">Trusted by thousands across India</h2>
+                                <div class="testimonial-nav-arrows">
+                                    <button class="nav-arrow" type="button" aria-label="Previous testimonial"><i class="bi bi-chevron-left"></i></button>
+                                    <button class="nav-arrow" type="button" aria-label="Next testimonial"><i class="bi bi-chevron-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="testimonials-stack mt-4">
+                            <!-- Testimonial 1 -->
+                            <div class="testimonial-card">
+                                <div class="testimonial-user">
+                                    <div class="user-avatar-circle av-1">RS</div>
+                                    <div>
+                                        <h4 class="user-name">Rahul S.</h4>
+                                        <span class="user-city">Bangalore</span>
+                                    </div>
+                                </div>
+                                <p class="testimonial-quote">
+                                    "Smart Subscription Advisor helped me find 3 unused subscriptions. I'm saving around ₹1,200 every month."
+                                </p>
+                                <div class="rating-stars">★★★★★</div>
+                            </div>
+
+                            <!-- Testimonial 2 -->
+                            <div class="testimonial-card">
+                                <div class="testimonial-user">
+                                    <div class="user-avatar-circle av-2">PM</div>
+                                    <div>
+                                        <h4 class="user-name">Priya M.</h4>
+                                        <span class="user-city">Hyderabad</span>
+                                    </div>
+                                </div>
+                                <p class="testimonial-quote">
+                                    "The renewal alerts are a lifesaver. No more surprise charges on my credit card."
+                                </p>
+                                <div class="rating-stars">★★★★★</div>
+                            </div>
+
+                            <!-- Testimonial 3 -->
+                            <div class="testimonial-card">
+                                <div class="testimonial-user">
+                                    <div class="user-avatar-circle av-3">AK</div>
+                                    <div>
+                                        <h4 class="user-name">Arjun K.</h4>
+                                        <span class="user-city">Pune</span>
+                                    </div>
+                                </div>
+                                <p class="testimonial-quote">
+                                    "Clean, simple and actually useful. Exactly what I needed to manage my subscriptions."
+                                </p>
+                                <div class="rating-stars">★★★★★</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / Final Action Banner -->
+    <section class="cta-banner-section" id="pricing">
+        <div class="container">
+            <div class="cta-box">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <span class="cta-eyebrow">PRICING</span>
+                        <h2 class="cta-heading">Start managing your subscriptions today</h2>
+                        <p class="cta-desc">Join thousands of Indians who are already saving money with Smart Subscription Advisor.</p>
+                    </div>
+                    <div class="col-lg-5 text-lg-end text-start">
+                        <div class="cta-btns-wrap">
+                            <a href="{{ url_for('auth.register') }}" class="btn cta-btn-primary">
+                                Get Started Free <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                            <a href="#pricing" class="btn cta-btn-outline">
+                                View Pricing
+                            </a>
+                        </div>
+                        <span class="cta-foot-note">No credit card required</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="text-center max-w-640 mx-auto mb-4">
+                <span class="section-eyebrow">FREQUENTLY ASKED QUESTIONS</span>
+                <h2 class="section-title">Common questions about Smart Subscription Advisor</h2>
+            </div>
+
+            <div class="faq-accordion-wrap max-w-720 mx-auto">
+                <div class="faq-item">
+                    <h3 class="faq-question">Is Smart Subscription Advisor free to use?</h3>
+                    <p class="faq-answer">Yes, it is 100% free to get started. You can track all your active subscriptions, receive advance renewal alerts, and view analytics without providing any credit card information.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">How does the AI advisor detect savings opportunities?</h3>
+                    <p class="faq-answer">Our deterministic rule engine analyzes your usage frequency, days until renewal, category overlaps (such as multiple concurrent streaming apps), and calculates exact rupee savings for your portfolio.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Is my financial data kept safe and private?</h3>
+                    <p class="faq-answer">Yes. We use JWT-secured authentication, encrypted sessions, and isolated user databases. We never sell your personal subscription data to third parties.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Can I export my subscription portfolio to CSV?</h3>
+                    <p class="faq-answer">Yes. You can export your full portfolio anytime in one click to CSV for personal budgeting or spreadsheets.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SaaS Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-top-row">
+                <div class="footer-brand-col">
+                    <a class="footer-brand" href="/">
+                        <span class="landing-brand-mark">SA</span>
+                        <span class="landing-brand-text">Smart Subscription Advisor</span>
+                    </a>
+                    <p class="footer-tagline">Smarter spending. A brighter tomorrow.</p>
+                </div>
+
+                <div class="footer-links-col">
+                    <a href="/">About</a>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#faq">FAQ</a>
+                    <a href="/login">Privacy</a>
+                    <a href="/register">Terms</a>
+                    <a href="mailto:support@smartsubadvisor.com">Contact</a>
+                </div>
+
+                <div class="footer-social-col">
+                    <a href="#" class="social-icon" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="social-icon" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-bottom-row">
+                <span class="copyright-text">© 2026 Smart Subscription Advisor. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+</main>
 {% endblock %}
