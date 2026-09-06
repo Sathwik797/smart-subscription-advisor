@@ -11,6 +11,7 @@ from controllers.subscription_controller import (
     delete_subscription as delete_subscription_controller,
     edit_subscription as edit_subscription_controller,
     export_csv as export_csv_controller,
+    spending_analytics as spending_analytics_controller,
     subscriptions as subscriptions_controller,
 )
 from routes.auth import auth
@@ -44,3 +45,10 @@ def edit_subscription(id):
 @login_required
 def delete_subscription(id):
     return delete_subscription_controller(id)
+
+
+@auth.route("/spending-analytics")
+@auth.route("/analytics")
+@login_required
+def spending_analytics():
+    return spending_analytics_controller()

@@ -21,6 +21,7 @@ app.config.from_object(Config)
 
 app.jinja_env.filters['inr'] = format_inr
 app.jinja_env.globals['format_inr'] = format_inr
+app.jinja_env.globals['zip'] = zip
 
 db.init_app(app)
 

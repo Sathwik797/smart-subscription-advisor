@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+
+<main class="analytics-page">
+    <div class="analytics-app-layout">
+        
+        <!-- Left Application Sidebar -->
+        <aside class="dashboard-sidebar" aria-label="Application navigation">
+            <div class="sidebar-nav-group">
+                <a href="{{ url_for('auth.dashboard') }}" class="sidebar-nav-item">
+                    <i class="bi bi-house-door"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('auth.subscriptions') }}" class="sidebar-nav-item">
+                    <i class="bi bi-collection"></i>
+                    <span>Subscriptions</span>
+                </a>
+                <a href="{{ url_for('auth.add_subscription') }}" class="sidebar-nav-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Add Subscription</span>
+                </a>
+                <a href="javascript:void(0)" id="sidebarAiAdvisor" class="sidebar-nav-item">
+                    <i class="bi bi-stars"></i>
+                    <span>AI Advisor</span>
+                </a>
+                <a href="{{ url_for('auth.spending_analytics') }}" class="sidebar-nav-item active">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                    <span>Spending Analytics</span>
+                </a>
+                
+                <div class="sidebar-divider"></div>
+
+                <a href="{{ url_for('auth.profile') }}" class="sidebar-nav-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="{{ url_for('auth.edit_profile') }}" class="sidebar-nav-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+                <div class="sidebar-divider"></div>
+
+                <a href="{{ url_for('auth.logout') }}" class="sidebar-nav-item sidebar-logout-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+
+            <!-- Bottom Supporting Card -->
+            <div class="sidebar-footer-card">
+                <div class="footer-card-icon">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div class="footer-card-body">
+                    <strong>Smarter spending brighter tomorrow.</strong>
+                    <span>Track. Control. Save.</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <div class="analytics-main-area">
+            
+            <!-- Page Header Row -->
+            <div class="analytics-header-row">
+                <div class="header-left-wrap">
+                    <span class="analytics-eyebrow">SPENDING ANALYTICS</span>
+                    <h1 class="analytics-title">Understand your subscription spending</h1>
+                    <p class="analytics-desc">Get detailed insights into your recurring expenses, identify trends, and find opportunities to save.</p>
+                </div>
+                <div class="header-right-wrap">
+                    <div class="analytics-range-selector" title="Selected reporting period">
+                        <i class="bi bi-calendar3 date-range-icon"></i>
+                        <span>Last 6 Months</span>
+                        <i class="bi bi-chevron-down range-chevron"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards Grid (4 items) -->
+            <div class="analytics-kpi-grid">
+                <!-- 1. Current Monthly Spend -->
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box kpi-icon-blue">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <span class="kpi-label" id="kpiLabelSpend">Current Monthly Spend</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiSpendValue">{{ "{:,.0f}".format(total_monthly) if total_monthly is defined else "0" }}</span>
+                    </div>
+                    <div class="kpi-subtext-row">
+                        <span class="kpi-trend positive"><i class="bi bi-arrow-down-short"></i> 12%</span>
+                        <span class="kpi-context">vs previous 6 months</span>
+                    </div>
+                </div>
+
+                <!-- 2. Projected Yearly Cost -->
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box kpi-icon-purple">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <span class="kpi-label">Projected Yearly Cost</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiYearlyValue">{{ "{:,.0f}".format(total_yearly) if total_yearly is defined else "0" }}</span>
+                    </div>
+                    <div class="kpi-subtext-row">
+                        <span class="kpi-trend neutral"><i class="bi bi-arrow-up-short"></i> 8%</span>
+                        <span class="kpi-context">vs previous year</span>
+                    </div>
+                </div>
+
+                <!-- 3. Average Monthly Spend -->
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box kpi-icon-green">
+                            <i class="bi bi-bar-chart-fill"></i>
+                        </div>
+                        <span class="kpi-label" id="kpiLabelAvg">Average Monthly Spend</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiAvgValue">{{ "{:,.0f}".format(avg_monthly) if avg_monthly is defined else "0" }}</span>
+                    </div>
+                    <div class="kpi-subtext-row">
+                        <span class="kpi-context">Based on last 6 months</span>
+                    </div>
+                </div>
+
+                <!-- 4. Potential Monthly Savings -->
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box kpi-icon-amber">
+                            <i class="bi bi-piggy-bank"></i>
+                        </div>
+                        <span class="kpi-label" id="kpiLabelSavings">Potential Monthly Savings</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiSavingsValue">{{ "{:,.0f}".format(potential_monthly_savings) if potential_monthly_savings is defined else "0" }}</span>
+                    </div>
+                    <div class="kpi-subtext-row">
+                        <span class="kpi-context">AI-identified opportunities</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Toggle: Monthly / Yearly -->
+            <div class="view-toggle-bar">
+                <div class="toggle-pill-group" role="group" aria-label="Analysis timeframe view">
+                    <button type="button" class="toggle-btn active" id="btnViewMonthly">Monthly</button>
+                    <button type="button" class="toggle-btn" id="btnViewYearly">Yearly</button>
+                </div>
+            </div>
+
+            <!-- Primary Analytics Grid: Monthly Spending Trend & Spending by Category -->
+            <div class="analytics-row-primary">
+                <!-- Trend Chart Card -->
+                <div class="analytics-panel-card trend-card">
+                    <div class="panel-header">
+                        <div class="panel-title-wrap">
+                            <h2 class="panel-title" id="trendCardTitle">Monthly Spending Trend</h2>
+                            <p class="panel-subtitle">Your total subscription spending over time.</p>
+                        </div>
+                        <div class="panel-filter-wrap">
+                            <span class="filter-label">Time Period</span>
+                            <div class="inline-select-pill">
+                                <span>Last 6 Months</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        {% if total_subscriptions > 0 and trend_values and trend_values|sum > 0 %}
+                        <div class="chart-canvas-wrap trend-canvas-wrap">
+                            <canvas id="trendChart" height="230"></canvas>
+                        </div>
+                        {% else %}
+                        <div class="empty-state-wrap">
+                            <div class="empty-icon-circle">
+                                <i class="bi bi-bar-chart"></i>
+                            </div>
+                            <h3 class="empty-state-title">No spending data yet</h3>
+                            <p class="empty-state-desc">Add your first subscription to see your spending trend.</p>
+                            <a href="{{ url_for('auth.add_subscription') }}" class="empty-cta-btn">Add Subscription</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Spending by Category Card -->
+                <div class="analytics-panel-card category-card">
+                    <div class="panel-header">
+                        <div class="panel-title-wrap">
+                            <h2 class="panel-title">Spending by Category</h2>
+                            <p class="panel-subtitle">Breakdown of your subscription spending.</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        {% if total_subscriptions > 0 and categories_data %}
+                        <div class="category-breakdown-row">
+                            <div class="donut-container">
+                                <canvas id="categoryChart" width="180" height="180"></canvas>
+                                <div class="donut-center-info">
+                                    <span class="center-amount" id="catCenterTotal">₹{{ "{:,.0f}".format(total_monthly) }}</span>
+                                    <span class="center-label" id="catCenterLabel">Monthly Spend</span>
+                                </div>
+                            </div>
+                            <div class="category-legend-list">
+                                {% for cat in categories_data %}
+                                <div class="cat-legend-row" data-monthly="{{ cat.monthly_amount }}" data-yearly="{{ cat.yearly_amount }}">
+                                    <div class="cat-name-box">
+                                        <span class="legend-color-dot" style="background-color: {{ cat.color }};"></span>
+                                        <span class="cat-name">{{ cat.name }}</span>
+                                    </div>
+                                    <div class="cat-pct-box">{{ "%.0f"|format(cat.percentage) }}%</div>
+                                    <div class="cat-amount-box" data-monthly-val="{{ cat.monthly_amount }}" data-yearly-val="{{ cat.yearly_amount }}">₹{{ "{:,.0f}".format(cat.monthly_amount) }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="empty-state-wrap">
+                            <div class="empty-icon-circle">
+                                <i class="bi bi-pie-chart"></i>
+                            </div>
+                            <h3 class="empty-state-title">No category data yet</h3>
+                            <p class="empty-state-desc">Add subscriptions to see your spending distribution.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Analytics Grid: Top Subscriptions, Billing Cycle Analysis, Spending Insights -->
+            <div class="analytics-row-secondary">
+                <!-- Top Subscriptions by Spend -->
+                <div class="analytics-panel-card top-subs-card">
+                    <div class="panel-header">
+                        <div class="panel-title-wrap">
+                            <h2 class="panel-title">Top Subscriptions by Spend</h2>
+                            <p class="panel-subtitle">Your highest spending subscriptions.</p>
+                        </div>
+                    </div>
+                    <div class="panel-body no-padding">
+                        {% if top_subscriptions %}
+                        <div class="table-responsive">
+                            <table class="analytics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subscription</th>
+                                        <th>Category</th>
+                                        <th class="text-right" id="thCostHeader">Monthly Cost</th>
+                                        <th class="text-right">% of Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sub in top_subscriptions[:5] %}
+                                    <tr class="sub-table-row" data-monthly="{{ sub.monthly_cost }}" data-yearly="{{ sub.yearly_cost }}">
+                                        <td>
+                                            <div class="sub-ident-wrap">
+                                                {% set name_lower = sub.service_name|lower %}
+                                                {% if 'amazon' in name_lower or 'prime' in name_lower %}
+                                                    <div class="service-logo-box service-amazon"><i class="bi bi-cart3"></i></div>
+                                                {% elif 'netflix' in name_lower %}
+                                                    <div class="service-logo-box service-netflix">N</div>
+                                                {% elif 'spotify' in name_lower %}
+                                                    <div class="service-logo-box service-spotify"><i class="bi bi-soundwave"></i></div>
+                                                {% elif 'microsoft' in name_lower or '365' in name_lower or 'office' in name_lower %}
+                                                    <div class="service-logo-box service-msft"><i class="bi bi-grid-fill"></i></div>
+                                                {% elif 'youtube' in name_lower or 'google' in name_lower %}
+                                                    <div class="service-logo-box service-youtube"><i class="bi bi-play-fill"></i></div>
+                                                {% else %}
+                                                    <div class="service-logo-box service-default">{{ sub.icon_letter }}</div>
+                                                {% endif %}
+                                                <span class="service-name-text">{{ sub.service_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="sub-category-pill">{{ sub.category }}</span>
+                                        </td>
+                                        <td class="text-right sub-cost-cell font-semibold">
+                                            ₹{{ "{:,.0f}".format(sub.monthly_cost) }}
+                                        </td>
+                                        <td class="text-right sub-pct-cell font-medium text-muted">
+                                            {{ "%.1f"|format(sub.percentage) }}%
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-footer-action">
+                            <a href="{{ url_for('auth.subscriptions') }}" class="action-link-arrow">
+                                <span>View all subscriptions</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="empty-state-wrap p-4">
+                            <div class="empty-icon-circle">
+                                <i class="bi bi-collection"></i>
+                            </div>
+                            <h3 class="empty-state-title">No subscriptions yet</h3>
+                            <p class="empty-state-desc">Add your first subscription to start analyzing your spending.</p>
+                            <a href="{{ url_for('auth.add_subscription') }}" class="empty-cta-btn">Add Subscription</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Billing Cycle Analysis -->
+                <div class="analytics-panel-card billing-cycle-card">
+                    <div class="panel-header">
+                        <div class="panel-title-wrap">
+                            <h2 class="panel-title">Billing Cycle Analysis</h2>
+                            <p class="panel-subtitle">How your subscriptions are billed.</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        {% if billing_cycles and total_subscriptions > 0 %}
+                        <div class="billing-chart-row">
+                            <div class="donut-container-compact">
+                                <canvas id="billingChart" width="130" height="130"></canvas>
+                                <div class="donut-center-info compact">
+                                    <span class="center-count">{{ total_subscriptions }}</span>
+                                    <span class="center-label">Total</span>
+                                </div>
+                            </div>
+                            <div class="billing-legend-list">
+                                {% for bc in billing_cycles %}
+                                <div class="billing-legend-row">
+                                    <div class="cycle-name-group">
+                                        <span class="legend-color-dot" style="background-color: {{ bc.color }};"></span>
+                                        <span class="cycle-name">{{ bc.cycle }}</span>
+                                    </div>
+                                    <span class="cycle-stat font-semibold">{{ bc.count }} <span class="text-muted font-normal">({{ "%.0f"|format(bc.percentage) }}%)</span></span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Pro Tip Box -->
+                        <div class="pro-tip-box">
+                            <div class="pro-tip-icon">
+                                <i class="bi bi-lightbulb-fill"></i>
+                            </div>
+                            <div class="pro-tip-content">
+                                <strong class="pro-tip-title">Pro Tip</strong>
+                                <p class="pro-tip-desc">{{ pro_tip }}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="empty-state-wrap">
+                            <div class="empty-icon-circle">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+                            <h3 class="empty-state-title">No billing data yet</h3>
+                            <p class="empty-state-desc">Add subscriptions to view billing frequency.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Spending Insights -->
+                <div class="analytics-panel-card insights-card">
+                    <div class="panel-header">
+                        <div class="panel-title-wrap">
+                            <div class="panel-title-with-sparkle">
+                                <i class="bi bi-stars sparkle-icon"></i>
+                                <h2 class="panel-title">Spending Insights</h2>
+                            </div>
+                            <p class="panel-subtitle">Key insights about your subscription spending.</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        {% if insights %}
+                        <div class="insights-stack">
+                            {% for insight in insights %}
+                            <div class="insight-row-item">
+                                <div class="insight-icon-box insight-icon-{{ insight.color }}">
+                                    <i class="bi {{ insight.icon }}"></i>
+                                </div>
+                                <div class="insight-text-box">
+                                    <h4 class="insight-item-title">{{ insight.title }}</h4>
+                                    <p class="insight-item-desc">{{ insight.description }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="empty-state-wrap">
+                            <div class="empty-icon-circle">
+                                <i class="bi bi-stars"></i>
+                            </div>
+                            <h3 class="empty-state-title">No spending insights yet</h3>
+                            <p class="empty-state-desc">Add subscriptions to generate personalized spending analysis.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<script>
+    window.ANALYTICS_DATA = {
+        totalMonthly: {{ total_monthly|default(0)|tojson }},
+        totalYearly: {{ total_yearly|default(0)|tojson }},
+        avgMonthly: {{ avg_monthly|default(0)|tojson }},
+        avgYearly: {{ (avg_monthly * 12)|default(0)|tojson }},
+        potentialMonthlySavings: {{ potential_monthly_savings|default(0)|tojson }},
+        potentialYearlySavings: {{ potential_yearly_savings|default(0)|tojson }},
+        totalSubscriptions: {{ total_subscriptions|default(0)|tojson }},
+        trendMonths: {{ trend_months|default([])|tojson }},
+        trendValuesMonthly: {{ trend_values|default([])|tojson }},
+        categoriesData: {{ categories_data|default([])|tojson }},
+        billingCycles: {{ billing_cycles|default([])|tojson }}
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% set chatbot_page = 'spending_analytics' %}
+{% include "partials/chatbot.html" %}
+<div class="chatbot-badge-tip">Ask AI</div>
+{% endblock %}

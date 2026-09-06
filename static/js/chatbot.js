@@ -33,7 +33,7 @@
     };
 
     const GREETING_TEXT =
-        "Hi! I'm your Subscription Advisor. Ask me about your subscriptions, spending, renewals, or savings within this app.";
+        "Hi! I'm your Smart Subscription Advisor assistant. Ask me about your subscriptions, spending, renewals, or savings within this app.";
 
     // -------------------------------------------------------------------------
     // DOM Elements
@@ -163,7 +163,7 @@
         panel.setAttribute("aria-hidden", "false");
         launcher.classList.add("is-active");
         launcher.setAttribute("aria-expanded", "true");
-        launcher.setAttribute("aria-label", "Close Subscription Advisor");
+        launcher.setAttribute("aria-label", "Close Smart Subscription Advisor");
 
         if (!initialized) {
             // Render initial greeting and suggestion chips on first open
@@ -186,7 +186,7 @@
         panel.setAttribute("aria-hidden", "true");
         launcher.classList.remove("is-active");
         launcher.setAttribute("aria-expanded", "false");
-        launcher.setAttribute("aria-label", "Open Subscription Advisor");
+        launcher.setAttribute("aria-label", "Open Smart Subscription Advisor");
         launcher.focus();
     }
 

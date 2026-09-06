@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <rect width="48" height="48" rx="10" fill="#FFFFFF"/>
+  <!-- Top beak (Red) -->
+  <path d="M16.5 19.5c0-.6.3-1.1.7-1.5l5.8-5.5v7h-6.5z" fill="#EA4335"/>
+  <!-- Upper stem (Blue) -->
+  <path d="M23 12.5h5.5v9H23z" fill="#4285F4"/>
+  <!-- Mid stem (Yellow) -->
+  <path d="M23 21.5h5.5v8H23z" fill="#FBBC05"/>
+  <!-- Lower stem & Base (Green) -->
+  <path d="M23 29.5h5.5v6H23z" fill="#34A853"/>
+</svg>

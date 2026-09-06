@@ -37,6 +37,7 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Logs
+# Logs & Scratch
 logs/
-*.log
+*.log
+scratch/

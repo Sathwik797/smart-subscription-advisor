@@ -42,60 +42,83 @@
 
 <body>
     <nav class="app-navbar navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand app-brand" href="/">
-                <span class="app-brand-mark">
-                    <i class="bi bi-wallet2"></i>
-                </span>
-                SmartSub
+        <div class="container-fluid px-4 app-header-inner">
+            <a class="navbar-brand app-brand" href="{% if current_user.is_authenticated %}{{ url_for('auth.dashboard') }}{% else %}/{% endif %}">
+                <span class="app-brand-mark">SA</span>
+                <span class="app-brand-text">Smart Subscription Advisor</span>
             </a>
 
-            <button
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-                class="navbar-toggler"
-                data-bs-target="#navbarNav"
-                data-bs-toggle="collapse"
-                type="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav ms-auto app-navigation">
-                    {% if current_user.is_authenticated %}
-                        <a class="nav-link" href="/dashboard">
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="/subscriptions">
-                            Subscriptions
-                        </a>
-                        <a class="nav-link" href="/profile">
-                            Profile
-                        </a>
-                        <span class="app-notification" title="Notifications">
-                            <i class="bi bi-bell"></i>
-                        </span>
-                        <a class="app-avatar" href="/profile" aria-label="Open profile">
-                            {{ current_user.username[:1]|upper }}
-                        </a>
-                        <a class="nav-link app-logout" href="/logout">
-                            <i class="bi bi-box-arrow-right"></i>
-                            Logout
-                        </a>
-                    {% else %}
-                        <a class="nav-link" href="/">
-                            Home
-                        </a>
-                        <a class="nav-link" href="/login">
-                            Login
-                        </a>
-                        <a class="app-btn app-btn-primary app-nav-register" href="/register">
-                            Register
-                        </a>
-                    {% endif %}
+            {% if current_user.is_authenticated %}
+                <!-- Compact Search Bar matching reference -->
+                <div class="app-header-search d-none d-md-flex">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search subscriptions, e.g. Netflix, Spotify..." aria-label="Search subscriptions">
                 </div>
-            </div>
+
+                <!-- Right Utility Group: Notifications & User Account -->
+                <div class="app-header-utilities ms-auto d-flex align-items-center gap-3">
+                    <button class="app-header-icon-btn position-relative" type="button" aria-label="Notifications" title="Notifications">
+                        <i class="bi bi-bell"></i>
+                        <span class="notification-badge-dot"></span>
+                    </button>
+
+                    <!-- User Profile Dropdown -->
+                    <div class="dropdown app-user-dropdown">
+                        <button class="app-user-btn dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="app-avatar">{{ current_user.username[:1]|upper }}</span>
+                            <span class="app-username d-none d-sm-inline">{{ current_user.username }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end app-dropdown-menu" aria-labelledby="userMenuButton">
+                            <li class="dropdown-header">
+                                <span class="d-block fw-semibold text-dark">{{ current_user.username }}</span>
+                                <span class="d-block text-muted small">{{ current_user.email }}</span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('auth.profile') }}">
+                                    <i class="bi bi-person me-2"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">
+                                    <i class="bi bi-gear me-2"></i> Settings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+                <button
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                    class="navbar-toggler"
+                    data-bs-target="#navbarNav"
+                    data-bs-toggle="collapse"
+                    type="button">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav mx-auto app-marketing-links">
+                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/#features">Features</a>
+                        <a class="nav-link" href="/#how-it-works">How It Works</a>
+                        <a class="nav-link" href="/#pricing">Pricing</a>
+                        <a class="nav-link" href="/#faq">FAQ</a>
+                    </div>
+                    <div class="navbar-nav ms-auto app-auth-actions d-flex align-items-center gap-2">
+                        <a class="btn btn-outline-nav" href="/login">Log In</a>
+                        <a class="btn btn-primary-nav" href="/register">Get Started Free</a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </nav>
 

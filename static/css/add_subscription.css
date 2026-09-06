@@ -466,3 +466,266 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
     }
 
 }
+
+/* ==========================================================================
+   Service Autocomplete & Logo System
+   ========================================================================== */
+
+.service-autocomplete-wrap {
+    position: relative;
+}
+
+.service-logo-indicator {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #94a3b8;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.service-logo-indicator.has-logo {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.service-logo-indicator img,
+.autocomplete-logo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    display: block;
+}
+
+.service-logo-indicator svg,
+.autocomplete-logo-box svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.add-subscription-page #service-name {
+    padding-left: 48px;
+}
+
+.service-autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12), 0 2px 4px rgba(15, 23, 42, 0.04);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 1060;
+    padding: 6px;
+    overscroll-behavior: contain;
+}
+
+.service-autocomplete-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+.service-autocomplete-dropdown::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+}
+
+.autocomplete-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    user-select: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+    background-color: #f5f3ff;
+}
+
+.autocomplete-item.active {
+    outline: 1px solid #d8d3ff;
+}
+
+.autocomplete-logo-box {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.autocomplete-logo-box.has-logo {
+    background: transparent;
+    border: none;
+}
+
+.autocomplete-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    line-height: 1.25;
+}
+
+.autocomplete-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.autocomplete-category {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.autocomplete-match {
+    color: #635bff;
+    font-weight: 700;
+}
+
+.autocomplete-empty {
+    padding: 12px;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.82rem;
+}
+
+/* Service Brand Color Classes */
+.brand-netflix {
+    background-color: #000000 !important;
+    color: #E50914 !important;
+    font-weight: 800 !important;
+    border-color: #000000 !important;
+}
+.brand-spotify {
+    background-color: #1DB954 !important;
+    color: #FFFFFF !important;
+    border-color: #1DB954 !important;
+}
+.brand-youtube {
+    background-color: #DC2626 !important;
+    color: #FFFFFF !important;
+    border-color: #DC2626 !important;
+}
+.brand-amazon {
+    background-color: #0284C7 !important;
+    color: #FFFFFF !important;
+    border-color: #0284C7 !important;
+}
+.brand-microsoft {
+    background-color: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #2563EB !important;
+}
+.brand-canva {
+    background-color: #00C4CC !important;
+    color: #FFFFFF !important;
+    border-color: #00C4CC !important;
+}
+.brand-chatgpt {
+    background-color: #10A37F !important;
+    color: #FFFFFF !important;
+    border-color: #10A37F !important;
+}
+.brand-disney {
+    background-color: #0C1946 !important;
+    color: #FFFFFF !important;
+    border-color: #0C1946 !important;
+}
+.brand-apple {
+    background-color: #FC3C44 !important;
+    color: #FFFFFF !important;
+    border-color: #FC3C44 !important;
+}
+.brand-adobe {
+    background-color: #DA1F26 !important;
+    color: #FFFFFF !important;
+    border-color: #DA1F26 !important;
+}
+.brand-google {
+    background-color: #4285F4 !important;
+    color: #FFFFFF !important;
+    border-color: #4285F4 !important;
+}
+.brand-dropbox {
+    background-color: #0061FF !important;
+    color: #FFFFFF !important;
+    border-color: #0061FF !important;
+}
+.brand-notion {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
+}
+.brand-grammarly {
+    background-color: #15C39A !important;
+    color: #FFFFFF !important;
+    border-color: #15C39A !important;
+}
+.brand-linkedin {
+    background-color: #0A66C2 !important;
+    color: #FFFFFF !important;
+    border-color: #0A66C2 !important;
+}
+.brand-default {
+    background-color: #64748B !important;
+    color: #FFFFFF !important;
+    border-color: #64748B !important;
+}
+
+/* Chatbot Badge Tip */
+.chatbot-badge-tip {
+    position: fixed;
+    bottom: 84px;
+    right: 28px;
+    background: #0F172A;
+    color: #FFFFFF;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1050;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+}
+
+.chatbot-badge-tip::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    right: 18px;
+    border-width: 4px 4px 0;
+    border-style: solid;
+    border-color: #0F172A transparent transparent;
+}

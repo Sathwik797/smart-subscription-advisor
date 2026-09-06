@@ -1,336 +1,397 @@
 {% extends "base.html" %}
 {% block content %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
-    <main class="register-page">
-        <div class="register-shell">
-            <section class="register-showcase">
-                <a class="register-brand" href="/">
-                    <span>
-                        <i class="bi bi-wallet2">
-                        </i>
-                    </span>
-                    Smart Subscription Advisor
-                </a>
-                <div class="showcase-copy">
-                    <span class="showcase-kicker">
-                        <i class="bi bi-stars">
-                        </i>
-                        Your financial workspace
-                    </span>
-                    <h1>
-                        Start Smarter Today
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+
+<main class="register-page">
+    <!-- Top Navigation Bar matching Landing Page -->
+    <nav class="register-nav navbar navbar-expand-lg" aria-label="Registration navigation">
+        <div class="container register-nav-container">
+            <a class="register-brand" href="/">
+                <span class="register-brand-mark">SA</span>
+                <span class="register-brand-text">Smart Subscription Advisor</span>
+            </a>
+
+            <button class="navbar-toggler register-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#registerNav" aria-controls="registerNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="registerNav">
+                <div class="navbar-nav mx-auto register-nav-links">
+                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/#features">Features</a>
+                    <a class="nav-link" href="/#how-it-works">How It Works</a>
+                    <a class="nav-link" href="/#pricing">Pricing</a>
+                    <a class="nav-link" href="/#faq">FAQ</a>
+                </div>
+
+                <div class="register-nav-actions">
+                    {% if current_user.is_authenticated %}
+                        <a class="btn btn-outline-nav" href="{{ url_for('auth.dashboard') }}">Dashboard</a>
+                        <a class="btn btn-primary-nav" href="{{ url_for('auth.logout') }}">Sign Out</a>
+                    {% else %}
+                        <a class="btn btn-outline-nav" href="{{ url_for('auth.login') }}">Log In</a>
+                        <a class="btn btn-primary-nav" href="{{ url_for('auth.register') }}">Get Started Free</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Registration Shell -->
+    <div class="register-main-wrapper">
+        <div class="container register-container">
+            <div class="row register-content-row g-5 align-items-start">
+                
+                <!-- Left Column: Value Proposition & Product Showcase -->
+                <div class="col-lg-6 register-left-col">
+                    <div class="register-eyebrow">
+                        <span>JOIN SMARTER SPENDING</span>
+                    </div>
+
+                    <h1 class="register-headline">
+                        Create your account<br>today
                     </h1>
-                    <p>
-                        Create your account and take complete control of your subscriptions.
+
+                    <p class="register-subhead">
+                        Take control of your subscriptions, get AI-powered insights and start saving money — all in one place.
                     </p>
-                </div>
-                <div class="mini-dashboard" aria-hidden="true">
-                    <div class="mini-topbar">
-                        <span class="mini-mark">
-                            <i class="bi bi-wallet2">
-                            </i>
-                        </span>
-                        <span>
-                            Overview
-                        </span>
-                        <i class="bi bi-three-dots ms-auto">
-                        </i>
-                    </div>
-                    <div class="mini-content">
-                        <div class="mini-greeting">
-                            <span>
-                                Monthly spending
-                            </span>
-                            <strong>
-                                ₹184.50
-                            </strong>
-                            <small>
-                                <i class="bi bi-arrow-down">
-                                </i>
-                                8.2% this month
-                            </small>
-                        </div>
-                        <div class="mini-stats">
-                            <div>
-                                <small>
-                                    Subscriptions
-                                </small>
-                                <strong>
-                                    12
-                                </strong>
+
+                    <!-- Three Concise Benefits -->
+                    <div class="register-benefits">
+                        <div class="benefit-card">
+                            <div class="benefit-icon-box icon-emerald">
+                                <i class="bi bi-bar-chart-fill"></i>
                             </div>
-                            <div>
-                                <small>
-                                    Renewing soon
-                                </small>
-                                <strong>
-                                    3
-                                </strong>
-                            </div>
-                        </div>
-                        <div class="mini-chart">
-                            <div class="mini-chart-head">
-                                <b>
-                                    Spending overview
-                                </b>
-                                <span>
-                                    This week
-                                </span>
-                            </div>
-                            <div class="bars">
-                                <i>
-                                </i>
-                                <i>
-                                </i>
-                                <i>
-                                </i>
-                                <i>
-                                </i>
-                                <i>
-                                </i>
-                                <i>
-                                </i>
-                                <i>
-                                </i>
-                            </div>
-                        </div>
-                        <div class="mini-renewal">
-                            <span>
-                                <i class="bi bi-bell">
-                                </i>
-                            </span>
-                            <div>
-                                <small>
-                                    Upcoming renewal
-                                </small>
-                                <strong>
-                                    Notion Pro · in 2 days
-                                </strong>
-                            </div>
-                            <b>
-                                ₹10
-                            </b>
-                        </div>
-                    </div>
-                </div>
-                <ul class="showcase-features list-unstyled mb-0">
-                    <li>
-                        <i class="bi bi-check2">
-                        </i>
-                        Smart Expense Tracking
-                    </li>
-                    <li>
-                        <i class="bi bi-check2">
-                        </i>
-                        Subscription Analytics
-                    </li>
-                    <li>
-                        <i class="bi bi-check2">
-                        </i>
-                        Renewal Reminders
-                    </li>
-                </ul>
-            </section>
-            <section class="register-form-area">
-                <div class="register-card">
-                    <div class="register-card-heading">
-                        <span class="mobile-brand">
-                            <i class="bi bi-wallet2">
-                            </i>
-                            SmartSub
-                        </span>
-                        <h2>
-                            Create account
-                            <span>
-                                ✨
-                            </span>
-                        </h2>
-                        <p>
-                            Start making smarter subscription decisions today.
-                        </p>
-                    </div>
-                    <form method="POST" class="register-form">
-                        <div class="form-field">
-                            <label class="form-label" for="username">
-                                Full name
-                            </label>
-                            <div class="input-icon-wrap">
-                                <i class="bi bi-person">
-                                </i>
-                                <input type="text" id="username" name="username" class="form-control" value="{{ form_data.username if form_data else '' }}" placeholder="Enter your full name" required>
-                            </div>
-                            {% if username_error %}
-                                <div class="alert alert-danger field-error" role="alert">
-                                    <i class="bi bi-exclamation-circle">
-                                    </i>
-                                    {{ username_error }}
-                                </div>
-                            {% endif %}
-                            {% if suggestions %}
-                                <div class="suggestions">
-                                    <small>
-                                        Suggested usernames
-                                    </small>
-                                    <div>
-                                        {% for suggestion in suggestions %}
-                                            <button class="suggestion-chip" type="button" onclick="selectUsername('{{ suggestion }}')">
-                                                {{ suggestion }}
-                                            </button>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </div>
-                        {% if general_error %}
-                            <div class="alert alert-danger field-error mb-3" role="alert">
-                                <i class="bi bi-exclamation-circle"></i>
-                                {{ general_error }}
-                            </div>
-                        {% endif %}
-                        <div class="form-field">
-                            <label class="form-label" for="email">
-                                Email address
-                            </label>
-                            <div class="input-icon-wrap">
-                                <i class="bi bi-envelope">
-                                </i>
-                                <input type="email" id="email" name="email" class="form-control" value="{{ form_data.email if form_data else '' }}" placeholder="you@example.com" required>
-                            </div>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label" for="mobile_number">
-                                Mobile Number
-                            </label>
-                            <div class="input-icon-wrap">
-                                <i class="bi bi-phone">
-                                </i>
-                                <input type="tel" id="mobile_number" name="mobile_number" class="form-control" value="{{ form_data.mobile_number if form_data else '' }}" placeholder="10-digit mobile number (e.g. 9876543210)" pattern="[6-9][0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9" required>
+                            <div class="benefit-info">
+                                <h3 class="benefit-title">Track Everything</h3>
+                                <p class="benefit-desc">See all your subscriptions in one place.</p>
                             </div>
                         </div>
 
-                        <div class="form-field">
-                            <label class="form-label" for="password">
-                                Password
-                            </label>
-                            <div class="input-icon-wrap password-wrap">
-                                <i class="bi bi-lock">
-                                </i>
-                                <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
-                                <button class="password-toggle" type="button" data-target="password" aria-label="Show password" aria-pressed="false">
-                                    <i class="bi bi-eye">
-                                    </i>
-                                </button>
+                        <div class="benefit-card">
+                            <div class="benefit-icon-box icon-blue">
+                                <i class="bi bi-lightbulb-fill"></i>
                             </div>
-                            <div class="strength-meter" aria-live="polite">
-                                <div class="strength-bars">
-                                    <i>
-                                    </i>
-                                    <i>
-                                    </i>
-                                    <i>
-                                    </i>
+                            <div class="benefit-info">
+                                <h3 class="benefit-title">Get Smart Insights</h3>
+                                <p class="benefit-desc">Find savings opportunities with AI.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-card">
+                            <div class="benefit-icon-box icon-amber">
+                                <i class="bi bi-shield-fill"></i>
+                            </div>
+                            <div class="benefit-info">
+                                <h3 class="benefit-title">Your Data Stays Private</h3>
+                                <p class="benefit-desc">Secure, encrypted and never shared.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Product Preview Mockup -->
+                    <div class="register-mockup-window" aria-hidden="true">
+                        <div class="mockup-chrome">
+                            <div class="chrome-dots">
+                                <span class="dot dot-red"></span>
+                                <span class="dot dot-amber"></span>
+                                <span class="dot dot-green"></span>
+                            </div>
+                            <div class="chrome-brand">
+                                <span class="chrome-logo">SA</span>
+                                <span class="chrome-name">Smart Subscription Advisor</span>
+                            </div>
+                        </div>
+
+                        <div class="mockup-body">
+                            <!-- Mini Sidebar -->
+                            <div class="mockup-sidebar">
+                                <div class="side-item active"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></div>
+                                <div class="side-item"><i class="bi bi-collection"></i><span>Subscriptions</span></div>
+                                <div class="side-item"><i class="bi bi-bar-chart"></i><span>Analytics</span></div>
+                                <div class="side-item"><i class="bi bi-stars"></i><span>AI Advisor</span></div>
+                                <div class="side-item"><i class="bi bi-person"></i><span>Profile</span></div>
+                                <div class="side-item"><i class="bi bi-gear"></i><span>Settings</span></div>
+                            </div>
+
+                            <!-- Mini Content -->
+                            <div class="mockup-main">
+                                <div class="mockup-header">
+                                    <div>
+                                        <div class="mockup-greeting">Welcome back!</div>
+                                        <div class="mockup-subtext">Here's what's happening with your subscriptions.</div>
+                                    </div>
+                                    <div class="mockup-date-pill">
+                                        <span class="status-dot"></span>
+                                        <span>Mon, 10 Mar 2026</span>
+                                    </div>
                                 </div>
-                                <span>
-                                    Use 8 or more characters
-                                </span>
+
+                                <!-- 4 KPI Strip -->
+                                <div class="mockup-kpi-grid">
+                                    <div class="kpi-cell">
+                                        <strong class="kpi-val">₹4,850</strong>
+                                        <span class="kpi-lbl">Monthly Spend</span>
+                                        <span class="kpi-trend trend-down">↓ 12% from last month</span>
+                                    </div>
+                                    <div class="kpi-cell">
+                                        <strong class="kpi-val">12</strong>
+                                        <span class="kpi-lbl">Active Subscriptions</span>
+                                    </div>
+                                    <div class="kpi-cell">
+                                        <strong class="kpi-val">3</strong>
+                                        <span class="kpi-lbl">Renewing Soon</span>
+                                        <span class="kpi-trend trend-warn">In next 7 days</span>
+                                    </div>
+                                    <div class="kpi-cell">
+                                        <strong class="kpi-val val-positive">₹1,199</strong>
+                                        <span class="kpi-lbl">Potential Monthly Savings</span>
+                                        <span class="kpi-trend trend-positive">✦ AI Identified</span>
+                                    </div>
+                                </div>
+
+                                <!-- 2 Mini Visuals -->
+                                <div class="mockup-charts-grid">
+                                    <div class="chart-box">
+                                        <div class="chart-box-title">
+                                            <span>Monthly Spending Trend</span>
+                                            <small>Last 6 Months</small>
+                                        </div>
+                                        <div class="bars-strip">
+                                            <div class="bar-elem"><span class="bar-fill" style="height: 50%;"></span><small>Jan</small></div>
+                                            <div class="bar-elem"><span class="bar-fill" style="height: 70%;"></span><small>Feb</small></div>
+                                            <div class="bar-elem"><span class="bar-fill" style="height: 55%;"></span><small>Mar</small></div>
+                                            <div class="bar-elem"><span class="bar-fill" style="height: 60%;"></span><small>Apr</small></div>
+                                            <div class="bar-elem"><span class="bar-fill" style="height: 45%;"></span><small>May</small></div>
+                                            <div class="bar-elem"><span class="bar-fill bar-dark" style="height: 80%;"></span><small>Jun</small></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="chart-box">
+                                        <div class="chart-box-title">
+                                            <span>Spending by Category</span>
+                                        </div>
+                                        <div class="donut-box">
+                                            <svg viewBox="0 0 36 36" class="mini-donut-svg">
+                                                <path class="donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#E2E8F0" stroke-width="4.5"/>
+                                                <path class="donut-s1" stroke-dasharray="32, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0F172A" stroke-width="4.5"/>
+                                                <path class="donut-s2" stroke-dasharray="18, 100" stroke-dashoffset="-32" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#334155" stroke-width="4.5"/>
+                                                <path class="donut-s3" stroke-dasharray="15, 100" stroke-dashoffset="-50" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#64748B" stroke-width="4.5"/>
+                                                <path class="donut-s4" stroke-dasharray="12, 100" stroke-dashoffset="-65" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#94A3B8" stroke-width="4.5"/>
+                                                <path class="donut-s5" stroke-dasharray="23, 100" stroke-dashoffset="-77" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#CBD5E1" stroke-width="4.5"/>
+                                            </svg>
+                                            <div class="mini-donut-legend">
+                                                <div class="leg-row"><span class="leg-sq sq-1"></span> Streaming <span class="leg-num">32%</span></div>
+                                                <div class="leg-row"><span class="leg-sq sq-2"></span> Productivity <span class="leg-num">18%</span></div>
+                                                <div class="leg-row"><span class="leg-sq sq-3"></span> Shopping <span class="leg-num">15%</span></div>
+                                                <div class="leg-row"><span class="leg-sq sq-4"></span> Music <span class="leg-num">12%</span></div>
+                                                <div class="leg-row"><span class="leg-sq sq-5"></span> Fitness <span class="leg-num">10%</span></div>
+                                                <div class="leg-row"><span class="leg-sq sq-6"></span> Others <span class="leg-num">13%</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-field">
-                            <label class="form-label" for="confirm-password">
-                                Confirm password
-                            </label>
-                            <div class="input-icon-wrap password-wrap">
-                                <i class="bi bi-shield-lock">
-                                </i>
-                                <input type="password" id="confirm-password" name="confirm_password" class="form-control" placeholder="Confirm your password" required>
-                                <button class="password-toggle" type="button" data-target="confirm-password" aria-label="Show password" aria-pressed="false">
-                                    <i class="bi bi-eye">
-                                    </i>
+                    </div>
+                </div>
+
+                <!-- Right Column: Registration Form Card -->
+                <div class="col-lg-6 register-right-col">
+                    <div class="register-form-card">
+                        <div class="register-card-header">
+                            <h2 class="form-main-heading">Create account</h2>
+                            <p class="form-main-subhead">Start making smarter subscription decisions today.</p>
+                        </div>
+
+                        {% if general_error %}
+                            <div class="alert alert-danger register-alert" role="alert">
+                                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                {{ general_error }}
+                            </div>
+                        {% endif %}
+
+                        <form method="POST" class="register-form" novalidate>
+                            <!-- 1. Full Name -->
+                            <div class="form-group-item">
+                                <label class="form-label-styled" for="username">
+                                    Full name
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-person input-leading-icon"></i>
+                                    <input type="text" id="username" name="username" class="form-input-styled" value="{{ form_data.username if form_data else '' }}" placeholder="Enter your full name" required>
+                                </div>
+                                {% if username_error %}
+                                    <div class="field-error-message" role="alert">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ username_error }}
+                                    </div>
+                                {% endif %}
+                                {% if suggestions %}
+                                    <div class="username-suggestions-box">
+                                        <span class="suggestions-label">Suggested usernames:</span>
+                                        <div class="suggestions-chips-wrap">
+                                            {% for suggestion in suggestions %}
+                                                <button class="suggestion-chip-btn" type="button" onclick="selectUsername('{{ suggestion }}')">
+                                                    {{ suggestion }}
+                                                </button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- 2. Email Address -->
+                            <div class="form-group-item">
+                                <label class="form-label-styled" for="email">
+                                    Email address
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-envelope input-leading-icon"></i>
+                                    <input type="email" id="email" name="email" class="form-input-styled" value="{{ form_data.email if form_data else '' }}" placeholder="you@example.com" required>
+                                </div>
+                            </div>
+
+                            <!-- 3. Mobile Number -->
+                            <div class="form-group-item">
+                                <label class="form-label-styled" for="mobile_number">
+                                    Mobile number
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-phone input-leading-icon"></i>
+                                    <input type="tel" id="mobile_number" name="mobile_number" class="form-input-styled" value="{{ form_data.mobile_number if form_data else '' }}" placeholder="10-digit mobile number (e.g. 9876543210)" pattern="[6-9][0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9" required>
+                                </div>
+                            </div>
+
+                            <!-- 4. Password -->
+                            <div class="form-group-item">
+                                <label class="form-label-styled" for="password">
+                                    Password
+                                </label>
+                                <div class="input-icon-wrap password-wrap">
+                                    <i class="bi bi-lock input-leading-icon"></i>
+                                    <input type="password" id="password" name="password" class="form-input-styled" placeholder="Create a password" required>
+                                    <button class="password-toggle" type="button" data-target="password" aria-label="Show password" aria-pressed="false">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="strength-meter" aria-live="polite">
+                                    <div class="strength-bars">
+                                        <i></i>
+                                        <i></i>
+                                        <i></i>
+                                    </div>
+                                    <span class="strength-label">Use 8 or more characters</span>
+                                </div>
+                            </div>
+
+                            <!-- 5. Confirm Password -->
+                            <div class="form-group-item">
+                                <label class="form-label-styled" for="confirm-password">
+                                    Confirm password
+                                </label>
+                                <div class="input-icon-wrap password-wrap">
+                                    <i class="bi bi-shield-lock input-leading-icon"></i>
+                                    <input type="password" id="confirm-password" name="confirm_password" class="form-input-styled" placeholder="Confirm your password" required>
+                                    <button class="password-toggle" type="button" data-target="confirm-password" aria-label="Show password" aria-pressed="false">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 6. Occupation & Financial Preference (Two-Column on Desktop) -->
+                            <div class="row g-3 select-row">
+                                <div class="col-md-6">
+                                    <div class="form-group-item mb-0">
+                                        <label class="form-label-styled" for="occupation">
+                                            Occupation
+                                        </label>
+                                        <div class="input-icon-wrap select-wrap">
+                                            <i class="bi bi-briefcase input-leading-icon"></i>
+                                            <select id="occupation" name="occupation" class="form-select-styled" required>
+                                                <option value="" disabled {% if not form_data or not form_data.occupation %}selected{% endif %}>
+                                                    Select your occupation
+                                                </option>
+                                                <option value="Student" {% if form_data and form_data.occupation == "Student" %}selected{% endif %}>
+                                                    Student
+                                                </option>
+                                                <option value="Software Developer" {% if form_data and form_data.occupation == "Software Developer" %}selected{% endif %}>
+                                                    Software Developer
+                                                </option>
+                                                <option value="AI/ML Engineer" {% if form_data and form_data.occupation == "AI/ML Engineer" %}selected{% endif %}>
+                                                    AI/ML Engineer
+                                                </option>
+                                                <option value="Designer" {% if form_data and form_data.occupation == "Designer" %}selected{% endif %}>
+                                                    Designer
+                                                </option>
+                                                <option value="Business Owner" {% if form_data and form_data.occupation == "Business Owner" %}selected{% endif %}>
+                                                    Business Owner
+                                                </option>
+                                                <option value="Other" {% if form_data and form_data.occupation == "Other" %}selected{% endif %}>
+                                                    Other
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group-item mb-0">
+                                        <label class="form-label-styled" for="financial-preference">
+                                            Financial preference
+                                        </label>
+                                        <div class="input-icon-wrap select-wrap">
+                                            <i class="bi bi-sliders input-leading-icon"></i>
+                                            <select id="financial-preference" name="financial_preference" class="form-select-styled" required>
+                                                <option value="" disabled {% if not form_data or not form_data.financial_preference %}selected{% endif %}>
+                                                    Choose your financial style
+                                                </option>
+                                                <option value="Money Saver" {% if form_data and form_data.financial_preference == "Money Saver" %}selected{% endif %}>
+                                                    Money Saver
+                                                </option>
+                                                <option value="Balanced" {% if form_data and form_data.financial_preference == "Balanced" %}selected{% endif %}>
+                                                    Balanced
+                                                </option>
+                                                <option value="Premium" {% if form_data and form_data.financial_preference == "Premium" %}selected{% endif %}>
+                                                    Premium
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 7. Agreement Checkbox -->
+                            <div class="terms-agreement-wrap">
+                                <label class="terms-checkbox-label" for="terms-agree">
+                                    <input type="checkbox" id="terms-agree" name="terms" class="terms-checkbox" checked required>
+                                    <span class="terms-text">
+                                        I agree to the <a href="/" class="terms-link">Terms of Service</a> and <a href="/" class="terms-link">Privacy Policy</a>.
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- 8. Submit CTA Button -->
+                            <div class="form-submit-wrap">
+                                <button type="submit" class="btn btn-register-primary">
+                                    <span>Create Account</span>
+                                    <i class="bi bi-arrow-right ms-1"></i>
                                 </button>
                             </div>
+                        </form>
+
+                        <!-- 9. Already have an account prompt -->
+                        <div class="register-footer-prompt">
+                            <span>Already have an account?</span>
+                            <a href="{{ url_for('auth.login') }}" class="login-redirect-link">Log in</a>
                         </div>
-                        <div class="form-field select-field">
-                            <label class="form-label" for="occupation">
-                                Occupation
-                            </label>
-                            <div class="input-icon-wrap">
-                                <i class="bi bi-briefcase">
-                                </i>
-                                <select id="occupation" name="occupation" class="form-select" required>
-                                    <option value="" disabled {% if not form_data or not form_data.occupation %}selected{% endif %}>
-                                        Select your occupation
-                                    </option>
-                                    <option value="Student" {% if form_data and form_data.occupation == "Student" %}selected{% endif %}>
-                                        🎓 Student
-                                    </option>
-                                    <option value="Software Developer" {% if form_data and form_data.occupation == "Software Developer" %}selected{% endif %}>
-                                        💻 Software Developer
-                                    </option>
-                                    <option value="AI/ML Engineer" {% if form_data and form_data.occupation == "AI/ML Engineer" %}selected{% endif %}>
-                                        🤖 AI/ML Engineer
-                                    </option>
-                                    <option value="Designer" {% if form_data and form_data.occupation == "Designer" %}selected{% endif %}>
-                                        🎨 Designer
-                                    </option>
-                                    <option value="Business Owner" {% if form_data and form_data.occupation == "Business Owner" %}selected{% endif %}>
-                                        📈 Business Owner
-                                    </option>
-                                    <option value="Other" {% if form_data and form_data.occupation == "Other" %}selected{% endif %}>
-                                        Other
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-field select-field">
-                            <label class="form-label" for="financial-preference">
-                                Financial preference
-                            </label>
-                            <div class="input-icon-wrap">
-                                <i class="bi bi-sliders">
-                                </i>
-                                <select id="financial-preference" name="financial_preference" class="form-select" required>
-                                    <option value="" disabled {% if not form_data or not form_data.financial_preference %}selected{% endif %}>
-                                        Choose your financial style
-                                    </option>
-                                    <option value="Money Saver" {% if form_data and form_data.financial_preference == "Money Saver" %}selected{% endif %}>
-                                        💰 Money Saver
-                                    </option>
-                                    <option value="Balanced" {% if form_data and form_data.financial_preference == "Balanced" %}selected{% endif %}>
-                                        ⚖️ Balanced
-                                    </option>
-                                    <option value="Premium" {% if form_data and form_data.financial_preference == "Premium" %}selected{% endif %}>
-                                        💎 Premium
-                                    </option>
-                                </select>
-                            </div>
-                            <small class="preference-help">
-                                <i class="bi bi-info-circle">
-                                </i>
-                                This helps us personalize future subscription recommendations.
-                            </small>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary register-button">
-                                Create Account
-                                <i class="bi bi-arrow-right">
-                                </i>
-                            </button>
-                        </div>
-                    </form>
-                    <p class="login-prompt">
-                        Already have an account?
-                        <a href="/login">
-                            Login
-                        </a>
-                    </p>
-                    <p class="register-security">
-                        <i class="bi bi-shield-check">
-                        </i>
-                        Your information is protected securely.
-                    </p>
+                    </div>
                 </div>
-            </section>
+
+            </div>
         </div>
-    </main>
-    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
-        {% endblock %}
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+{% endblock %}

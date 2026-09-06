@@ -77,12 +77,16 @@ def subscriptions():
         page=page,
     )
 
+    summary = subscription_service.get_subscription_summary(current_user)
+
     return render_template(
         "subscriptions.html",
         subscriptions=paginated_subscriptions,
         search=search,
         category=category,
         sort=sort,
+        summary=summary,
+        **summary,
     )
 
 
@@ -145,3 +149,10 @@ def delete_subscription(id):
     logger.info("Subscription deleted")
     flash("Subscription deleted successfully!", "success")
     return redirect(url_for("auth.subscriptions"))
+
+
+def spending_analytics():
+    """Render the spending analytics view for the current user."""
+    data = subscription_service.get_spending_analytics(current_user)
+    return render_template("analytics.html", **data)
+

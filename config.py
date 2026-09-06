@@ -26,6 +26,7 @@ class Config:
     JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
 
     DEBUG = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
+    TEMPLATES_AUTO_RELOAD = True
 
     # Database connection: support full DATABASE_URL or individual DB parameters
     DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("SQLALCHEMY_DATABASE_URI")
