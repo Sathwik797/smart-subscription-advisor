@@ -51,7 +51,7 @@
         </a>
 
         <!-- 4. Recommendations / AI Advisor -->
-        <a href="javascript:void(0)"
+        <button type="button"
            id="sidebarAiAdvisor"
            class="sidebar-nav-item {% if active_nav == 'recommendations' %}active{% endif %}"
            data-nav="recommendations"
@@ -61,7 +61,7 @@
             </span>
             <span class="nav-label">Recommendations</span>
             <span class="sidebar-tooltip">Recommendations</span>
-        </a>
+        </button>
 
         <!-- 5. Analytics -->
         <a href="{{ url_for('auth.spending_analytics') }}"

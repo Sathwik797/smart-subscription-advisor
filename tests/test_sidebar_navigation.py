@@ -227,3 +227,20 @@ def test_sidebar_script_and_style_in_base(authenticated_client):
     assert "sidebar.css" in html
     assert "sidebar.js" in html
     assert "smartSubscriptionAdvisor.sidebarCollapsed" in html
+
+
+def test_sidebar_recommendations_button_semantics_and_no_javascript_void(authenticated_client):
+    res = authenticated_client.get("/dashboard")
+    assert res.status_code == 200
+    html = res.get_data(as_text=True)
+
+    # Recommendations must be a semantic button and not use href="javascript:void(0)"
+    assert 'id="sidebarAiAdvisor"' in html
+    assert 'data-nav="recommendations"' in html
+    assert 'aria-label="Recommendations"' in html
+    assert '<button type="button"' in html
+    # Ensure sidebar does not contain javascript:void(0)
+    sidebar_html = html[html.find('id="appSidebar"'):html.find('</aside>')]
+    assert 'href="javascript:void(0)"' not in sidebar_html
+    assert 'javascript:void(0)' not in sidebar_html
+

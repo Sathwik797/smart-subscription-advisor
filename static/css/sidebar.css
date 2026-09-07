@@ -156,6 +156,20 @@ body.sidebar-expanded .toggle-icon-expanded {
     text-decoration: none;
     box-sizing: border-box;
     transition: background-color 0.15s ease, color 0.15s ease;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sidebar-nav-item:focus-visible {
+    outline: 2px solid #2563EB;
+    outline-offset: 2px;
 }
 
 body.sidebar-expanded .sidebar-nav-item {
