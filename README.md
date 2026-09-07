@@ -4,6 +4,7 @@
 
 **An enterprise-grade, hybrid-intelligence personal subscription and financial management platform.**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-00C7B7.svg?style=flat-square&logo=render&logoColor=white)](https://smart-subscription-advisor.onrender.com)
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/framework-Flask%203.1-black.svg?style=flat-square&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![Database](https://img.shields.io/badge/database-MySQL%208.0-4479A1.svg?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
@@ -13,6 +14,13 @@
 [![Test Suite](https://img.shields.io/badge/tests-109%20passed-brightgreen.svg?style=flat-square&logo=pytest&logoColor=white)](https://pytest.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](LICENSE)
 
+<br/>
+
+**🌐 Live Demo:** [https://smart-subscription-advisor.onrender.com](https://smart-subscription-advisor.onrender.com)
+
+<br/>
+
+[Live Demo](#-live-demo) •
 [Key Features](#-key-features) •
 [Architecture](#-system-architecture) •
 [Tech Stack](#-technology-stack) •
@@ -23,6 +31,16 @@
 [Contributing](#-contributing)
 
 </div>
+
+---
+
+## 🌐 Live Demo
+
+Explore the live, fully functional application deployed on Render:
+
+🔗 **[https://smart-subscription-advisor.onrender.com](https://smart-subscription-advisor.onrender.com)**
+
+> **Note:** Hosted on Render. If the service has been idle, the initial container spin-up may take ~30–50 seconds. Subsequent requests will be instantaneous.
 
 ---
 
@@ -434,7 +452,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 **Sathwik Reddy**  
 * GitHub: [@Sathwik797](https://github.com/Sathwik797)  
-* Project Repository: [Smart Subscription Advisor](https://github.com/Sathwik797/smart-subscription-advisor)
+* Project Repository: [Smart Subscription Advisor](https://github.com/Sathwik797/smart-subscription-advisor)  
+* Live Demo: [https://smart-subscription-advisor.onrender.com](https://smart-subscription-advisor.onrender.com)
 
 <div align="center">
 <sub>Engineered with precision for transparency, performance, and financial intelligence.</sub>
