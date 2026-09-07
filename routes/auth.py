@@ -35,6 +35,7 @@ def inject_current_user():
 
 
 @auth.route("/register", methods=["GET", "POST"])
+@limiter.limit("10 per hour")
 def register():
     return register_controller()
 

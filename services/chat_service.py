@@ -82,8 +82,8 @@ def _build_subscription_context(user, page: str | None) -> dict:
     next_7_days = today + timedelta(days=7)
     next_30_days = today + timedelta(days=30)
 
-    total_monthly = sum(s.monthly_cost for s in subscriptions)
-    total_yearly = total_monthly * 12
+    total_monthly = float(round(sum(s.monthly_equivalent for s in subscriptions), 2))
+    total_yearly = float(round(sum(s.yearly_equivalent for s in subscriptions), 2))
 
     # Upcoming renewals
     upcoming_7 = [s for s in subscriptions if s.renewal_date and today <= s.renewal_date <= next_7_days]
@@ -93,7 +93,7 @@ def _build_subscription_context(user, page: str | None) -> dict:
     category_totals: dict[str, float] = {}
     for s in subscriptions:
         cat = s.category or "Other"
-        category_totals[cat] = category_totals.get(cat, 0.0) + s.monthly_cost
+        category_totals[cat] = category_totals.get(cat, 0.0) + float(s.monthly_equivalent)
 
     # Per-subscription insights using existing engine
     sub_details = []
@@ -106,7 +106,7 @@ def _build_subscription_context(user, page: str | None) -> dict:
                     occupation=user.occupation or "Other",
                     financial_preference=user.financial_preference or "Balanced",
                     category=s.category or "Other",
-                    monthly_cost=s.monthly_cost,
+                    monthly_cost=float(s.monthly_equivalent),
                     usage_frequency=s.usage_frequency,
                     usage_hours=float(s.usage_hours),
                 )
@@ -121,8 +121,9 @@ def _build_subscription_context(user, page: str | None) -> dict:
         sub_details.append({
             "name": s.service_name,
             "category": s.category,
-            "monthly_cost": s.monthly_cost,
-            "yearly_cost": round(s.monthly_cost * 12, 2),
+            "monthly_cost": float(s.monthly_cost),
+            "monthly_equivalent": float(round(s.monthly_equivalent, 2)),
+            "yearly_cost": float(round(s.yearly_equivalent, 2)),
             "billing_cycle": s.billing_cycle,
             "renewal_date": s.renewal_date.isoformat() if s.renewal_date else None,
             "usage_frequency": s.usage_frequency,
@@ -137,7 +138,7 @@ def _build_subscription_context(user, page: str | None) -> dict:
 
     # Potential savings — low-priority subscriptions
     low_priority_subs = [d for d in sub_details if d.get("priority") == "Low"]
-    potential_monthly_saving = sum(d["monthly_cost"] for d in low_priority_subs)
+    potential_monthly_saving = sum(d["monthly_equivalent"] for d in low_priority_subs)
 
     context = {
         "user": {

@@ -23,6 +23,7 @@ from models.user import User
 from repositories.subscription_repository import SubscriptionRepository
 from repositories.user_repository import UserRepository
 from services.email_service import email_service
+from services.intelligence_service import IntelligenceService
 from services.otp_service import otp_service
 from utils.insights_engine import generate_insight
 
@@ -33,6 +34,7 @@ class AuthService:
     def __init__(self):
         self.user_repository = UserRepository()
         self.subscription_repository = SubscriptionRepository()
+        self.intelligence_service = IntelligenceService(self.subscription_repository)
         self.email_service = email_service
         self.otp_service = otp_service
 
@@ -190,61 +192,38 @@ class AuthService:
         return user
 
     def get_dashboard_data(self, user):
-        """Prepare dashboard statistics and insights for the current user."""
+        """Prepare dashboard statistics and insights for the current user using authoritative intelligence."""
         subscriptions = self.subscription_repository.get_user_subscriptions(user.id)
-        total_monthly = sum(sub.monthly_cost for sub in subscriptions)
-        total_yearly = total_monthly * 12
+        intel = self.intelligence_service.build_intelligence_context(user)
+        fin_summary = intel.get("financial_summary", {})
+
+        total_monthly = float(fin_summary.get("monthly_spending", 0.0))
+        total_yearly = float(fin_summary.get("yearly_projection", 0.0))
+        potential_monthly_savings = float(fin_summary.get("potential_monthly_savings", 0.0))
+        potential_yearly_savings = float(fin_summary.get("potential_yearly_savings", 0.0))
         total_subscriptions = len(subscriptions)
 
         today = date.today()
         next_week = today + timedelta(days=7)
         upcoming_renewals = self.subscription_repository.get_upcoming_renewals(user.id, today, next_week)
 
-        category_data = {}
-        for sub in subscriptions:
-            category_data[sub.category] = category_data.get(sub.category, 0) + sub.monthly_cost
+        # Category chart data using monthly equivalent
+        category_labels = [cat["name"] for cat in intel.get("categories", [])]
+        category_values = [float(cat["monthly_spending"]) for cat in intel.get("categories", [])]
 
         subscription_labels = [sub.service_name for sub in subscriptions]
-        subscription_values = [sub.monthly_cost for sub in subscriptions]
+        subscription_values = [float(round(sub.monthly_equivalent, 2)) for sub in subscriptions]
 
-        recommendations = []
-        for sub in subscriptions:
-            insight = generate_insight(subscription=sub, financial_preference=user.financial_preference)
-            recommendations.append(insight)
-
-        recommendations = sorted(recommendations, key=lambda item: item["score"], reverse=True)[:3]
-
-        health_score = 100
-        for sub in subscriptions:
-            if sub.priority == "Low":
-                health_score -= 15
-            elif sub.priority == "Medium":
-                health_score -= 5
-
-            if sub.usage_frequency == "Rarely":
-                health_score -= 10
-
-            if sub.monthly_cost > 1000:
-                health_score -= 5
-
-        health_score = max(0, min(100, health_score))
-
-        potential_monthly_savings = 0
-        for sub in subscriptions:
-            if sub.priority == "Low":
-                potential_monthly_savings += sub.monthly_cost
-            elif user.financial_preference == "Money Saver" and sub.usage_frequency == "Rarely":
-                potential_monthly_savings += sub.monthly_cost
-
-        potential_yearly_savings = potential_monthly_savings * 12
+        recommendations = intel.get("recommendations", [])
+        health_score = int(intel.get("health_score", {}).get("score", 100))
 
         return {
             "total_monthly": total_monthly,
             "total_yearly": total_yearly,
             "total_subscriptions": total_subscriptions,
             "upcoming_renewals": upcoming_renewals,
-            "category_labels": list(category_data.keys()),
-            "category_values": list(category_data.values()),
+            "category_labels": category_labels,
+            "category_values": category_values,
             "subscription_labels": subscription_labels,
             "subscription_values": subscription_values,
             "recommendations": recommendations,
@@ -257,12 +236,12 @@ class AuthService:
         """Prepare profile summary values for the current user."""
         subscriptions = self.subscription_repository.get_user_subscriptions(user.id)
         total_subscriptions = len(subscriptions)
-        total_monthly = sum(sub.monthly_cost for sub in subscriptions)
-        total_yearly = total_monthly * 12
+        total_monthly_dec = sum(sub.monthly_equivalent for sub in subscriptions)
+        total_yearly_dec = sum(sub.yearly_equivalent for sub in subscriptions)
         return {
             "total_subscriptions": total_subscriptions,
-            "total_monthly": total_monthly,
-            "total_yearly": total_yearly,
+            "total_monthly": float(round(total_monthly_dec, 2)),
+            "total_yearly": float(round(total_yearly_dec, 2)),
         }
 
     def update_profile(self, user, username, occupation, financial_preference):

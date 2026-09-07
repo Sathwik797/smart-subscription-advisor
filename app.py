@@ -58,6 +58,15 @@ from middleware.rate_limiter import limiter
 limiter.init_app(app)
 
 
+@app.after_request
+def set_security_headers(response):
+    """Set essential HTTP security headers on all responses."""
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
+
 
 @jwt.unauthorized_loader
 def unauthorized_loader(callback):

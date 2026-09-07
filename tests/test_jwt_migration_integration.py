@@ -92,10 +92,13 @@ def test_full_web_user_journey(app, client):
     assert dash_resp.status_code == 200
     assert b"journey_user" in dash_resp.data
 
-    # 5. Add subscription via web form
+    # 5. Add subscription via web form (with valid CSRF token)
+    csrf_cookie = client.get_cookie("csrf_access_token")
+    csrf_token = csrf_cookie.value if csrf_cookie else ""
     add_resp = client.post(
         "/add-subscription",
         data={
+            "csrf_token": csrf_token,
             "service_name": "Spotify Premium",
             "monthly_cost": "119",
             "category": "Entertainment",

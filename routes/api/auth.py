@@ -16,6 +16,7 @@ api_auth = Blueprint("api_auth", __name__)
 
 
 @api_auth.route("/register", methods=["POST"])
+@limiter.limit("10 per hour")
 def register():
     return api_register()
 

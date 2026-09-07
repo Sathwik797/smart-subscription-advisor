@@ -4,6 +4,7 @@ Services contain the application's business rules and orchestrate repository
 calls without directly handling HTTP requests.
 """
 
+from decimal import Decimal
 import csv
 from io import StringIO
 from datetime import datetime, timedelta
@@ -26,13 +27,16 @@ class SubscriptionService:
         self.intelligence_service = IntelligenceService(self.subscription_repository)
 
     def add_subscription(self, user, service_name, monthly_cost, category, start_date, billing_cycle, usage_frequency=None, usage_hours=None):
-        """Create a new subscription for a user."""
+        """Create a new subscription for a user with precise Decimal storage and billing-cycle awareness."""
         if monthly_cost is None or monthly_cost == "":
             raise ValidationException("Monthly cost is required")
-        if float(monthly_cost) <= 0:
+        try:
+            monthly_cost_dec = Decimal(str(monthly_cost))
+        except (ValueError, TypeError) as exc:
+            raise ValidationException("Monthly cost must be a valid number") from exc
+        if monthly_cost_dec <= Decimal("0.00"):
             raise ValidationException("Monthly cost must be greater than zero")
 
-        monthly_cost = float(monthly_cost)
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
 
         parsed_usage_hours = None
@@ -42,23 +46,35 @@ class SubscriptionService:
             except (ValueError, TypeError):
                 parsed_usage_hours = None
 
-        if billing_cycle == "Monthly":
+        cycle = (billing_cycle or "Monthly").strip().capitalize()
+        if cycle == "Monthly":
             renewal_date = start_date + relativedelta(months=1)
-        else:
+            effective_monthly = monthly_cost_dec
+        elif cycle == "Yearly":
             renewal_date = start_date + relativedelta(years=1)
+            effective_monthly = monthly_cost_dec / Decimal("12")
+        elif cycle == "Quarterly":
+            renewal_date = start_date + relativedelta(months=3)
+            effective_monthly = monthly_cost_dec / Decimal("3")
+        elif cycle == "Weekly":
+            renewal_date = start_date + relativedelta(weeks=1)
+            effective_monthly = (monthly_cost_dec * Decimal("52")) / Decimal("12")
+        else:
+            renewal_date = start_date + relativedelta(months=1)
+            effective_monthly = monthly_cost_dec
 
         priority_data = calculate_priority(
             occupation=user.occupation,
             financial_preference=user.financial_preference,
             category=category,
-            monthly_cost=monthly_cost,
+            monthly_cost=float(effective_monthly),
             usage_frequency=usage_frequency,
             usage_hours=parsed_usage_hours,
         )
 
         subscription = Subscription(
             service_name=service_name,
-            monthly_cost=monthly_cost,
+            monthly_cost=monthly_cost_dec,
             category=category,
             start_date=start_date,
             renewal_date=renewal_date,
@@ -103,7 +119,7 @@ class SubscriptionService:
             occupation=user.occupation,
             financial_preference=user.financial_preference,
             category=subscription.category,
-            monthly_cost=subscription.monthly_cost,
+            monthly_cost=float(subscription.monthly_equivalent),
             usage_frequency=subscription.usage_frequency,
             usage_hours=subscription.usage_hours,
         )
@@ -153,10 +169,10 @@ class SubscriptionService:
                 "all_categories": [],
             }
 
-        total_monthly = sum(float(s.monthly_cost or 0.0) for s in all_subs)
-        total_yearly = round(total_monthly * 12.0, 2)
+        total_monthly_dec = sum(s.monthly_equivalent for s in all_subs)
+        total_yearly_dec = sum(s.yearly_equivalent for s in all_subs)
         active_count = len(all_subs)
-        avg_cost = round(total_monthly / active_count, 2) if active_count > 0 else 0.0
+        avg_cost_dec = (total_monthly_dec / Decimal(str(active_count))) if active_count > 0 else Decimal("0.00")
 
         # Renewing this week (between today and today + 7 days)
         today = datetime.now().date()
@@ -166,8 +182,8 @@ class SubscriptionService:
             if s.renewal_date and today <= s.renewal_date <= week_end
         )
 
-        # Most expensive & most affordable
-        sorted_by_cost = sorted(all_subs, key=lambda s: float(s.monthly_cost or 0.0), reverse=True)
+        # Most expensive & most affordable by monthly equivalent
+        sorted_by_cost = sorted(all_subs, key=lambda s: s.monthly_equivalent, reverse=True)
         most_expensive = sorted_by_cost[0] if sorted_by_cost else None
         most_affordable = sorted_by_cost[-1] if sorted_by_cost else None
 
@@ -178,13 +194,13 @@ class SubscriptionService:
             category_preview += ", and more"
 
         return {
-            "monthly_spend": total_monthly,
-            "projected_yearly": total_yearly,
+            "monthly_spend": float(round(total_monthly_dec, 2)),
+            "projected_yearly": float(round(total_yearly_dec, 2)),
             "active_count": active_count,
             "renewing_this_week": renewing_this_week,
             "most_expensive": most_expensive,
             "most_affordable": most_affordable,
-            "avg_monthly_cost": avg_cost,
+            "avg_monthly_cost": float(round(avg_cost_dec, 2)),
             "total_categories": len(categories),
             "category_preview": category_preview,
             "all_categories": categories,
@@ -227,33 +243,60 @@ class SubscriptionService:
             occupation=user.occupation,
             financial_preference=user.financial_preference,
             category=subscription.category,
-            monthly_cost=subscription.monthly_cost,
+            monthly_cost=float(subscription.monthly_equivalent),
             usage_frequency=subscription.usage_frequency,
             usage_hours=subscription.usage_hours,
         )
 
     def update_subscription(self, user, subscription_id, service_name, monthly_cost, category, start_date, billing_cycle, usage_frequency, usage_hours):
         """Update a subscription and recalculate its priority."""
+        if monthly_cost is None or monthly_cost == "":
+            raise ValidationException("Monthly cost is required")
+        try:
+            monthly_cost_dec = Decimal(str(monthly_cost))
+        except (ValueError, TypeError) as exc:
+            raise ValidationException("Monthly cost must be a valid number") from exc
+        if monthly_cost_dec <= Decimal("0.00"):
+            raise ValidationException("Monthly cost must be greater than zero")
+
         subscription = self.get_subscription_for_user(user, subscription_id)
         subscription.service_name = service_name
-        subscription.monthly_cost = float(monthly_cost)
+        subscription.monthly_cost = monthly_cost_dec
         subscription.category = category
         subscription.start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
         subscription.billing_cycle = billing_cycle
 
-        if subscription.billing_cycle == "Monthly":
+        cycle = (billing_cycle or "Monthly").strip().capitalize()
+        if cycle == "Monthly":
             subscription.renewal_date = subscription.start_date + relativedelta(months=1)
-        else:
+            effective_monthly = monthly_cost_dec
+        elif cycle == "Yearly":
             subscription.renewal_date = subscription.start_date + relativedelta(years=1)
+            effective_monthly = monthly_cost_dec / Decimal("12")
+        elif cycle == "Quarterly":
+            subscription.renewal_date = subscription.start_date + relativedelta(months=3)
+            effective_monthly = monthly_cost_dec / Decimal("3")
+        elif cycle == "Weekly":
+            subscription.renewal_date = subscription.start_date + relativedelta(weeks=1)
+            effective_monthly = (monthly_cost_dec * Decimal("52")) / Decimal("12")
+        else:
+            subscription.renewal_date = subscription.start_date + relativedelta(months=1)
+            effective_monthly = monthly_cost_dec
 
         subscription.usage_frequency = usage_frequency
-        subscription.usage_hours = float(usage_hours)
+        parsed_hours = None
+        if usage_hours is not None and str(usage_hours).strip() != "":
+            try:
+                parsed_hours = float(usage_hours)
+            except (ValueError, TypeError):
+                parsed_hours = None
+        subscription.usage_hours = parsed_hours
 
         priority_data = calculate_priority(
             occupation=user.occupation,
             financial_preference=user.financial_preference,
             category=subscription.category,
-            monthly_cost=subscription.monthly_cost,
+            monthly_cost=float(effective_monthly),
             usage_frequency=subscription.usage_frequency,
             usage_hours=subscription.usage_hours,
         )
@@ -287,7 +330,9 @@ class SubscriptionService:
         return {
             "id": subscription.id,
             "service_name": subscription.service_name,
-            "monthly_cost": subscription.monthly_cost,
+            "monthly_cost": float(subscription.monthly_cost) if subscription.monthly_cost is not None else 0.0,
+            "monthly_equivalent": float(round(subscription.monthly_equivalent, 2)) if subscription.monthly_equivalent is not None else 0.0,
+            "yearly_equivalent": float(round(subscription.yearly_equivalent, 2)) if subscription.yearly_equivalent is not None else 0.0,
             "category": subscription.category,
             "start_date": subscription.start_date.strftime("%Y-%m-%d") if subscription.start_date else None,
             "renewal_date": subscription.renewal_date.strftime("%Y-%m-%d") if subscription.renewal_date else None,
@@ -303,10 +348,11 @@ class SubscriptionService:
         subscriptions = self.subscription_repository.get_user_subscriptions(user.id)
         intel = self.intelligence_service.build_intelligence_context(user)
 
-        total_monthly = float(intel.get("total_monthly", 0.0))
-        total_yearly = float(intel.get("total_yearly", 0.0))
-        potential_monthly_savings = float(intel.get("potential_monthly_savings", 0.0))
-        potential_yearly_savings = float(intel.get("potential_yearly_savings", 0.0))
+        fin_summary = intel.get("financial_summary", {})
+        total_monthly = float(fin_summary.get("monthly_spending", intel.get("total_monthly", 0.0)))
+        total_yearly = float(fin_summary.get("yearly_projection", intel.get("total_yearly", 0.0)))
+        potential_monthly_savings = float(fin_summary.get("potential_monthly_savings", intel.get("potential_monthly_savings", 0.0)))
+        potential_yearly_savings = float(fin_summary.get("potential_yearly_savings", intel.get("potential_yearly_savings", 0.0)))
         active_count = len(subscriptions)
         avg_monthly = round(total_monthly / active_count, 2) if active_count > 0 else 0.0
 
@@ -321,7 +367,7 @@ class SubscriptionService:
                 trend_values.append(0.0)
             else:
                 m_spend = sum(
-                    float(s.monthly_cost) for s in subscriptions
+                    float(s.monthly_equivalent) for s in subscriptions
                     if getattr(s, "start_date", None) is None or s.start_date <= m_date.replace(day=28)
                 )
                 trend_values.append(round(m_spend, 2))
@@ -338,7 +384,8 @@ class SubscriptionService:
             "#F59E0B",  # Amber
         ]
         categories_data = []
-        for idx, cat_item in enumerate(intel.get("categories_summary", [])):
+        categories_source = intel.get("categories", intel.get("categories_summary", []))
+        for idx, cat_item in enumerate(categories_source):
             categories_data.append({
                 "name": cat_item["name"],
                 "monthly_amount": cat_item["monthly_spending"],
@@ -348,18 +395,20 @@ class SubscriptionService:
                 "color": category_palette[idx % len(category_palette)],
             })
 
-        # 3. Top Subscriptions by Spend
-        sorted_subs = sorted(subscriptions, key=lambda s: float(s.monthly_cost), reverse=True)
+        # 3. Top Subscriptions by Spend (using monthly equivalent)
+        sorted_subs = sorted(subscriptions, key=lambda s: s.monthly_equivalent, reverse=True)
         top_subscriptions = []
         for s in sorted_subs[:5]:
-            cost = float(s.monthly_cost)
-            pct = round(cost / total_monthly * 100.0, 1) if total_monthly > 0 else 0.0
+            m_equiv = float(round(s.monthly_equivalent, 2))
+            y_equiv = float(round(s.yearly_equivalent, 2))
+            pct = round(m_equiv / total_monthly * 100.0, 1) if total_monthly > 0 else 0.0
             top_subscriptions.append({
                 "id": s.id,
                 "service_name": s.service_name,
                 "category": s.category,
-                "monthly_cost": cost,
-                "yearly_cost": round(cost * 12.0, 2),
+                "monthly_cost": float(s.monthly_cost),
+                "monthly_equivalent": m_equiv,
+                "yearly_cost": y_equiv,
                 "percentage": pct,
                 "billing_cycle": getattr(s, "billing_cycle", "Monthly"),
                 "icon_letter": s.service_name[:1].upper() if s.service_name else "S",
