@@ -484,13 +484,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             const formData = new FormData(addForm);
+            const csrfToken = (typeof getCsrfToken === "function") ? getCsrfToken() : (formData.get("csrf_token") || "");
 
             fetch(window.location.href, {
                 method: "POST",
                 body: formData,
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
-                    "Accept": "application/json"
+                    "Accept": "application/json",
+                    ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {})
                 }
             })
             .then(async response => {
@@ -546,12 +548,15 @@ document.addEventListener("DOMContentLoaded", function () {
             btnSaveUsage.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving...';
             if (btnSkipUsage) btnSkipUsage.disabled = true;
 
+            const usageCsrfToken = (typeof getCsrfToken === "function") ? getCsrfToken() : "";
+
             fetch(`/subscriptions/${createdSubscriptionId}/usage`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest",
-                    "Accept": "application/json"
+                    "Accept": "application/json",
+                    ...(usageCsrfToken ? { "X-CSRF-TOKEN": usageCsrfToken } : {})
                 },
                 body: JSON.stringify({
                     usage_frequency: freq || null,

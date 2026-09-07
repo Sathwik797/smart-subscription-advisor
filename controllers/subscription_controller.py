@@ -7,7 +7,7 @@ delegate business work to services, and return Flask responses.
 from flask import Response, flash, redirect, render_template, request, url_for
 from middleware.auth import current_user
 
-from exceptions.exceptions import ValidationException
+from exceptions.exceptions import ResourceNotFoundException, ValidationException
 from logging_config.logger import logger
 from services.subscription_service import subscription_service
 from validators.subscription_validator import subscription_validator
@@ -107,6 +107,11 @@ def update_subscription_usage_controller(id):
                 "redirect_url": url_for("auth.subscriptions"),
             }, 200
         return redirect(url_for("auth.subscriptions"))
+    except ResourceNotFoundException as exc:
+        logger.warning("Subscription not found or access denied for usage update: %s", id)
+        if is_ajax or request.path.startswith("/api"):
+            return {"success": False, "message": "Subscription not found"}, 404
+        raise
     except Exception as exc:
         logger.warning("Failed to update subscription usage: %s", str(exc))
         if is_ajax:
@@ -155,7 +160,7 @@ def export_csv():
 
 def edit_subscription(id):
     """Handle editing a subscription."""
-    subscription = subscription_service.get_subscription_for_editing(id)
+    subscription = subscription_service.get_subscription_for_user(current_user, id)
 
     if request.method == "POST":
         try:
@@ -198,7 +203,7 @@ def edit_subscription(id):
 
 def delete_subscription(id):
     """Delete a subscription for the current user."""
-    subscription_service.delete_subscription(id)
+    subscription_service.delete_subscription(current_user, id)
     logger.info("Subscription deleted")
     flash("Subscription deleted successfully!", "success")
     return redirect(url_for("auth.subscriptions"))

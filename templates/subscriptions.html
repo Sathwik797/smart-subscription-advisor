@@ -249,9 +249,12 @@
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>
-                                                            <a class="dropdown-item text-danger" href="/delete-subscription/{{ subscription.id }}" onclick="return confirm('Are you sure you want to delete {{ subscription.service_name }}?');">
-                                                                <i class="bi bi-trash3 me-2"></i> Delete
-                                                            </a>
+                                                            <form method="POST" action="/delete-subscription/{{ subscription.id }}" class="m-0 p-0" onsubmit="return confirm('Are you sure you want to delete {{ subscription.service_name }}?');">
+                                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() if (csrf_token is defined and csrf_token is callable) else (csrf_token if csrf_token is defined else '') }}">
+                                                                <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">
+                                                                    <i class="bi bi-trash3 me-2"></i> Delete
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                     </ul>
                                                 </div>

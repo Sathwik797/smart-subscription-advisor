@@ -126,10 +126,14 @@ def test_edit_profile_post_update_functionality(app, client):
         follow_redirects=True,
     )
 
+    cookie = client.get_cookie("csrf_access_token")
+    csrf_token = cookie.value if cookie else ""
+
     # Submit profile update
     post_resp = client.post(
         "/profile/edit",
         data={
+            "csrf_token": csrf_token,
             "username": "updated_new_name",
             "occupation": "Software Developer",
             "financial_preference": "Money Saver",

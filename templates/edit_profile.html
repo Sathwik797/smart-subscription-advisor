@@ -50,6 +50,7 @@
 
                     <!-- Edit Form -->
                     <form method="POST" action="{{ url_for('auth.edit_profile') }}" class="edit-profile-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() if (csrf_token is defined and csrf_token is callable) else (csrf_token if csrf_token is defined else '') }}">
                         <div class="form-group">
                             <label class="form-label" for="usernameInput">
                                 Username <span class="required-asterisk">*</span>

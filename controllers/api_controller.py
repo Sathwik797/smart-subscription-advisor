@@ -200,12 +200,22 @@ def update_api_subscription(subscription_id):
 
 
 @jwt_required()
+def get_api_subscription(subscription_id):
+    """Return a single subscription for the authenticated user via JWT."""
+    user_id = get_jwt_identity()
+    user = auth_service.get_user_by_id(user_id)
+
+    subscription = subscription_service.get_subscription_for_user(user, subscription_id)
+    return json_success("Subscription fetched successfully", {"subscription": subscription_service.serialize_subscription(subscription)})
+
+
+@jwt_required()
 def delete_api_subscription(subscription_id):
     """Delete a subscription via JWT."""
     user_id = get_jwt_identity()
     user = auth_service.get_user_by_id(user_id)
 
-    subscription_service.delete_subscription(subscription_id)
+    subscription_service.delete_subscription(user, subscription_id)
     logger.info("API subscription deleted")
 
     return json_success("Subscription deleted successfully", None, 200)

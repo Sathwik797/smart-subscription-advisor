@@ -42,13 +42,16 @@ def export_csv():
     return export_csv_controller()
 
 
+@auth.route("/subscriptions/<int:id>", methods=["GET"])
 @auth.route("/edit-subscription/<int:id>", methods=["GET", "POST"])
+@auth.route("/subscriptions/<int:id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_subscription(id):
     return edit_subscription_controller(id)
 
 
-@auth.route("/delete-subscription/<int:id>")
+@auth.route("/delete-subscription/<int:id>", methods=["POST"])
+@auth.route("/subscriptions/<int:id>/delete", methods=["POST"])
 @login_required
 def delete_subscription(id):
     return delete_subscription_controller(id)

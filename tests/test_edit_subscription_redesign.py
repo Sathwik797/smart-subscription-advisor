@@ -151,9 +151,12 @@ def test_edit_subscription_page_loads_and_has_reference_hierarchy(client, auth_u
 
 def test_edit_subscription_form_submission_updates_db(client, auth_user_and_sub):
     user_id, sub_id = auth_user_and_sub
+    cookie = client.get_cookie("csrf_access_token")
+    csrf_token = cookie.value if cookie else ""
     res = client.post(
         f"/edit-subscription/{sub_id}",
         data={
+            "csrf_token": csrf_token,
             "service_name": "Amazon Prime Video",
             "monthly_cost": "299",
             "category": "Entertainment",

@@ -8,6 +8,7 @@ from flask import jsonify, request
 from werkzeug.exceptions import HTTPException
 
 from logging_config.logger import logger as app_logger
+from flask_jwt_extended.exceptions import CSRFError
 from .exceptions import (
     AppException,
     AuthenticationException,
@@ -19,6 +20,11 @@ from .exceptions import (
 
 def register_error_handlers(app):
     """Register centralized exception handlers on the Flask app."""
+
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(error):
+        app_logger.warning("CSRF validation failed on %s %s: %s", request.method, request.path, str(error))
+        return jsonify({"success": False, "message": "CSRF token missing or invalid"}), 400
 
     @app.errorhandler(ValidationException)
     def handle_validation_error(error):

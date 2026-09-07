@@ -75,13 +75,20 @@ class SubscriptionService:
             raise DatabaseException("Unable to create subscription") from exc
         return subscription
 
+    def get_subscription_for_user(self, user, subscription_id):
+        """Retrieve a subscription scoped strictly to the authenticated user."""
+        if not user:
+            raise ResourceNotFoundException("Subscription not found")
+        user_id = getattr(user, "id", user)
+        subscription = self.subscription_repository.get_user_subscription(user_id, subscription_id)
+        if not subscription or subscription.user_id != user_id:
+            logger.warning("Subscription %s not found or access denied for user %s", subscription_id, user_id)
+            raise ResourceNotFoundException("Subscription not found")
+        return subscription
+
     def update_subscription_usage(self, user, subscription_id, usage_frequency, usage_hours):
         """Update only usage information for a subscription and recalculate its priority."""
-        subscription = self.subscription_repository.get_subscription_by_id(subscription_id)
-        if not subscription:
-            raise ResourceNotFoundException("Subscription not found")
-        if subscription.user_id != user.id:
-            raise ValidationException("Unauthorized subscription access")
+        subscription = self.get_subscription_for_user(user, subscription_id)
 
         subscription.usage_frequency = usage_frequency
         parsed_hours = None
@@ -201,12 +208,21 @@ class SubscriptionService:
         output.seek(0)
         return output.getvalue()
 
-    def get_subscription_for_editing(self, subscription_id):
-        """Retrieve a subscription by ID for editing."""
-        return self.subscription_repository.get_subscription_or_404(subscription_id)
+    def get_subscription_for_editing(self, user, subscription_id=None):
+        """Retrieve a subscription by ID for editing, scoped strictly to the authenticated user."""
+        if subscription_id is None:
+            subscription_id = user
+            subscription = self.subscription_repository.get_subscription_by_id(subscription_id)
+            if not subscription:
+                raise ResourceNotFoundException("Subscription not found")
+            return subscription
+        return self.get_subscription_for_user(user, subscription_id)
 
     def get_subscription_insight(self, user, subscription):
         """Build the smart-insight payload for a subscription."""
+        user_id = getattr(user, "id", user)
+        if getattr(subscription, "user_id", None) is not None and subscription.user_id != user_id:
+            raise ResourceNotFoundException("Subscription not found")
         return calculate_priority(
             occupation=user.occupation,
             financial_preference=user.financial_preference,
@@ -218,9 +234,7 @@ class SubscriptionService:
 
     def update_subscription(self, user, subscription_id, service_name, monthly_cost, category, start_date, billing_cycle, usage_frequency, usage_hours):
         """Update a subscription and recalculate its priority."""
-        subscription = self.subscription_repository.get_subscription_by_id(subscription_id)
-        if not subscription:
-            raise ResourceNotFoundException("Subscription not found")
+        subscription = self.get_subscription_for_user(user, subscription_id)
         subscription.service_name = service_name
         subscription.monthly_cost = float(monthly_cost)
         subscription.category = category
@@ -251,11 +265,16 @@ class SubscriptionService:
             raise DatabaseException("Unable to update subscription") from exc
         return subscription
 
-    def delete_subscription(self, subscription_id):
-        """Delete a subscription by ID."""
-        subscription = self.subscription_repository.get_subscription_by_id(subscription_id)
-        if not subscription:
-            raise ResourceNotFoundException("Subscription not found")
+    def delete_subscription(self, user, subscription_id=None):
+        """Delete a subscription, strictly scoped to the authenticated user."""
+        if subscription_id is None:
+            subscription_id = user
+            subscription = self.subscription_repository.get_subscription_by_id(subscription_id)
+            if not subscription:
+                raise ResourceNotFoundException("Subscription not found")
+        else:
+            subscription = self.get_subscription_for_user(user, subscription_id)
+
         try:
             self.subscription_repository.delete_subscription(subscription)
         except Exception as exc:

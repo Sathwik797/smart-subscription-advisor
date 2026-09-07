@@ -222,11 +222,13 @@
         scrollToBottom();
 
         try {
+            const csrfToken = (typeof getCsrfToken === "function") ? getCsrfToken() : "";
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
+                    ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {}),
                 },
                 credentials: "same-origin",
                 body: JSON.stringify({

@@ -7,6 +7,7 @@ binds the authenticated user to Flask's `g.current_user`, and exposes a `current
 from functools import wraps
 from flask import flash, g, jsonify, redirect, request, url_for
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+from flask_jwt_extended.exceptions import CSRFError
 from werkzeug.local import LocalProxy
 
 from logging_config.logger import logger
@@ -37,6 +38,16 @@ def _get_current_user():
 current_user = LocalProxy(_get_current_user)
 
 
+def get_current_csrf_token():
+    """Retrieve the CSRF access token from the request cookie for Jinja templates."""
+    try:
+        from flask import current_app
+        cookie_name = current_app.config.get("JWT_ACCESS_CSRF_COOKIE_NAME", "csrf_access_token")
+        return request.cookies.get(cookie_name, "")
+    except Exception:
+        return ""
+
+
 def resolve_current_user():
     """Attempt to resolve and set g.current_user from JWT in cookies or headers."""
     # If neither Authorization header nor non-empty access_token_cookie is present, user is anonymous
@@ -62,9 +73,22 @@ def resolve_current_user():
 
 
 def login_required(fn):
-    """Decorator to enforce JWT authentication on web and API endpoints."""
+    """Decorator to enforce JWT authentication and CSRF protection on web and API endpoints."""
     @wraps(fn)
     def wrapper(*args, **kwargs):
+        # Enforce JWT & CSRF validation on protected endpoints
+        try:
+            verify_jwt_in_request(optional=False, locations=["cookies", "headers"])
+        except CSRFError as exc:
+            logger.warning("CSRF verification failed on protected route %s: %s", request.path, exc)
+            return jsonify({"success": False, "message": "CSRF token missing or invalid"}), 400
+        except Exception:
+            if request.path.startswith("/api") or request.is_json or request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": False, "message": "Missing or invalid authentication token"}), 401
+
+            flash("Please log in to access this page.", "warning")
+            return redirect(url_for("auth.login"))
+
         user = resolve_current_user()
         if user and user.is_authenticated:
             return fn(*args, **kwargs)

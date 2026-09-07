@@ -28,6 +28,10 @@ class SubscriptionRepository:
         )
 
     @staticmethod
+    def get_user_subscription(user_id, subscription_id):
+        return Subscription.query.filter_by(id=subscription_id, user_id=user_id).first()
+
+    @staticmethod
     def get_subscription_by_id(subscription_id):
         return db.session.get(Subscription, subscription_id)
 

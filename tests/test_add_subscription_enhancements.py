@@ -98,6 +98,11 @@ def test_add_subscription_page_loads_and_has_smart_autocomplete_elements(client,
     assert 'add_subscription.js' in html
 
 
+def get_csrf_token(client):
+    cookie = client.get_cookie("csrf_access_token")
+    return cookie.value if cookie else ""
+
+
 def test_add_subscription_billing_cycle_defaults_to_monthly(client, auth_user):
     res = client.get("/add-subscription")
     assert res.status_code == 200
@@ -113,6 +118,7 @@ def test_add_subscription_form_submission_recognized_service(client, auth_user):
     res = client.post(
         "/add-subscription",
         data={
+            "csrf_token": get_csrf_token(client),
             "service_name": "Netflix",
             "monthly_cost": "499",
             "category": "Entertainment",
@@ -137,6 +143,7 @@ def test_add_subscription_form_submission_unknown_service_and_yearly(client, aut
     res = client.post(
         "/add-subscription",
         data={
+            "csrf_token": get_csrf_token(client),
             "service_name": "Custom Gym Pro",
             "monthly_cost": "1200",
             "category": "Fitness",
@@ -232,6 +239,7 @@ def test_fast_subscription_creation_without_usage_info(client, auth_user):
     res = client.post(
         "/add-subscription",
         data={
+            "csrf_token": get_csrf_token(client),
             "service_name": "Hotstar",
             "monthly_cost": "299",
             "category": "Entertainment",
@@ -253,16 +261,22 @@ def test_fast_subscription_creation_without_usage_info(client, auth_user):
 
 def test_ajax_subscription_creation_returns_subscription_id_for_post_save(client, auth_user):
     """AJAX subscription submission returns JSON with subscription_id for seamless in-place transition."""
+    csrf_token = get_csrf_token(client)
     res = client.post(
         "/add-subscription",
         data={
+            "csrf_token": csrf_token,
             "service_name": "ChatGPT Plus",
             "monthly_cost": "1999",
             "category": "Productivity",
             "start_date": "2026-10-01",
             "billing_cycle": "Monthly",
         },
-        headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"}
+        headers={
+            "X-Requested-With": "XMLHttpRequest",
+            "Accept": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+        }
     )
     assert res.status_code == 201
     json_data = res.get_json()
@@ -293,10 +307,14 @@ def test_post_save_usage_endpoint_updates_subscription_usage(client, auth_user):
     sub_id = sub.id
 
     # Now post usage details via JSON
+    csrf_token = get_csrf_token(client)
     res = client.post(
         f"/subscriptions/{sub_id}/usage",
         json={"usage_frequency": "Several times a week", "usage_hours": 6},
-        headers={"X-Requested-With": "XMLHttpRequest"}
+        headers={
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-TOKEN": csrf_token,
+        }
     )
     assert res.status_code == 200
     json_data = res.get_json()

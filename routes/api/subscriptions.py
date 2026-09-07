@@ -8,6 +8,7 @@ from controllers.api_controller import (
     api_subscriptions,
     create_api_subscription,
     delete_api_subscription,
+    get_api_subscription,
     update_api_subscription,
 )
 
@@ -32,6 +33,11 @@ def subscriptions():
 @api_subscriptions_bp.route("/subscriptions", methods=["POST"])
 def create_subscription():
     return create_api_subscription()
+
+
+@api_subscriptions_bp.route("/subscriptions/<int:subscription_id>", methods=["GET"])
+def get_subscription(subscription_id):
+    return get_api_subscription(subscription_id)
 
 
 @api_subscriptions_bp.route("/subscriptions/<int:subscription_id>", methods=["PUT"])

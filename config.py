@@ -22,7 +22,11 @@ class Config:
     JWT_COOKIE_SECURE = os.getenv("JWT_COOKIE_SECURE", "False").lower() in ("true", "1", "t")
     JWT_COOKIE_HTTPONLY = True
     JWT_COOKIE_SAMESITE = "Lax"
-    JWT_COOKIE_CSRF_PROTECT = False
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_CSRF_CHECK_FORM = True
+    JWT_ACCESS_CSRF_COOKIE_NAME = "csrf_access_token"
+    JWT_ACCESS_CSRF_HEADER_NAME = "X-CSRF-TOKEN"
+    JWT_ACCESS_CSRF_FIELD_NAME = "csrf_token"
     JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
 
     DEBUG = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")

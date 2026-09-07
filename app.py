@@ -1,6 +1,6 @@
 import os
 from flask import Flask, jsonify, render_template, request, send_from_directory
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, get_csrf_token
 
 from config import Config
 from database.db import db
@@ -19,9 +19,23 @@ from utils.currency import format_inr
 app = Flask(__name__)
 app.config.from_object(Config)
 
+def get_current_csrf_token():
+    """Retrieve current CSRF token from cookie or decode from access token."""
+    tok = request.cookies.get("csrf_access_token")
+    if tok:
+        return tok
+    raw = request.cookies.get("access_token_cookie")
+    if raw:
+        try:
+            return get_csrf_token(raw)
+        except Exception:
+            pass
+    return ""
+
 app.jinja_env.filters['inr'] = format_inr
 app.jinja_env.globals['format_inr'] = format_inr
 app.jinja_env.globals['zip'] = zip
+app.jinja_env.globals['csrf_token'] = get_current_csrf_token
 
 db.init_app(app)
 
@@ -34,7 +48,10 @@ def load_logged_in_user():
 
 @app.context_processor
 def inject_current_user():
-    return dict(current_user=current_user)
+    return dict(
+        current_user=current_user,
+        csrf_token=get_current_csrf_token,
+    )
 
 
 from middleware.rate_limiter import limiter
@@ -44,7 +61,9 @@ limiter.init_app(app)
 
 @jwt.unauthorized_loader
 def unauthorized_loader(callback):
-    logger.warning("Unauthorized JWT access attempted for %s", request.path)
+    logger.warning("Unauthorized JWT access attempted for %s: %s", request.path, callback)
+    if "csrf" in str(callback).lower():
+        return jsonify({"success": False, "message": "CSRF token missing or invalid"}), 400
     return jsonify({"success": False, "message": "Missing or invalid token"}), 401
 
 

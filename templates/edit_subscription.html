@@ -84,6 +84,7 @@
                                 </div>
 
                                 <form method="POST" class="subscription-form" id="editSubscriptionForm">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if (csrf_token is defined and csrf_token is callable) else (csrf_token if csrf_token is defined else '') }}">
                                     <!-- 1. Service Name (Full width) -->
                                     <div class="form-field service-autocomplete-wrap">
                                         <label class="form-label" for="service-name">Service name</label>
