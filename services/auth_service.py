@@ -74,7 +74,8 @@ class AuthService:
             logger.warning("Registration failed: email already exists")
             raise ValidationException("An account with this email already exists.")
 
-        if self.user_repository.get_user_by_mobile_number(mobile_number):
+        clean_mobile = (mobile_number or "").strip() or None
+        if clean_mobile and self.user_repository.get_user_by_mobile_number(clean_mobile):
             logger.warning("Registration failed: mobile number already exists")
             raise ValidationException("An account with this mobile number already exists.")
 
@@ -85,7 +86,7 @@ class AuthService:
         user = User(
             username=username,
             email=email,
-            mobile_number=mobile_number,
+            mobile_number=clean_mobile,
             password=hashed_password,
             occupation=occupation,
             financial_preference=financial_preference,
@@ -145,12 +146,9 @@ class AuthService:
         return True
 
     def authenticate_user(self, email, password):
-        """Authenticate a user by email and password, enforcing email verification."""
+        """Authenticate a user by email and password."""
         user = self.user_repository.get_user_by_email(email)
         if user and check_password_hash(user.password, password):
-            if not user.email_verified:
-                logger.warning("Authentication failed: unverified email")
-                raise AuthenticationException("Please verify your email before logging in.")
             logger.info("User authenticated successfully")
             return user
         logger.warning("Authentication failed")

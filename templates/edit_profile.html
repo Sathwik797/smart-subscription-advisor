@@ -1,166 +1,134 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="row justify-content-center">
-
-    <div class="col-lg-8">
-
-        <div class="card shadow-lg border-0 rounded-4">
-
-            <div class="card-body text-center p-5">
-
-                <img src="https://ui-avatars.com/api/?name={{ current_user.username }}&background=0D6EFD&color=fff&size=120"
-                     class="rounded-circle mb-3"
-                     alt="Profile">
-
-                <form method="POST">
-
-                    <div class="mb-3 text-start">
-
-                        <label class="form-label">
-                            Username
-                        </label>
-
-                        <input
-                            type="text"
-                            name="username"
-                            class="form-control"
-                            value="{{ current_user.username }}"
-                            required>
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_profile.css') }}">
+    <div class="authenticated-app-layout">
+        {% with active_nav='profile' %}
+            {% include "partials/sidebar.html" %}
+        {% endwith %}
+        <main class="edit-profile-page authenticated-main-area">
+            <div class="edit-profile-container">
+                <!-- Page Header -->
+                <header class="edit-profile-header">
+                    <div class="header-titles">
+                        <span class="page-kicker">
+                            <i class="bi bi-person"></i>
+                            ACCOUNT WORKSPACE
+                        </span>
+                        <h1 class="page-title">Edit Profile</h1>
+                        <p class="page-subtitle">Update your personal information and account preferences.</p>
                     </div>
-
-                    <div class="mb-3 text-start">
-
-                        <label class="form-label">
-                            Email
-                        </label>
-
-                        <input
-                            type="email"
-                            class="form-control"
-                            value="{{ current_user.email }}"
-                            readonly>
-
-                    </div>
-
-                    <div class="mb-3 text-start">
-
-                        <label class="form-label">
-                            Occupation
-                        </label>
-
-                        <select
-                            name="occupation"
-                            class="form-select">
-
-                            <option value="Student"
-                                {% if current_user.occupation=="Student" %}selected{% endif %}>
-                                Student
-                            </option>
-
-                            <option value="Software Developer"
-                                {% if current_user.occupation=="Software Developer" %}selected{% endif %}>
-                                Software Developer
-                            </option>
-
-                            <option value="Working Professional"
-                                {% if current_user.occupation=="Working Professional" %}selected{% endif %}>
-                                Working Professional
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <div class="mb-4 text-start">
-
-                        <label class="form-label">
-                            Financial Preference
-                        </label>
-
-                        <select
-                            name="financial_preference"
-                            class="form-select">
-
-                            <option value="Money Saver"
-                                {% if current_user.financial_preference=="Money Saver" %}selected{% endif %}>
-                                Money Saver
-                            </option>
-
-                            <option value="Balanced"
-                                {% if current_user.financial_preference=="Balanced" %}selected{% endif %}>
-                                Balanced
-                            </option>
-
-                            <option value="Convenience"
-                                {% if current_user.financial_preference=="Convenience" %}selected{% endif %}>
-                                Convenience
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <div class="d-flex gap-2">
-
-                        <button type="submit" class="btn btn-success">
-                            💾 Save Changes
-                        </button>
-
-                        <a href="{{ url_for('auth.dashboard') }}"
-                        class="btn btn-secondary">
-                            Cancel
+                    <div class="header-actions">
+                        <a href="{{ url_for('auth.profile') }}" class="btn back-to-profile-btn">
+                            <i class="bi bi-arrow-left"></i>
+                            <span>Back to Profile</span>
                         </a>
-
                     </div>
+                </header>
 
-                </form>
-
-                <hr>
-
-                <div class="row">
-
-                    <div class="col-md-4">
-                        <div class="card bg-primary text-white mb-3">
-                            <div class="card-body">
-                                <h5>Total Subscriptions</h5>
-                                <h2>{{ total_subscriptions }}</h2>
-                            </div>
+                <!-- Form Card -->
+                <div class="edit-profile-card">
+                    <div class="card-top-heading">
+                        <div class="heading-badge blue-badge">
+                            <i class="bi bi-person-vcard"></i>
+                        </div>
+                        <div class="heading-text">
+                            <h2 class="card-title">Personal Details</h2>
+                            <p class="card-subtitle">Manage your identity and financial preference attributes.</p>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card bg-success text-white mb-3">
-                            <div class="card-body">
-                                <h5>Monthly Spending</h5>
-                                <h2>₹{{ total_monthly }}</h2>
-                            </div>
+                    <!-- User Identity Preview -->
+                    <div class="identity-preview-strip">
+                        <div class="preview-avatar">
+                            {{ (current_user.username[:1] if current_user and current_user.username else 'U')|upper }}
+                        </div>
+                        <div class="preview-details">
+                            <span class="preview-name">{{ current_user.username }}</span>
+                            <span class="preview-email">{{ current_user.email }}</span>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card bg-warning text-dark mb-3">
-                            <div class="card-body">
-                                <h5>Yearly Spending</h5>
-                                <h2>₹{{ total_yearly }}</h2>
+                    <!-- Edit Form -->
+                    <form method="POST" action="{{ url_for('auth.edit_profile') }}" class="edit-profile-form">
+                        <div class="form-group">
+                            <label class="form-label" for="usernameInput">
+                                Username <span class="required-asterisk">*</span>
+                            </label>
+                            <div class="input-with-icon">
+                                <i class="bi bi-person input-icon"></i>
+                                <input
+                                    type="text"
+                                    id="usernameInput"
+                                    name="username"
+                                    class="form-input"
+                                    value="{{ current_user.username }}"
+                                    required
+                                    placeholder="Enter your username">
                             </div>
                         </div>
-                    </div>
 
+                        <div class="form-group">
+                            <label class="form-label" for="emailInput">
+                                Email address
+                            </label>
+                            <div class="input-with-icon">
+                                <i class="bi bi-envelope input-icon"></i>
+                                <input
+                                    type="email"
+                                    id="emailInput"
+                                    class="form-input disabled-input"
+                                    value="{{ current_user.email }}"
+                                    readonly>
+                            </div>
+                            <small class="field-hint">
+                                <i class="bi bi-shield-check"></i>
+                                Email is tied to account verification and cannot be changed directly.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="occupationSelect">
+                                Occupation
+                            </label>
+                            <div class="select-with-icon">
+                                <i class="bi bi-mortarboard input-icon"></i>
+                                <select id="occupationSelect" name="occupation" class="form-select-custom">
+                                    <option value="Student" {% if current_user.occupation == "Student" %}selected{% endif %}>Student</option>
+                                    <option value="Software Developer" {% if current_user.occupation == "Software Developer" %}selected{% endif %}>Software Developer</option>
+                                    <option value="Working Professional" {% if current_user.occupation == "Working Professional" %}selected{% endif %}>Working Professional</option>
+                                    <option value="Product Designer" {% if current_user.occupation == "Product Designer" %}selected{% endif %}>Product Designer</option>
+                                    <option value="Other" {% if current_user.occupation and current_user.occupation not in ["Student", "Software Developer", "Working Professional", "Product Designer"] %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="financialPreferenceSelect">
+                                Financial preference
+                            </label>
+                            <div class="select-with-icon">
+                                <i class="bi bi-sliders input-icon"></i>
+                                <select id="financialPreferenceSelect" name="financial_preference" class="form-select-custom">
+                                    <option value="Money Saver" {% if current_user.financial_preference == "Money Saver" %}selected{% endif %}>Money Saver</option>
+                                    <option value="Balanced" {% if current_user.financial_preference == "Balanced" %}selected{% endif %}>Balanced</option>
+                                    <option value="Convenience" {% if current_user.financial_preference == "Convenience" %}selected{% endif %}>Convenience</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions-bar">
+                            <button type="submit" class="btn save-profile-btn">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Save Changes</span>
+                            </button>
+                            <a href="{{ url_for('auth.profile') }}" class="btn cancel-btn">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
                 </div>
-
-                <a href="/dashboard" class="btn btn-primary mt-3">
-                    Go to Dashboard
-                </a>
-
             </div>
-
-        </div>
-
+        </main>
     </div>
-
-</div>
-
 {% endblock %}

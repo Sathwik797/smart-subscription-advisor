@@ -16,11 +16,13 @@ class AuthValidator:
     MOBILE_REGEX = r"^[6-9]\d{9}$"
 
     @staticmethod
-    def validate_mobile_number(mobile_number):
+    def validate_mobile_number(mobile_number, required=True):
         """Validate mobile number (Must be 10 digits, numeric, starting with 6, 7, 8, or 9)."""
         mobile = (mobile_number or "").strip()
         if not mobile:
-            raise ValidationException("Mobile number is required")
+            if required:
+                raise ValidationException("Mobile number is required")
+            return None
         if not re.match(AuthValidator.MOBILE_REGEX, mobile):
             raise ValidationException("Mobile number must be 10 digits starting with 6, 7, 8, or 9")
         return mobile
@@ -50,7 +52,8 @@ class AuthValidator:
             raise ValidationException("Username must be at least 3 characters")
 
         AuthValidator.validate_email(email)
-        AuthValidator.validate_mobile_number(mobile_number)
+        if mobile_number:
+            AuthValidator.validate_mobile_number(mobile_number, required=True)
 
         if not password:
             raise ValidationException("Password is required")

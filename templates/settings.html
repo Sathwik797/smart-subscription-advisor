@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+    <div class="authenticated-app-layout">
+        {% with active_nav='settings' %}
+            {% include "partials/sidebar.html" %}
+        {% endwith %}
+        <main class="settings-page authenticated-main-area">
+            <div class="settings-container">
+                <!-- Page Header -->
+                <header class="settings-header">
+                    <div class="header-titles">
+                        <span class="page-kicker">
+                            <i class="bi bi-gear"></i>
+                            SETTINGS
+                        </span>
+                        <h1 class="page-title">Settings</h1>
+                        <p class="page-subtitle">Manage your preferences, notifications, and account.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button type="button" id="saveSettingsBtn" class="btn save-settings-btn">
+                            <i class="bi bi-floppy"></i>
+                            <span>Save Changes</span>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="settings-content-flow">
+                    <!-- 1. Notification Preferences Card -->
+                    <section class="settings-card">
+                        <div class="card-top-heading">
+                            <div class="heading-badge blue-badge">
+                                <i class="bi bi-bell"></i>
+                            </div>
+                            <div class="heading-text">
+                                <h2 class="card-title">Notification Preferences</h2>
+                                <p class="card-subtitle">Choose what Smart Subscription Advisor should notify you about.</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-rows-list">
+                            <!-- Row 1: Email notifications -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box green-icon-box">
+                                        <i class="bi bi-envelope"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Email notifications</h3>
+                                        <p class="setting-desc">Receive helpful account and subscription updates.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <label class="switch-control" for="toggleEmailNotif" aria-label="Toggle Email notifications">
+                                        <input type="checkbox" id="toggleEmailNotif" name="email_notifications" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Renewal reminders -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box purple-icon-box">
+                                        <i class="bi bi-calendar3"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Renewal reminders</h3>
+                                        <p class="setting-desc">Get notified before subscription charges are due.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <label class="switch-control" for="toggleRenewalReminders" aria-label="Toggle Renewal reminders">
+                                        <input type="checkbox" id="toggleRenewalReminders" name="renewal_reminders" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Subscription insights -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box green-icon-box">
+                                        <i class="bi bi-bar-chart-line"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Subscription insights</h3>
+                                        <p class="setting-desc">Receive important recommendations about your spending.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <label class="switch-control" for="toggleSubInsights" aria-label="Toggle Subscription insights">
+                                        <input type="checkbox" id="toggleSubInsights" name="subscription_insights" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. Appearance & Interface Card -->
+                    <section class="settings-card">
+                        <div class="card-top-heading">
+                            <div class="heading-badge blue-badge">
+                                <i class="bi bi-display"></i>
+                            </div>
+                            <div class="heading-text">
+                                <h2 class="card-title">Appearance & Interface</h2>
+                                <p class="card-subtitle">Customize how Smart Subscription Advisor looks and feels.</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-rows-list">
+                            <!-- Row 1: Theme -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box amber-icon-box">
+                                        <i class="bi bi-sun"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Theme</h3>
+                                        <p class="setting-desc">Choose your preferred appearance.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <div class="select-wrapper">
+                                        <select class="setting-select" id="themeSelect" name="theme" aria-label="Theme selection">
+                                            <option value="light" selected>☼ Light (Default)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Language -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box purple-icon-box">
+                                        <i class="bi bi-translate"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Language</h3>
+                                        <p class="setting-desc">Choose your display language.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <div class="select-wrapper">
+                                        <select class="setting-select" id="languageSelect" name="language" aria-label="Language selection">
+                                            <option value="en-US" selected>🌐 English (US)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Dark mode -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box slate-icon-box">
+                                        <i class="bi bi-moon"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Dark mode</h3>
+                                        <p class="setting-desc">A modern dark theme for comfortable viewing.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <span class="coming-soon-pill">Coming soon</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. Subscription Preferences Card -->
+                    <section class="settings-card">
+                        <div class="card-top-heading">
+                            <div class="heading-badge green-badge">
+                                <i class="bi bi-sliders"></i>
+                            </div>
+                            <div class="heading-text">
+                                <h2 class="card-title">Subscription Preferences</h2>
+                                <p class="card-subtitle">Control how Smart Subscription Advisor analyzes your subscriptions.</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-rows-list">
+                            <!-- Row 1: Renewal warning -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box blue-icon-box">
+                                        <i class="bi bi-clock"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Renewal warning</h3>
+                                        <p class="setting-desc">Remind me before a subscription renews.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <div class="select-wrapper">
+                                        <select class="setting-select" id="renewalWarningSelect" name="renewal_warning" aria-label="Renewal warning timeframe">
+                                            <option value="3">3 days</option>
+                                            <option value="7" selected>7 days</option>
+                                            <option value="14">14 days</option>
+                                            <option value="30">30 days</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Spending insights -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box purple-icon-box">
+                                        <i class="bi bi-graph-up"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Spending insights</h3>
+                                        <p class="setting-desc">Show recommendations when recurring costs increase.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <label class="switch-control" for="toggleSpendingInsights" aria-label="Toggle Spending insights">
+                                        <input type="checkbox" id="toggleSpendingInsights" name="spending_insights" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Usage-based insights -->
+                            <div class="setting-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box green-icon-box">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Usage-based insights</h3>
+                                        <p class="setting-desc">Use my usage information when calculating value.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <label class="switch-control" for="toggleUsageInsights" aria-label="Toggle Usage-based insights">
+                                        <input type="checkbox" id="toggleUsageInsights" name="usage_insights" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. Danger Zone Card -->
+                    <section class="settings-card danger-zone-card">
+                        <div class="card-top-heading">
+                            <div class="heading-badge red-badge">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <div class="heading-text">
+                                <h2 class="card-title danger-title">Danger Zone</h2>
+                                <p class="card-subtitle danger-subtitle">These actions can affect your account permanently.</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-rows-list">
+                            <div class="setting-row danger-row">
+                                <div class="setting-left">
+                                    <div class="setting-icon-box red-icon-box">
+                                        <i class="bi bi-trash3"></i>
+                                    </div>
+                                    <div class="setting-info">
+                                        <h3 class="setting-label">Delete account</h3>
+                                        <p class="setting-desc">Permanently remove your account and all subscription data.</p>
+                                    </div>
+                                </div>
+                                <div class="setting-right">
+                                    <button type="button" class="btn delete-account-btn" disabled title="Account deletion is currently unavailable in this environment">
+                                        <i class="bi bi-trash3"></i>
+                                        <span>Delete Account</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="settingsToast" class="settings-toast" role="status" aria-live="polite">
+        <i class="bi bi-check-circle-fill"></i>
+        <span id="toastMsg">Settings saved successfully!</span>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

@@ -1,463 +1,276 @@
 {% extends "base.html" %}
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-    <main class="profile-page">
-        <div class="profile-container container">
-            <header class="profile-header">
-                <div>
-                    <span class="page-kicker">
-                        <i class="bi bi-person-badge">
-                        </i>
-                        Account workspace
-                    </span>
-                    <h1>
-                        My Profile
-                    </h1>
-                    <p>
-                        Manage your account information and preferences.
-                    </p>
-                </div>
-                <a href="{{ url_for('auth.edit_profile') }}" class="btn edit-profile-button">
-                    <i class="bi bi-pencil-square">
-                    </i>
-                    Edit Profile
-                </a>
-            </header>
-            <div class="row g-4 align-items-start">
-                <div class="col-xl-9">
-                    <section class="profile-hero-card">
-                        <div class="profile-avatar">
-                            {{ current_user.username[:1]|upper }}
-                            <span class="avatar-status">
-                                <i class="bi bi-check-lg">
-                                </i>
-                            </span>
-                        </div>
-                        <div class="profile-primary">
-                            <span class="profile-label">
-                                Account owner
-                            </span>
-                            <h2>
-                                {{ current_user.username }}
-                            </h2>
-                            <p>
-                                <i class="bi bi-envelope">
-                                </i>
-                                {{ current_user.email }}
-                            </p>
-                            <div class="profile-meta">
-                                <span>
-                                    <i class="bi bi-calendar3">
-                                    </i>
-                                    Member since
-                                    <b>
-                                        Not available
-                                    </b>
-                                </span>
-                                <span class="verified-badge">
-                                    <i class="bi bi-patch-check-fill">
-                                    </i>
-                                    Account active
-                                </span>
-                            </div>
-                        </div>
-                        <a href="{{ url_for('auth.edit_profile') }}" class="hero-edit-link">
-                            <i class="bi bi-pencil">
-                            </i>
-                            Edit
-                        </a>
-                    </section>
-                    <section class="profile-card account-card">
-                        <div class="card-heading">
-                            <div>
-                                <span class="card-kicker">
-                                    Your details
-                                </span>
-                                <h2>
-                                    Account information
-                                </h2>
-                            </div>
-                            <i class="bi bi-person-vcard heading-icon">
-                            </i>
-                        </div>
-                        <div class="info-grid">
-                            <article>
-                                <span class="info-icon purple">
-                                    <i class="bi bi-person">
-                                    </i>
-                                </span>
-                                <div>
-                                    <small>
-                                        Username
-                                    </small>
-                                    <strong>
-                                        {{ current_user.username }}
-                                    </strong>
-                                </div>
-                            </article>
-                            <article>
-                                <span class="info-icon blue">
-                                    <i class="bi bi-envelope">
-                                    </i>
-                                </span>
-                                <div>
-                                    <small>
-                                        Email address
-                                    </small>
-                                    <strong>
-                                        {{ current_user.email }}
-                                    </strong>
-                                </div>
-                            </article>
-                            <article>
-                                <span class="info-icon green">
-                                    <i class="bi bi-briefcase">
-                                    </i>
-                                </span>
-                                <div>
-                                    <small>
-                                        Occupation
-                                    </small>
-                                    <strong>
-                                        {{ current_user.occupation }}
-                                    </strong>
-                                </div>
-                            </article>
-                            <article>
-                                <span class="info-icon orange">
-                                    <i class="bi bi-sliders">
-                                    </i>
-                                </span>
-                                <div>
-                                    <small>
-                                        Financial preference
-                                    </small>
-                                    <strong>
-                                        {{ current_user.financial_preference }}
-                                    </strong>
-                                </div>
-                            </article>
-                            <article>
-                                <span class="info-icon neutral">
-                                    <i class="bi bi-hash">
-                                    </i>
-                                </span>
-                                <div>
-                                    <small>
-                                        Account ID
-                                    </small>
-                                    <strong>
-                                        Not available
-                                    </strong>
-                                </div>
-                            </article>
-                            <article>
-                                <span class="info-icon neutral">
-                                    <i class="bi bi-calendar-plus">
-                                    </i>
-                                </span>
-                                <div>
-                                    <small>
-                                        Registration date
-                                    </small>
-                                    <strong>
-                                        Not available
-                                    </strong>
-                                </div>
-                            </article>
-                        </div>
-                    </section>
-                    <section class="profile-card security-card">
-                        <div class="card-heading">
-                            <div>
-                                <span class="card-kicker">
-                                    Security & access
-                                </span>
-                                <h2>
-                                    Keep your account secure
-                                </h2>
-                            </div>
-                            <i class="bi bi-shield-lock heading-icon">
-                            </i>
-                        </div>
-                        <div class="security-list">
-                            <div class="security-item">
-                                <span class="security-icon">
-                                    <i class="bi bi-key">
-                                    </i>
-                                </span>
-                                <div>
-                                    <strong>
-                                        Password
-                                    </strong>
-                                    <small>
-                                        ••••••••••••
-                                    </small>
-                                </div>
-                                <button class="disabled-action" type="button" disabled title="Password changes are not available yet">
-                                    Change password
-                                </button>
-                            </div>
-                            <div class="security-item">
-                                <span class="security-icon green">
-                                    <i class="bi bi-shield-check">
-                                    </i>
-                                </span>
-                                <div>
-                                    <strong>
-                                        Login status
-                                    </strong>
-                                    <small>
-                                        JWT protected session
-                                    </small>
-                                </div>
-                                <span class="security-status">
-                                    <i class="bi bi-check-circle-fill">
-                                    </i>
-                                    Active
-                                </span>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="profile-card preferences-card">
-                        <div class="card-heading">
-                            <div>
-                                <span class="card-kicker">
-                                    Interface preferences
-                                </span>
-                                <h2>
-                                    Preferences
-                                </h2>
-                                <p>
-                                    These controls are visual only and are not saved.
-                                </p>
-                            </div>
-                            <i class="bi bi-sliders heading-icon">
-                            </i>
-                        </div>
-                        <div class="preferences-list">
-                            <div class="preference-row">
-                                <div>
-                                    <span class="preference-icon">
-                                        <i class="bi bi-envelope">
-                                        </i>
-                                    </span>
-                                    <p>
-                                        <strong>
-                                            Email notifications
-                                        </strong>
-                                        <small>
-                                            Receive helpful account updates
-                                        </small>
-                                    </p>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" checked aria-label="Email notifications">
-                                </div>
-                            </div>
-                            <div class="preference-row">
-                                <div>
-                                    <span class="preference-icon purple">
-                                        <i class="bi bi-bell">
-                                        </i>
-                                    </span>
-                                    <p>
-                                        <strong>
-                                            Renewal reminders
-                                        </strong>
-                                        <small>
-                                            Get notified before charges are due
-                                        </small>
-                                    </p>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" checked aria-label="Renewal reminders">
-                                </div>
-                            </div>
-                            <div class="preference-row">
-                                <div>
-                                    <span class="preference-icon neutral">
-                                        <i class="bi bi-moon">
-                                        </i>
-                                    </span>
-                                    <p>
-                                        <strong>
-                                            Dark mode
-                                        </strong>
-                                        <small>
-                                            Coming soon
-                                        </small>
-                                    </p>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" disabled aria-label="Dark mode unavailable">
-                                </div>
-                            </div>
-                            <div class="preference-row">
-                                <div>
-                                    <span class="preference-icon orange">
-                                        <i class="bi bi-translate">
-                                        </i>
-                                    </span>
-                                    <p>
-                                        <strong>
-                                            Language
-                                        </strong>
-                                        <small>
-                                            Choose your display language
-                                        </small>
-                                    </p>
-                                </div>
-                                <select class="form-select preference-select" aria-label="Language preference">
-                                    <option>
-                                        English (US)
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="danger-card">
-                        <div>
-                            <span class="danger-icon">
-                                <i class="bi bi-exclamation-triangle">
-                                </i>
-                            </span>
-                            <div>
-                                <h2>
-                                    Danger zone
-                                </h2>
-                                <p>
-                                    Sign out safely or manage irreversible account actions.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="danger-actions">
-                            <a href="/logout" class="btn logout-button">
-                                <i class="bi bi-box-arrow-right">
-                                </i>
-                                Logout
-                            </a>
-                            <button type="button" class="btn delete-button" disabled title="Account deletion is not available">
-                                Delete account
-                            </button>
-                        </div>
-                    </section>
-                </div>
-                <aside class="col-xl-3">
-                    <div class="profile-sidebar">
-                        <section class="completion-card">
-                            <span class="card-kicker">
-                                Profile completion
-                            </span>
-                            <div class="completion-overview">
-                                <div class="completion-ring">
-                                    <strong>
-                                        85
-                                    </strong>
-                                    <small>
-                                        %
-                                    </small>
-                                </div>
-                                <div>
-                                    <h2>
-                                        Almost there!
-                                    </h2>
-                                    <p>
-                                        Complete your profile to get the most from Smart Subscription Advisor.
-                                    </p>
-                                </div>
-                            </div>
-                            <ul class="completion-list list-unstyled">
-                                <li class="complete">
-                                    <i class="bi bi-check-lg">
-                                    </i>
-                                    Account created
-                                </li>
-                                <li class="complete">
-                                    <i class="bi bi-check-lg">
-                                    </i>
-                                    Email added
-                                </li>
-                                <li class="complete">
-                                    <i class="bi bi-check-lg">
-                                    </i>
-                                    Subscriptions added
-                                </li>
-                                <li>
-                                    <i class="bi bi-circle">
-                                    </i>
-                                    Profile picture
-                                </li>
-                            </ul>
-                        </section>
-                        <section class="profile-stats-card">
-                            <span class="card-kicker">
-                                At a glance
-                            </span>
-                            <h2>
-                                Account statistics
-                            </h2>
-                            <div class="profile-stat">
-                                <span>
-                                    <i class="bi bi-collection">
-                                    </i>
-                                    Total subscriptions
-                                </span>
-                                <strong>
-                                    {{ total_subscriptions }}
-                                </strong>
-                            </div>
-                            <div class="profile-stat">
-                                <span>
-                                    <i class="bi bi-cash-stack">
-                                    </i>
-                                    Monthly spending
-                                </span>
-                                <strong>
-                                    ₹
-                                    {{ total_monthly }}
-                                </strong>
-                            </div>
-                            <div class="profile-stat">
-                                <span>
-                                    <i class="bi bi-calendar2-week">
-                                    </i>
-                                    Yearly spending
-                                </span>
-                                <strong>
-                                    ₹
-                                    {{ total_yearly }}
-                                </strong>
-                            </div>
-                            <div class="profile-stat">
-                                <span>
-                                    <i class="bi bi-bell">
-                                    </i>
-                                    Upcoming renewals
-                                </span>
-                                <strong>
-                                    —
-                                </strong>
-                            </div>
-                        </section>
-                        <a href="{{ url_for('auth.dashboard') }}" class="dashboard-shortcut">
-                            <i class="bi bi-grid-1x2">
-                            </i>
-                            <span>
-                                <strong>
-                                    View dashboard
-                                </strong>
-                                <small>
-                                    Explore your subscription insights
-                                </small>
-                            </span>
-                            <i class="bi bi-arrow-right ms-auto">
-                            </i>
+    <div class="authenticated-app-layout">
+        {% with active_nav='profile' %}
+            {% include "partials/sidebar.html" %}
+        {% endwith %}
+        <main class="profile-page authenticated-main-area">
+            <div class="profile-container">
+                <!-- Page Header -->
+                <header class="profile-header">
+                    <div class="header-titles">
+                        <span class="page-kicker">
+                            <i class="bi bi-person"></i>
+                            ACCOUNT WORKSPACE
+                        </span>
+                        <h1 class="page-title">My Profile</h1>
+                        <p class="page-subtitle">Manage your account information and preferences.</p>
+                    </div>
+                    <div class="header-actions">
+                        <a href="{{ url_for('auth.edit_profile') }}" class="btn edit-profile-btn">
+                            <i class="bi bi-pencil"></i>
+                            <span>Edit Profile</span>
                         </a>
                     </div>
-                </aside>
+                </header>
+
+                <div class="profile-workspace-content">
+                    <!-- Profile Identity Card -->
+                    <section class="profile-card profile-identity-card">
+                        <div class="card-top-heading">
+                            <div class="heading-badge blue-badge">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="heading-text">
+                                <h2 class="card-title">Profile</h2>
+                                <p class="card-subtitle">Your account identity and status.</p>
+                            </div>
+                        </div>
+
+                        <div class="identity-body-grid">
+                            <!-- Left: Avatar & Identity -->
+                            <div class="identity-user-col">
+                                <div class="identity-avatar">
+                                    {{ (current_user.username[:1] if current_user and current_user.username else 'U')|upper }}
+                                </div>
+                                <div class="identity-user-details">
+                                    <h3 class="identity-username">{{ current_user.username }}</h3>
+                                    <p class="identity-email">{{ current_user.email }}</p>
+                                    <div class="identity-status-pill">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <span>Account active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Middle: Account Meta -->
+                            <div class="identity-meta-col">
+                                {% if current_user.created_at is defined and current_user.created_at %}
+                                <div class="identity-meta-item">
+                                    <div class="meta-icon">
+                                        <i class="bi bi-calendar3"></i>
+                                    </div>
+                                    <div class="meta-info">
+                                        <span class="meta-label">Member since</span>
+                                        <span class="meta-value">{{ current_user.created_at.strftime('%b %Y') }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="identity-meta-item">
+                                    <div class="meta-icon">
+                                        <i class="bi bi-shield"></i>
+                                    </div>
+                                    <div class="meta-info">
+                                        <span class="meta-label">Account type</span>
+                                        <span class="meta-value">{{ current_user.occupation or 'Standard' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Welcome / Info Area -->
+                            <div class="identity-welcome-col">
+                                <div class="welcome-callout-card">
+                                    <div class="welcome-icon-box">
+                                        <svg class="welcome-sprout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M7 20h10"></path>
+                                            <path d="M12 20v-9"></path>
+                                            <path d="M12 11a5 5 0 0 1 5-5h2v2a5 5 0 0 1-5 5h-2"></path>
+                                            <path d="M12 15a5 5 0 0 0-5-5H5v2a5 5 0 0 0 5 5h2"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="welcome-text-box">
+                                        <h4 class="welcome-title">Glad to have you here!</h4>
+                                        <p class="welcome-description">Keep exploring to get better insights and save more on your subscriptions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Two-Column Section: Account Information & Account Overview -->
+                    <div class="profile-two-column-grid">
+                        <!-- Account Information Card -->
+                        <section class="profile-card account-info-card">
+                            <div class="card-top-heading flex-between">
+                                <div class="heading-left">
+                                    <div class="heading-badge blue-badge">
+                                        <i class="bi bi-file-text"></i>
+                                    </div>
+                                    <div class="heading-text">
+                                        <h2 class="card-title">Account Information</h2>
+                                        <p class="card-subtitle">Your personal information and preferences.</p>
+                                    </div>
+                                </div>
+                                <a href="{{ url_for('auth.edit_profile') }}" class="card-edit-action" title="Edit account information" aria-label="Edit account information">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
+
+                            <div class="info-rows-list">
+                                <div class="info-row">
+                                    <div class="info-row-label">
+                                        <i class="bi bi-person"></i>
+                                        <span>Username</span>
+                                    </div>
+                                    <div class="info-row-value">{{ current_user.username }}</div>
+                                </div>
+
+                                <div class="info-row">
+                                    <div class="info-row-label">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>Email address</span>
+                                    </div>
+                                    <div class="info-row-value email-value">{{ current_user.email }}</div>
+                                </div>
+
+                                <div class="info-row">
+                                    <div class="info-row-label">
+                                        <i class="bi bi-mortarboard"></i>
+                                        <span>Occupation</span>
+                                    </div>
+                                    <div class="info-row-value">{{ current_user.occupation or 'Not specified' }}</div>
+                                </div>
+
+                                <div class="info-row">
+                                    <div class="info-row-label">
+                                        <i class="bi bi-sliders"></i>
+                                        <span>Financial preference</span>
+                                    </div>
+                                    <div class="info-row-value">{{ current_user.financial_preference or 'Balanced' }}</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Account Overview Card -->
+                        <section class="profile-card account-overview-card">
+                            <div class="card-top-heading">
+                                <div class="heading-badge green-badge">
+                                    <i class="bi bi-bar-chart-line"></i>
+                                </div>
+                                <div class="heading-text">
+                                    <h2 class="card-title">Account Overview</h2>
+                                    <p class="card-subtitle">A quick overview of your subscription activity.</p>
+                                </div>
+                            </div>
+
+                            <div class="overview-metrics-grid">
+                                <!-- Subscriptions -->
+                                <div class="metric-tile">
+                                    <div class="metric-icon-box blue-tile-icon">
+                                        <i class="bi bi-credit-card"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <span class="metric-num">{{ total_subscriptions or 0 }}</span>
+                                        <span class="metric-label">Subscriptions</span>
+                                        <span class="metric-hint">Total active subscriptions</span>
+                                    </div>
+                                </div>
+
+                                <!-- Monthly spending -->
+                                <div class="metric-tile">
+                                    <div class="metric-icon-box green-tile-icon">
+                                        <i class="bi bi-briefcase"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <span class="metric-num">₹{{ "{:,.0f}".format(total_monthly) if total_monthly is defined and total_monthly is not none else '0' }}</span>
+                                        <span class="metric-label">Monthly spending</span>
+                                        <span class="metric-hint">Across all subscriptions</span>
+                                    </div>
+                                </div>
+
+                                <!-- Yearly spending -->
+                                <div class="metric-tile">
+                                    <div class="metric-icon-box orange-tile-icon">
+                                        <i class="bi bi-calendar3"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <span class="metric-num">₹{{ "{:,.0f}".format(total_yearly) if total_yearly is defined and total_yearly is not none else '0' }}</span>
+                                        <span class="metric-label">Yearly spending</span>
+                                        <span class="metric-hint">Estimated annual cost</span>
+                                    </div>
+                                </div>
+
+                                <!-- Upcoming renewals -->
+                                <div class="metric-tile">
+                                    <div class="metric-icon-box red-tile-icon">
+                                        <i class="bi bi-bell"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <span class="metric-num">—</span>
+                                        <span class="metric-label">Upcoming renewals</span>
+                                        <span class="metric-hint">No upcoming renewals</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="overview-bottom-action">
+                                <a href="{{ url_for('auth.subscriptions') }}" class="view-subscriptions-btn">
+                                    <span>View your subscriptions</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Security Card -->
+                    <section class="profile-card security-card">
+                        <div class="card-top-heading">
+                            <div class="heading-badge green-badge">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="heading-text">
+                                <h2 class="card-title">Security</h2>
+                                <p class="card-subtitle">Keep your account secure.</p>
+                            </div>
+                        </div>
+
+                        <div class="security-rows-list">
+                            <div class="security-row">
+                                <div class="security-row-left">
+                                    <div class="security-row-label">
+                                        <i class="bi bi-key"></i>
+                                        <span>Password</span>
+                                    </div>
+                                    <div class="security-password-mask">••••••••••••</div>
+                                </div>
+                                <div class="security-row-right">
+                                    <a href="{{ url_for('auth.forgot_password') }}" class="btn change-password-btn" title="Request password reset via email">
+                                        Change password
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="security-row">
+                                <div class="security-row-left">
+                                    <div class="security-row-label">
+                                        <i class="bi bi-shield"></i>
+                                        <span>Login status</span>
+                                    </div>
+                                    <div class="security-status-text">JWT protected session</div>
+                                </div>
+                                <div class="security-row-right">
+                                    <span class="status-active-badge">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <span>Active</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}

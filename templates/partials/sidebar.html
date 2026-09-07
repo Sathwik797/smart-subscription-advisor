@@ -1,0 +1,118 @@
+<!-- Reusable Authenticated Sidebar Navigation -->
+<aside class="dashboard-sidebar" id="appSidebar" aria-label="Application navigation">
+    <!-- Top Toggle / Brand Bar -->
+    <div class="sidebar-header-bar">
+        <div class="sidebar-brand-compact">
+            <span class="brand-mini-mark">SA</span>
+            <span class="brand-mini-text">Smart Subscription Advisor</span>
+        </div>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Toggle navigation menu" title="Toggle navigation">
+            <i class="bi bi-chevron-right toggle-icon-collapsed"></i>
+            <i class="bi bi-chevron-left toggle-icon-expanded"></i>
+        </button>
+    </div>
+
+    <!-- Main Navigation Group -->
+    <nav class="sidebar-nav-group" aria-label="Primary navigation">
+        <!-- 1. Dashboard -->
+        <a href="{{ url_for('auth.dashboard') }}"
+           class="sidebar-nav-item {% if active_nav == 'dashboard' %}active{% endif %}"
+           data-nav="dashboard"
+           aria-label="Dashboard">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'dashboard' %}bi-house-door-fill{% else %}bi-house-door{% endif %}"></i>
+            </span>
+            <span class="nav-label">Dashboard</span>
+            <span class="sidebar-tooltip">Dashboard</span>
+        </a>
+
+        <!-- 2. Subscriptions -->
+        <a href="{{ url_for('auth.subscriptions') }}"
+           class="sidebar-nav-item {% if active_nav == 'subscriptions' %}active{% endif %}"
+           data-nav="subscriptions"
+           aria-label="Subscriptions">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'subscriptions' %}bi-collection-fill{% else %}bi-collection{% endif %}"></i>
+            </span>
+            <span class="nav-label">Subscriptions</span>
+            <span class="sidebar-tooltip">Subscriptions</span>
+        </a>
+
+        <!-- 3. Add Subscription -->
+        <a href="{{ url_for('auth.add_subscription') }}"
+           class="sidebar-nav-item {% if active_nav == 'add_subscription' %}active{% endif %}"
+           data-nav="add_subscription"
+           aria-label="Add Subscription">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'add_subscription' %}bi-plus-circle-fill{% else %}bi-plus-circle{% endif %}"></i>
+            </span>
+            <span class="nav-label">Add Subscription</span>
+            <span class="sidebar-tooltip">Add Subscription</span>
+        </a>
+
+        <!-- 4. Recommendations / AI Advisor -->
+        <a href="javascript:void(0)"
+           id="sidebarAiAdvisor"
+           class="sidebar-nav-item {% if active_nav == 'recommendations' %}active{% endif %}"
+           data-nav="recommendations"
+           aria-label="Recommendations">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'recommendations' %}bi-lightbulb-fill{% else %}bi-lightbulb{% endif %}"></i>
+            </span>
+            <span class="nav-label">Recommendations</span>
+            <span class="sidebar-tooltip">Recommendations</span>
+        </a>
+
+        <!-- 5. Analytics -->
+        <a href="{{ url_for('auth.spending_analytics') }}"
+           class="sidebar-nav-item {% if active_nav == 'analytics' %}active{% endif %}"
+           data-nav="analytics"
+           aria-label="Spending Analytics">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'analytics' %}bi-bar-chart-line-fill{% else %}bi-bar-chart-line{% endif %}"></i>
+            </span>
+            <span class="nav-label">Analytics</span>
+            <span class="sidebar-tooltip">Analytics</span>
+        </a>
+
+        <div class="sidebar-divider" role="separator"></div>
+
+        <!-- 6. Profile -->
+        <a href="{{ url_for('auth.profile') }}"
+           class="sidebar-nav-item {% if active_nav == 'profile' %}active{% endif %}"
+           data-nav="profile"
+           aria-label="Profile">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'profile' %}bi-person-fill{% else %}bi-person{% endif %}"></i>
+            </span>
+            <span class="nav-label">Profile</span>
+            <span class="sidebar-tooltip">Profile</span>
+        </a>
+
+        <!-- 7. Settings -->
+        <a href="{{ url_for('auth.settings') }}"
+           class="sidebar-nav-item {% if active_nav == 'settings' %}active{% endif %}"
+           data-nav="settings"
+           aria-label="Settings">
+            <span class="nav-icon-wrap">
+                <i class="bi {% if active_nav == 'settings' %}bi-gear-fill{% else %}bi-gear{% endif %}"></i>
+            </span>
+            <span class="nav-label">Settings</span>
+            <span class="sidebar-tooltip">Settings</span>
+        </a>
+
+        <div class="sidebar-divider" role="separator"></div>
+
+        <!-- 8. Sign Out -->
+        <a href="{{ url_for('auth.logout') }}"
+           class="sidebar-nav-item sidebar-logout-item"
+           data-nav="logout"
+           aria-label="Sign Out">
+            <span class="nav-icon-wrap">
+                <i class="bi bi-box-arrow-right"></i>
+            </span>
+            <span class="nav-label">Sign Out</span>
+            <span class="sidebar-tooltip">Sign Out</span>
+        </a>
+    </nav>
+</aside>

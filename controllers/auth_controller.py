@@ -84,15 +84,6 @@ def login():
             user = auth_service.authenticate_user(email, password)
         except AuthenticationException as exc:
             logger.warning("Login failed: %s", str(exc))
-            err_msg = str(exc)
-            if "verify your email" in err_msg.lower():
-                return render_template(
-                    "login.html",
-                    email=email,
-                    login_error="Please verify your email before logging in.",
-                    show_resend=True,
-                    unverified_email=email,
-                )
             return render_template(
                 "login.html",
                 email=email,
@@ -206,7 +197,7 @@ def profile():
 
 
 def edit_profile():
-    """Handle profile updates."""
+    """Handle personal profile updates."""
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         occupation = request.form.get("occupation")
@@ -227,6 +218,15 @@ def edit_profile():
         return redirect(url_for("auth.profile"))
 
     return render_template("edit_profile.html")
+
+
+def settings():
+    """Handle settings workspace requests."""
+    if request.method == "POST":
+        flash("Settings saved successfully!", "success")
+        return redirect(url_for("auth.settings"))
+
+    return render_template("settings.html")
 
 
 def logout():

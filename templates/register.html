@@ -255,11 +255,11 @@
                             <!-- 3. Mobile Number -->
                             <div class="form-group-item">
                                 <label class="form-label-styled" for="mobile_number">
-                                    Mobile number
+                                    Mobile number <span class="form-label-optional">(optional)</span>
                                 </label>
                                 <div class="input-icon-wrap">
                                     <i class="bi bi-phone input-leading-icon"></i>
-                                    <input type="tel" id="mobile_number" name="mobile_number" class="form-input-styled" value="{{ form_data.mobile_number if form_data else '' }}" placeholder="10-digit mobile number (e.g. 9876543210)" pattern="[6-9][0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9" required>
+                                    <input type="tel" id="mobile_number" name="mobile_number" class="form-input-styled" value="{{ form_data.mobile_number if form_data else '' }}" placeholder="10-digit mobile number (e.g. 9876543210)" pattern="([6-9][0-9]{9})?" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9">
                                 </div>
                             </div>
 

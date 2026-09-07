@@ -133,9 +133,9 @@ def test_mobile_number_validation_formats(app):
             auth_validator.validate_mobile_number(invalid)
 
 
-def test_unverified_user_cannot_login(app, auth_service):
+def test_unverified_user_can_login(app, auth_service):
     with app.app_context():
-        auth_service.register_user(
+        user = auth_service.register_user(
             username="unverified_user",
             email="unverified@example.com",
             mobile_number="7876543210",
@@ -143,11 +143,11 @@ def test_unverified_user_cannot_login(app, auth_service):
             occupation="Student",
             financial_preference="Money Saver",
         )
+        assert user.email_verified is False
 
-        with pytest.raises(AuthenticationException) as exc_info:
-            auth_service.authenticate_user("unverified@example.com", "Password123!")
-
-        assert "verify your email" in str(exc_info.value).lower()
+        authenticated = auth_service.authenticate_user("unverified@example.com", "Password123!")
+        assert authenticated is not None
+        assert authenticated.id == user.id
 
 
 def test_token_email_verification_flow(app, auth_service):

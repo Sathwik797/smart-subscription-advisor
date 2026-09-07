@@ -25,7 +25,7 @@ class SubscriptionService:
         self.subscription_repository = SubscriptionRepository()
         self.intelligence_service = IntelligenceService(self.subscription_repository)
 
-    def add_subscription(self, user, service_name, monthly_cost, category, start_date, billing_cycle, usage_frequency, usage_hours):
+    def add_subscription(self, user, service_name, monthly_cost, category, start_date, billing_cycle, usage_frequency=None, usage_hours=None):
         """Create a new subscription for a user."""
         if monthly_cost is None or monthly_cost == "":
             raise ValidationException("Monthly cost is required")
@@ -34,7 +34,13 @@ class SubscriptionService:
 
         monthly_cost = float(monthly_cost)
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
-        usage_hours = float(usage_hours)
+
+        parsed_usage_hours = None
+        if usage_hours is not None and str(usage_hours).strip() != "":
+            try:
+                parsed_usage_hours = float(usage_hours)
+            except (ValueError, TypeError):
+                parsed_usage_hours = None
 
         if billing_cycle == "Monthly":
             renewal_date = start_date + relativedelta(months=1)
@@ -47,7 +53,7 @@ class SubscriptionService:
             category=category,
             monthly_cost=monthly_cost,
             usage_frequency=usage_frequency,
-            usage_hours=usage_hours,
+            usage_hours=parsed_usage_hours,
         )
 
         subscription = Subscription(
@@ -58,7 +64,7 @@ class SubscriptionService:
             renewal_date=renewal_date,
             billing_cycle=billing_cycle,
             usage_frequency=usage_frequency,
-            usage_hours=usage_hours,
+            usage_hours=parsed_usage_hours,
             priority=priority_data["priority"],
             user_id=user.id,
         )
@@ -67,6 +73,39 @@ class SubscriptionService:
         except Exception as exc:
             logger.error("Database failure while creating subscription")
             raise DatabaseException("Unable to create subscription") from exc
+        return subscription
+
+    def update_subscription_usage(self, user, subscription_id, usage_frequency, usage_hours):
+        """Update only usage information for a subscription and recalculate its priority."""
+        subscription = self.subscription_repository.get_subscription_by_id(subscription_id)
+        if not subscription:
+            raise ResourceNotFoundException("Subscription not found")
+        if subscription.user_id != user.id:
+            raise ValidationException("Unauthorized subscription access")
+
+        subscription.usage_frequency = usage_frequency
+        parsed_hours = None
+        if usage_hours is not None and str(usage_hours).strip() != "":
+            try:
+                parsed_hours = float(usage_hours)
+            except (ValueError, TypeError):
+                parsed_hours = None
+        subscription.usage_hours = parsed_hours
+
+        priority_data = calculate_priority(
+            occupation=user.occupation,
+            financial_preference=user.financial_preference,
+            category=subscription.category,
+            monthly_cost=subscription.monthly_cost,
+            usage_frequency=subscription.usage_frequency,
+            usage_hours=subscription.usage_hours,
+        )
+        subscription.priority = priority_data["priority"]
+        try:
+            self.subscription_repository.update_subscription(subscription)
+        except Exception as exc:
+            logger.error("Database failure while updating subscription usage")
+            raise DatabaseException("Unable to update subscription usage") from exc
         return subscription
 
     def get_user_subscriptions(self, user, search, category, sort, page):

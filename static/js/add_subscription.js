@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
             dateFormat: "Y-m-d",
             allowInput: false,
             clickOpens: true,
-            disableMobile: true
+            disableMobile: true,
+            defaultDate: "today"
         });
     }
 
@@ -288,6 +289,10 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             if (option) {
                 categorySelect.value = option.value;
+                const categoryPill = document.getElementById("categoryStatusPill");
+                if (categoryPill) {
+                    categoryPill.textContent = "Auto-detected";
+                }
             }
         }
 
@@ -401,6 +406,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 setBrandLogoIndicator(matched);
                 if (categorySelect && (!categorySelect.value || categorySelect.value === "Entertainment")) {
                     categorySelect.value = matched.category;
+                    const categoryPill = document.getElementById("categoryStatusPill");
+                    if (categoryPill) {
+                        categoryPill.textContent = "Auto-detected";
+                    }
                 }
             } else if (serviceInput.value.trim()) {
                 setFallbackLogoIndicator(serviceInput.value);
@@ -409,6 +418,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 200);
     });
+
+    // Mark category as custom if user manually modifies it
+    if (categorySelect) {
+        categorySelect.addEventListener("change", function () {
+            const categoryPill = document.getElementById("categoryStatusPill");
+            if (categoryPill) {
+                categoryPill.textContent = "Custom";
+            }
+        });
+    }
 
     // Close Dropdown When Clicking Outside
     document.addEventListener("click", function (e) {
@@ -435,5 +454,118 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    // =========================================================================
+    // Frictionless Form Submission & Post-Save "Usage & Value" Step
+    // =========================================================================
+    const addForm = document.getElementById("addSubscriptionForm");
+    const submitBtn = document.getElementById("btnSubmitSubscription");
+    const postSaveCard = document.getElementById("postSaveUsageCard");
+    const btnSkipUsage = document.getElementById("btnSkipUsage");
+    const btnSaveUsage = document.getElementById("btnSaveUsage");
+    const postSaveFreq = document.getElementById("post-save-frequency");
+    const postSaveHours = document.getElementById("post-save-hours");
+
+    let createdSubscriptionId = null;
+    let redirectDestination = "/subscriptions";
+
+    if (addForm) {
+        addForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (!addForm.checkValidity()) {
+                addForm.reportValidity();
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Adding...';
+            }
+
+            const formData = new FormData(addForm);
+
+            fetch(window.location.href, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json"
+                }
+            })
+            .then(async response => {
+                const data = await response.json().catch(() => null);
+                if (response.ok && data && data.success) {
+                    createdSubscriptionId = data.subscription_id;
+                    if (data.redirect_url) {
+                        redirectDestination = data.redirect_url;
+                    }
+
+                    // Hide initial fast creation form and display lightweight post-save step
+                    addForm.style.display = "none";
+                    if (postSaveCard) {
+                        postSaveCard.style.display = "block";
+                        postSaveCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                } else {
+                    const errorMsg = (data && data.message) ? data.message : "Failed to add subscription. Please check your inputs.";
+                    alert(errorMsg);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="bi bi-plus-lg"></i> Add Subscription';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Error creating subscription:", err);
+                // Fallback to normal post
+                addForm.submit();
+            });
+        });
+    }
+
+    // Skip Usage Step
+    if (btnSkipUsage) {
+        btnSkipUsage.addEventListener("click", function () {
+            window.location.href = redirectDestination;
+        });
+    }
+
+    // Save Optional Usage Details
+    if (btnSaveUsage) {
+        btnSaveUsage.addEventListener("click", function () {
+            if (!createdSubscriptionId) {
+                window.location.href = redirectDestination;
+                return;
+            }
+
+            const freq = postSaveFreq ? postSaveFreq.value : "";
+            const hours = postSaveHours ? postSaveHours.value : "";
+
+            btnSaveUsage.disabled = true;
+            btnSaveUsage.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving...';
+            if (btnSkipUsage) btnSkipUsage.disabled = true;
+
+            fetch(`/subscriptions/${createdSubscriptionId}/usage`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    usage_frequency: freq || null,
+                    usage_hours: hours ? parseFloat(hours) : null
+                })
+            })
+            .then(() => {
+                window.location.href = redirectDestination;
+            })
+            .catch(err => {
+                console.error("Failed to save usage details:", err);
+                window.location.href = redirectDestination;
+            });
+        });
+    }
 
 });

@@ -313,3 +313,37 @@
         width: 100%;
     }
 }
+
+/* --------------------------------------------------------------------------
+   Global Authenticated Navigation & Content Area Grid/Flex System
+   -------------------------------------------------------------------------- */
+:root {
+    --sidebar-width-collapsed: 72px;
+    --sidebar-width-expanded: 260px;
+    --sidebar-width: var(--sidebar-width-collapsed);
+}
+
+body.sidebar-expanded,
+html.sidebar-expanded body {
+    --sidebar-width: var(--sidebar-width-expanded);
+}
+
+.authenticated-app-layout,
+.dashboard-app-layout,
+.subscriptions-app-layout,
+.add-sub-app-layout,
+.edit-sub-app-layout,
+.analytics-app-layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.authenticated-main-area {
+    flex: 1;
+    min-width: 0;
+    max-width: 1600px;
+    box-sizing: border-box;
+}
+

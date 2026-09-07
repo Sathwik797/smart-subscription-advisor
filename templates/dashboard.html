@@ -6,59 +6,9 @@
     <div class="dashboard-app-layout">
         
         <!-- Left Application Sidebar -->
-        <aside class="dashboard-sidebar" aria-label="Application navigation">
-            <div class="sidebar-nav-group">
-                <a href="{{ url_for('auth.dashboard') }}" class="sidebar-nav-item active">
-                    <i class="bi bi-house-door-fill"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="{{ url_for('auth.subscriptions') }}" class="sidebar-nav-item">
-                    <i class="bi bi-collection"></i>
-                    <span>Subscriptions</span>
-                </a>
-                <a href="{{ url_for('auth.add_subscription') }}" class="sidebar-nav-item">
-                    <i class="bi bi-plus-circle"></i>
-                    <span>Add Subscription</span>
-                </a>
-                <a href="javascript:void(0)" id="sidebarAiAdvisor" class="sidebar-nav-item">
-                    <i class="bi bi-stars"></i>
-                    <span>AI Advisor</span>
-                </a>
-                <a href="{{ url_for('auth.spending_analytics') }}" class="sidebar-nav-item">
-                    <i class="bi bi-bar-chart-line"></i>
-                    <span>Spending Analytics</span>
-                </a>
-                
-                <div class="sidebar-divider"></div>
-
-                <a href="{{ url_for('auth.profile') }}" class="sidebar-nav-item">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="{{ url_for('auth.edit_profile') }}" class="sidebar-nav-item">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
-                </a>
-
-                <div class="sidebar-divider"></div>
-
-                <a href="{{ url_for('auth.logout') }}" class="sidebar-nav-item sidebar-logout-item">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Sign Out</span>
-                </a>
-            </div>
-
-            <!-- Bottom Supporting Card -->
-            <div class="sidebar-footer-card">
-                <div class="footer-card-icon">
-                    <i class="bi bi-graph-up-arrow"></i>
-                </div>
-                <div class="footer-card-body">
-                    <strong>Smarter spending brighter tomorrow.</strong>
-                    <span>Track. Control. Save.</span>
-                </div>
-            </div>
-        </aside>
+        {% with active_nav='dashboard' %}
+            {% include "partials/sidebar.html" %}
+        {% endwith %}
 
         <!-- Main Dashboard Workspace -->
         <div class="dashboard-main-area">

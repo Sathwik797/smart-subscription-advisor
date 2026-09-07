@@ -1,407 +1,418 @@
 {% extends "base.html" %}
 {% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_subscription.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_subscription.css') }}">
+
+    {% set name_lower = subscription.service_name|lower %}
+    {% if 'amazon' in name_lower or 'prime' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/amazon.svg') %}
+    {% elif 'netflix' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/netflix.svg') %}
+    {% elif 'spotify' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/spotify.svg') %}
+    {% elif 'youtube' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/youtube.svg') %}
+    {% elif 'microsoft' in name_lower or '365' in name_lower or 'office' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/microsoft365.svg') %}
+    {% elif 'canva' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/canva.svg') %}
+    {% elif 'chatgpt' in name_lower or 'openai' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/chatgpt.svg') %}
+    {% elif 'disney' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/disneyplus.svg') %}
+    {% elif 'apple' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/applemusic.svg') %}
+    {% elif 'adobe' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/adobe.svg') %}
+    {% elif 'google' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/googleone.svg') %}
+    {% elif 'dropbox' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/dropbox.svg') %}
+    {% elif 'notion' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/notion.svg') %}
+    {% elif 'grammarly' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/grammarly.svg') %}
+    {% elif 'linkedin' in name_lower %}
+        {% set logo_src = url_for('static', filename='assets/logos/subscriptions/linkedin.svg') %}
+    {% else %}
+        {% set logo_src = None %}
+    {% endif %}
+
     <main class="edit-subscription-page">
-        <div class="edit-subscription-container container">
-            <header class="edit-page-header">
-                <div>
-                    <span class="page-kicker">
-                        <i class="bi bi-pencil-square">
-                        </i>
-                        Subscription workspace
-                    </span>
-                    <h1>
-                        Edit Subscription
-                    </h1>
-                    <p>
-                        Update your subscription details and keep your recurring expenses accurate.
-                    </p>
-                </div>
-                <a href="{{ url_for('auth.subscriptions') }}" class="btn back-button">
-                    <i class="bi bi-arrow-left">
-                    </i>
-                    Back to Subscriptions
-                </a>
-            </header>
-            <div class="row g-4 align-items-start">
-                <div class="col-lg-8">
-                    <section class="edit-form-card">
-                        <div class="form-card-heading">
-                            <div>
-                                <span class="card-kicker">
-                                    Subscription details
-                                </span>
-                                <h2>
-                                    Update
-                                    {{ subscription.service_name }}
-                                </h2>
-                                <p>
-                                    Keep your subscription details accurate and your insights useful.
-                                </p>
-                            </div>
-                            <span class="form-heading-icon">
-                                <i class="bi bi-pencil">
-                                </i>
+        <div class="edit-sub-app-layout">
+            
+            <!-- Left Application Sidebar -->
+            {% with active_nav='subscriptions' %}
+                {% include "partials/sidebar.html" %}
+            {% endwith %}
+
+            <!-- Main Workspace Content -->
+            <div class="edit-sub-main-content">
+                <div class="edit-sub-content-inner">
+                    
+                    <!-- Page Header Section -->
+                    <header class="edit-page-header">
+                        <div>
+                            <span class="page-kicker">
+                                <i class="bi bi-pencil-square"></i>
+                                SUBSCRIPTION WORKSPACE
                             </span>
+                            <h1 class="page-title">Edit Subscription</h1>
+                            <p class="page-subtitle">Update your subscription details and keep your recurring expenses accurate.</p>
                         </div>
-                        <form method="POST" class="subscription-form">
-                            <div class="form-field">
-                                <label class="form-label" for="service-name">
-                                    Service name
-                                </label>
-                                <div class="input-icon-wrap">
-                                    <i class="bi bi-grid-1x2">
-                                    </i>
-                                    <input type="text" id="service-name" class="form-control" name="service_name" value="{{ subscription.service_name }}" required>
+                        <a href="{{ url_for('auth.subscriptions') }}" class="btn back-button">
+                            <i class="bi bi-arrow-left"></i>
+                            Back to Subscriptions
+                        </a>
+                    </header>
+
+                    <!-- Top Two-Column Workspace -->
+                    <div class="workspace-grid mb-4">
+                        
+                        <!-- LEFT COLUMN: Main Form Card -->
+                        <div class="workspace-left">
+                            <section class="edit-form-card">
+                                <div class="form-card-heading">
+                                    <div class="form-card-icon-box">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </div>
+                                    <div class="form-card-title-wrap">
+                                        <h2>Subscription Details</h2>
+                                        <p>Update the core details of your subscription.</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="monthly-cost">
-                                            Monthly cost
-                                        </label>
-                                        <div class="input-icon-wrap currency-wrap">
-                                            <span>
-                                                ₹
+
+                                <form method="POST" class="subscription-form" id="editSubscriptionForm">
+                                    <!-- 1. Service Name (Full width) -->
+                                    <div class="form-field service-autocomplete-wrap">
+                                        <label class="form-label" for="service-name">Service name</label>
+                                        <div class="input-icon-wrap" id="serviceInputWrap">
+                                            <span class="service-logo-indicator {% if logo_src %}has-logo{% endif %}" id="serviceLogoIndicator">
+                                                {% if logo_src %}
+                                                    <img src="{{ logo_src }}" alt="{{ subscription.service_name }}" class="service-brand-logo">
+                                                {% else %}
+                                                    <i class="bi bi-grid-1x2"></i>
+                                                {% endif %}
                                             </span>
-                                            <input type="number" id="monthly-cost" class="form-control" name="monthly_cost" min="0" step="1" value="{{ subscription.monthly_cost }}" required>
+                                            <input type="text" id="service-name" class="form-control" name="service_name" value="{{ subscription.service_name }}" placeholder="Search for a service" required autocomplete="off">
+                                        </div>
+                                        <div class="field-hint">Search for a service (e.g. Netflix, Spotify, YouTube)</div>
+                                        <div class="service-autocomplete-dropdown" id="serviceAutocompleteDropdown" style="display: none;"></div>
+                                    </div>
+
+                                    <!-- 2. Cost & Billing Cycle (Two columns) -->
+                                    <div class="form-row-2col">
+                                        <div class="form-field">
+                                            <label class="form-label" for="monthly-cost">Monthly cost (₹)</label>
+                                            <div class="input-icon-wrap currency-wrap">
+                                                <span>₹</span>
+                                                <input type="number" id="monthly-cost" class="form-control" name="monthly_cost" min="0" step="1" value="{{ subscription.monthly_cost }}" required>
+                                            </div>
+                                            <div class="field-hint">Enter the subscription cost</div>
+                                        </div>
+                                        <div class="form-field">
+                                            <label class="form-label" for="billing-cycle">Billing cycle</label>
+                                            <div class="input-icon-wrap select-wrap">
+                                                <i class="bi bi-arrow-repeat select-prefix-icon"></i>
+                                                <select id="billing-cycle" class="form-select prefix-select" name="billing_cycle" required>
+                                                    <option value="Monthly" {% if subscription.billing_cycle == 'Monthly' %}selected{% endif %}>Monthly</option>
+                                                    <option value="Yearly" {% if subscription.billing_cycle == 'Yearly' %}selected{% endif %}>Yearly</option>
+                                                </select>
+                                                <i class="bi bi-chevron-down select-chevron"></i>
+                                            </div>
+                                            <div class="field-hint">How often you are billed</div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="category">
-                                            Category
-                                        </label>
-                                        <div class="input-icon-wrap select-wrap">
-                                            <i class="bi bi-folder2">
-                                            </i>
-                                            <select id="category" name="category" class="form-select" required>
-                                                <option value="Entertainment" {% if subscription.category=="Entertainment" %}selected{% endif %}>
-                                                    Entertainment
-                                                </option>
-                                                <option value="Music" {% if subscription.category=="Music" %}selected{% endif %}>
-                                                    Music
-                                                </option>
-                                                <option value="Education" {% if subscription.category=="Education" %}selected{% endif %}>
-                                                    Education
-                                                </option>
-                                                <option value="Productivity" {% if subscription.category=="Productivity" %}selected{% endif %}>
-                                                    Productivity
-                                                </option>
-                                                <option value="Gaming" {% if subscription.category=="Gaming" %}selected{% endif %}>
-                                                    Gaming
-                                                </option>
-                                                <option value="Other" {% if subscription.category=="Other" %}selected{% endif %}>
-                                                    Other
-                                                </option>
-                                            </select>
+
+                                    <!-- 3. Start Date & Category (Two columns) -->
+                                    <div class="form-row-2col">
+                                        <div class="form-field">
+                                            <label class="form-label" for="start-date">Start date</label>
+                                            <div class="input-icon-wrap date-wrap">
+                                                <i class="bi bi-calendar3"></i>
+                                                <input type="date" id="start-date" class="form-control" name="start_date" value="{{ subscription.start_date }}" required>
+                                            </div>
+                                            <div class="field-hint">When did your subscription start?</div>
+                                        </div>
+                                        <div class="form-field">
+                                            <label class="form-label" for="category">Category</label>
+                                            <div class="input-icon-wrap select-wrap category-wrap">
+                                                <i class="bi bi-display category-icon"></i>
+                                                <select id="category" name="category" class="form-select secondary-category-select" required>
+                                                    <option value="Entertainment" {% if subscription.category == 'Entertainment' %}selected{% endif %}>Entertainment</option>
+                                                    <option value="Music" {% if subscription.category == 'Music' %}selected{% endif %}>Music</option>
+                                                    <option value="Productivity" {% if subscription.category == 'Productivity' %}selected{% endif %}>Productivity</option>
+                                                    <option value="Shopping" {% if subscription.category == 'Shopping' %}selected{% endif %}>Shopping</option>
+                                                    <option value="Utilities" {% if subscription.category == 'Utilities' %}selected{% endif %}>Utilities</option>
+                                                    <option value="Education" {% if subscription.category == 'Education' %}selected{% endif %}>Education</option>
+                                                    <option value="Design" {% if subscription.category == 'Design' %}selected{% endif %}>Design</option>
+                                                    <option value="Fitness" {% if subscription.category == 'Fitness' %}selected{% endif %}>Fitness</option>
+                                                    <option value="Gaming" {% if subscription.category == 'Gaming' %}selected{% endif %}>Gaming</option>
+                                                    <option value="Other" {% if subscription.category == 'Other' %}selected{% endif %}>Other</option>
+                                                </select>
+                                                <i class="bi bi-chevron-down select-chevron"></i>
+                                            </div>
+                                            <div class="field-hint">Choose a category for this subscription</div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="start-date">
-                                            Start date
-                                        </label>
-                                        <div class="input-icon-wrap">
-                                            <i class="bi bi-calendar3">
-                                            </i>
-                                            <input type="date" id="start-date" class="form-control" name="start_date" value="{{ subscription.start_date }}" required>
+
+                                    <!-- Section 2: Usage & Value -->
+                                    <div class="usage-value-section">
+                                        <div class="usage-section-heading">
+                                            <div class="usage-section-icon-box">
+                                                <i class="bi bi-bar-chart-line"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="usage-section-title">Usage & Value</h3>
+                                                <p class="usage-section-subtitle">Help us understand how you use this subscription.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row-2col">
+                                            <div class="form-field">
+                                                <label class="form-label" for="usage-frequency">Usage frequency</label>
+                                                <div class="input-icon-wrap select-wrap">
+                                                    <i class="bi bi-bar-chart select-prefix-icon"></i>
+                                                    <select id="usage-frequency" name="usage_frequency" class="form-select prefix-select" required>
+                                                        <option value="Daily" {% if subscription.usage_frequency == 'Daily' %}selected{% endif %}>Daily</option>
+                                                        <option value="Several times a week" {% if subscription.usage_frequency == 'Several times a week' %}selected{% endif %}>Several times a week</option>
+                                                        <option value="Weekly" {% if subscription.usage_frequency == 'Weekly' %}selected{% endif %}>Weekly</option>
+                                                        <option value="Monthly" {% if subscription.usage_frequency == 'Monthly' %}selected{% endif %}>Monthly</option>
+                                                        <option value="Rarely" {% if subscription.usage_frequency == 'Rarely' %}selected{% endif %}>Rarely</option>
+                                                        <option value="Never" {% if subscription.usage_frequency == 'Never' %}selected{% endif %}>Never</option>
+                                                    </select>
+                                                    <i class="bi bi-chevron-down select-chevron"></i>
+                                                </div>
+                                                <div class="field-hint">How often do you use this service?</div>
+                                            </div>
+                                            <div class="form-field">
+                                                <label class="form-label" for="usage-hours">Hours used (per week)</label>
+                                                <div class="input-icon-wrap">
+                                                    <i class="bi bi-clock input-prefix-icon"></i>
+                                                    <input type="number" id="usage-hours" class="form-control prefix-input" name="usage_hours" min="0" step="0.5" value="{{ subscription.usage_hours if subscription.usage_hours is not none else '1.0' }}" required>
+                                                </div>
+                                                <div class="field-hint">Enter average hours per week (optional)</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="compact-usage-guide">
+                                            <i class="bi bi-info-circle text-primary"></i>
+                                            <span><strong>Usage guide:</strong> Daily = hours/day · Weekly = hours/week · Monthly/Rarely = hours/month.</span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="billing-cycle">
-                                            Billing cycle
-                                        </label>
-                                        <div class="input-icon-wrap select-wrap">
-                                            <i class="bi bi-arrow-repeat">
-                                            </i>
-                                            <select id="billing-cycle" name="billing_cycle" class="form-select" required>
-                                                <option value="Monthly" {% if subscription.billing_cycle=="Monthly" %}selected{% endif %}>
-                                                    Monthly
-                                                </option>
-                                                <option value="Yearly" {% if subscription.billing_cycle=="Yearly" %}selected{% endif %}>
-                                                    Yearly
-                                                </option>
-                                            </select>
-                                        </div>
+
+                                    <!-- Form Actions -->
+                                    <div class="form-actions">
+                                        <a href="{{ url_for('auth.subscriptions') }}" class="btn cancel-button">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" class="btn submit-button">
+                                            <i class="bi bi-floppy"></i>
+                                            Save Changes
+                                        </button>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="usage-frequency">
-                                            Usage frequency
-                                        </label>
-                                        <div class="input-icon-wrap select-wrap">
-                                            <i class="bi bi-bar-chart">
-                                            </i>
-                                            <select id="usage-frequency" name="usage_frequency" class="form-select" required>
-                                                <option value="Daily" {% if subscription.usage_frequency=="Daily" %}selected{% endif %}>
-                                                    Daily
-                                                </option>
-                                                <option value="Weekly" {% if subscription.usage_frequency=="Weekly" %}selected{% endif %}>
-                                                    Weekly
-                                                </option>
-                                                <option value="Monthly" {% if subscription.usage_frequency=="Monthly" %}selected{% endif %}>
-                                                    Monthly
-                                                </option>
-                                                <option value="Rarely" {% if subscription.usage_frequency=="Rarely" %}selected{% endif %}>
-                                                    Rarely
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="usage-hours">
-                                            Hours used
-                                        </label>
-                                        <div class="input-icon-wrap">
-                                            <i class="bi bi-clock">
-                                            </i>
-                                            <input type="number" id="usage-hours" class="form-control" name="usage_hours" min="0" step="0.5" value="{{ subscription.usage_hours }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="usage-note">
-                                <span>
-                                    <i class="bi bi-info-circle">
-                                    </i>
-                                </span>
-                                <p>
-                                    <strong>
-                                        Usage guide:
-                                    </strong>
-                                    Daily = hours/day · Weekly = hours/week · Monthly/Rarely = hours/month.
-                                </p>
-                            </div>
-                            <section class="priority-panel">
-                                <div>
-                                    <span class="card-kicker">
-                                        Calculated priority
-                                    </span>
-                                    <h3>
-                                        Current priority
-                                    </h3>
-                                    <p>
-                                        Automatically calculated from your profile, category, cost and usage.
-                                    </p>
-                                </div>
-                                {% if subscription.priority == "High" %}
-                                    <span class="priority-badge high">
-                                        <i class="bi bi-arrow-up-circle-fill">
-                                        </i>
-                                        High
-                                    </span>
-                                {% elif subscription.priority == "Medium" %}
-                                    <span class="priority-badge medium">
-                                        <i class="bi bi-dash-circle-fill">
-                                        </i>
-                                        Medium
-                                    </span>
-                                {% else %}
-                                    <span class="priority-badge low">
-                                        <i class="bi bi-arrow-down-circle-fill">
-                                        </i>
-                                        Low
-                                    </span>
-                                {% endif %}
+                                </form>
                             </section>
-                            <section class="insight-panel">
-                                <div class="insight-head">
-                                    <div>
-                                        <span class="card-kicker">
-                                            Smart subscription insights
-                                        </span>
-                                        <h3>
-                                            <i class="bi bi-stars">
-                                            </i>
-                                            Your subscription score
-                                        </h3>
+                        </div>
+
+                        <!-- RIGHT COLUMN: Subscription Snapshot Card -->
+                        <div class="workspace-right">
+                            <aside class="snapshot-card">
+                                <div class="snapshot-header">
+                                    <div class="snapshot-icon-box">
+                                        <i class="bi bi-card-checklist"></i>
                                     </div>
-                                    <div class="score-circle">
-                                        <strong>
-                                            {{ insight.score }}
-                                        </strong>
-                                        <small>
-                                            /100
-                                        </small>
+                                    <div>
+                                        <h2 class="snapshot-title">Subscription Snapshot</h2>
+                                        <p class="snapshot-subtitle">Key information about this subscription.</p>
                                     </div>
                                 </div>
-                                <div class="insight-grid">
-                                    <div>
-                                        <h4>
-                                            Why this matters
-                                        </h4>
-                                        <ul class="insight-reasons list-unstyled">
-                                            {% for reason in insight.reasons %}
-                                                <li>
-                                                    <i class="bi bi-check2">
-                                                    </i>
-                                                    {{ reason }}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <div class="recommendation-box">
-                                        <span>
-                                            <i class="bi bi-lightbulb">
-                                            </i>
-                                            Recommendation
-                                        </span>
-                                        <p>
-                                            {{ insight.recommendation }}
-                                        </p>
-                                        {% if insight.priority == "High" %}
-                                            <b class="insight-status high">
-                                                High priority
-                                            </b>
-                                        {% elif insight.priority == "Medium" %}
-                                            <b class="insight-status medium">
-                                                Medium priority
-                                            </b>
+
+                                <!-- Subscription Identity Box -->
+                                <div class="snapshot-identity-box">
+                                    <div class="snapshot-logo-container {% if logo_src %}has-logo{% else %}has-fallback{% endif %}">
+                                        {% if logo_src %}
+                                            <img src="{{ logo_src }}" alt="{{ subscription.service_name }}" class="snapshot-logo-img">
                                         {% else %}
-                                            <b class="insight-status low">
-                                                Low priority
-                                            </b>
+                                            <span class="snapshot-fallback-initial">{{ subscription.service_name[:1]|upper }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="snapshot-identity-meta">
+                                        <div class="snapshot-name-row">
+                                            <span class="snapshot-name">{{ subscription.service_name }}</span>
+                                            <span class="snapshot-status-pill">Active</span>
+                                        </div>
+                                        <span class="snapshot-category-label">{{ subscription.category }}</span>
+                                        <span class="snapshot-tagline">Streaming, shopping and more</span>
+                                    </div>
+                                </div>
+
+                                <!-- Key Details Rows -->
+                                <div class="snapshot-details-list">
+                                    <div class="snapshot-detail-row">
+                                        <span class="detail-label">
+                                            <i class="bi bi-currency-rupee"></i>
+                                            Monthly cost
+                                        </span>
+                                        <strong class="detail-value">₹ {{ "{:,.1f}".format(subscription.monthly_cost) }}</strong>
+                                    </div>
+                                    <div class="snapshot-detail-row">
+                                        <span class="detail-label">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                            Billing cycle
+                                        </span>
+                                        <span class="detail-value">{{ subscription.billing_cycle or 'Monthly' }}</span>
+                                    </div>
+                                    <div class="snapshot-detail-row">
+                                        <span class="detail-label">
+                                            <i class="bi bi-calendar-event"></i>
+                                            Next renewal
+                                        </span>
+                                        <div class="text-end">
+                                            <span class="detail-value d-block">
+                                                {{ subscription.renewal_date.strftime("%d %b %Y") if subscription.renewal_date else (subscription.start_date.strftime("%d %b %Y") if subscription.start_date else '—') }}
+                                            </span>
+                                            <span class="detail-hint">in 5 days</span>
+                                        </div>
+                                    </div>
+                                    <div class="snapshot-detail-row">
+                                        <span class="detail-label">
+                                            <i class="bi bi-folder2"></i>
+                                            Category
+                                        </span>
+                                        <span class="detail-value">{{ subscription.category }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="snapshot-divider"></div>
+
+                                <!-- Current Priority Section -->
+                                <div class="snapshot-priority-section">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="priority-section-label">Current priority</span>
+                                        {% set p_lower = (subscription.priority or 'Low')|lower %}
+                                        {% if p_lower == 'high' %}
+                                            <span class="priority-pill high"><span class="priority-dot"></span> High</span>
+                                        {% elif p_lower == 'medium' %}
+                                            <span class="priority-pill medium"><span class="priority-dot"></span> Medium</span>
+                                        {% else %}
+                                            <span class="priority-pill low"><span class="priority-dot"></span> Low</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="priority-section-hint">Based on your usage, cost and subscription patterns.</p>
+                                </div>
+
+                                <!-- Stay In Control Callout -->
+                                <div class="stay-in-control-banner">
+                                    <div class="control-icon-circle">
+                                        <i class="bi bi-lightbulb"></i>
+                                    </div>
+                                    <div class="control-text">
+                                        <strong>Stay in control</strong>
+                                        <p>Keep your subscription details updated to get accurate insights and better recommendations.</p>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Section: Full-Width Smart Subscription Insights -->
+                    <section class="insights-full-card">
+                        <div class="insights-card-header">
+                            <div class="insights-header-icon">
+                                <i class="bi bi-stars"></i>
+                            </div>
+                            <div>
+                                <h3 class="insights-title">Smart Subscription Insights</h3>
+                                <p class="insights-subtitle">AI-powered insights to help you get more value from your subscription.</p>
+                            </div>
+                        </div>
+
+                        <div class="insights-columns-grid">
+                            
+                            <!-- Col 1: Subscription Score -->
+                            <div class="insights-col score-col">
+                                <h4 class="insights-col-title">Subscription score</h4>
+                                <div class="score-display-box">
+                                    <div class="score-donut-wrap">
+                                        <svg class="score-donut" viewBox="0 0 36 36">
+                                            <path class="donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            {% set stroke_color = '#DC2626' if insight.score < 40 else ('#F59E0B' if insight.score < 70 else '#10B981') %}
+                                            <path class="donut-val" stroke="{{ stroke_color }}" stroke-dasharray="{{ insight.score }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        </svg>
+                                        <div class="score-donut-text">
+                                            <span class="score-num">{{ insight.score }}</span>
+                                            <span class="score-total">/100</span>
+                                        </div>
+                                    </div>
+                                    <div class="score-meta-text">
+                                        {% if insight.score < 40 %}
+                                            <span class="score-badge low-value">Low value</span>
+                                            <p class="score-desc">This subscription may not be giving you enough value based on your usage.</p>
+                                        {% elif insight.score < 70 %}
+                                            <span class="score-badge fair-value">Fair value</span>
+                                            <p class="score-desc">This subscription provides moderate value relative to your current spending and usage.</p>
+                                        {% else %}
+                                            <span class="score-badge high-value">High value</span>
+                                            <p class="score-desc">This subscription provides strong regular value based on your profile and usage patterns.</p>
                                         {% endif %}
                                     </div>
                                 </div>
-                            </section>
-                            <div class="form-actions">
-                                <a href="{{ url_for('auth.subscriptions') }}" class="btn cancel-button">
-                                    Cancel
-                                </a>
-                                <button type="submit" class="btn submit-button">
-                                    <i class="bi bi-check-lg">
-                                    </i>
-                                    Update Subscription
-                                </button>
                             </div>
-                        </form>
+
+                            <!-- Col 2: Why This Matters -->
+                            <div class="insights-col matters-col">
+                                <h4 class="insights-col-title">Why this matters</h4>
+                                <ul class="insight-reasons-list">
+                                    {% for reason in insight.reasons %}
+                                        <li>
+                                            <i class="bi bi-check2"></i>
+                                            <span>{{ reason }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <i class="bi bi-check2"></i>
+                                            <span>Low usage ({{ subscription.usage_hours or 1.0 }} hours/week)</span>
+                                        </li>
+                                        <li>
+                                            <i class="bi bi-check2"></i>
+                                            <span>High cost per active hour (₹{{ "{:,.1f}".format(subscription.monthly_cost) }}/hr)</span>
+                                        </li>
+                                        <li>
+                                            <i class="bi bi-check2"></i>
+                                            <span>Similar services may be available cheaper</span>
+                                        </li>
+                                        <li>
+                                            <i class="bi bi-check2"></i>
+                                            <span>Consider reviewing if this is still needed</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <!-- Col 3: Recommendation -->
+                            <div class="insights-col recommendation-col">
+                                <h4 class="insights-col-title">
+                                    <i class="bi bi-lightbulb"></i>
+                                    Recommendation
+                                </h4>
+                                <div class="recommendation-callout-card">
+                                    <h5 class="recommendation-text-primary">{{ insight.recommendation }}</h5>
+                                    <p class="recommendation-text-secondary">You might be able to save money by reducing usage or switching to a cheaper plan.</p>
+                                </div>
+                            </div>
+
+                        </div>
                     </section>
+
                 </div>
-                <aside class="col-lg-4">
-                    <div class="edit-sidebar">
-                        <section class="sidebar-card summary-card">
-                            <span class="sidebar-icon">
-                                <i class="bi bi-receipt">
-                                </i>
-                            </span>
-                            <span class="card-kicker">
-                                Current subscription
-                            </span>
-                            <h2>
-                                Subscription summary
-                            </h2>
-                            <div class="summary-line">
-                                <span>
-                                    Monthly cost
-                                </span>
-                                <strong>
-                                    ₹
-                                    {{ subscription.monthly_cost }}
-                                </strong>
-                            </div>
-                            <div class="summary-line">
-                                <span>
-                                    Category
-                                </span>
-                                <strong>
-                                    {{ subscription.category }}
-                                </strong>
-                            </div>
-                            <div class="summary-line">
-                                <span>
-                                    Billing cycle
-                                </span>
-                                <strong>
-                                    {{ subscription.billing_cycle }}
-                                </strong>
-                            </div>
-                            <div class="summary-line">
-                                <span>
-                                    Usage frequency
-                                </span>
-                                <strong>
-                                    {{ subscription.usage_frequency }}
-                                </strong>
-                            </div>
-                        </section>
-                        <section class="sidebar-card tips-card">
-                            <span class="sidebar-icon orange">
-                                <i class="bi bi-lightbulb">
-                                </i>
-                            </span>
-                            <span class="card-kicker">
-                                Keep it accurate
-                            </span>
-                            <h2>
-                                Quick tips
-                            </h2>
-                            <div class="tip-row">
-                                <span>
-                                    💡
-                                </span>
-                                Review subscriptions regularly
-                            </div>
-                            <div class="tip-row">
-                                <span>
-                                    📅
-                                </span>
-                                Update renewal dates
-                            </div>
-                            <div class="tip-row">
-                                <span>
-                                    💳
-                                </span>
-                                Remove unused services
-                            </div>
-                            <div class="tip-row">
-                                <span>
-                                    📈
-                                </span>
-                                Track monthly spending
-                            </div>
-                        </section>
-                        <section class="security-sidebar">
-                            <span class="card-kicker">
-                                Your information
-                            </span>
-                            <h2>
-                                Secure by design
-                            </h2>
-                            <div>
-                                <i class="bi bi-shield-check">
-                                </i>
-                                JWT protected
-                            </div>
-                            <div>
-                                <i class="bi bi-database-lock">
-                                </i>
-                                Secure database storage
-                            </div>
-                            <div>
-                                <i class="bi bi-person-lock">
-                                </i>
-                                Private dashboard
-                            </div>
-                        </section>
-                    </div>
-                </aside>
             </div>
         </div>
     </main>
-    <script src="{{ url_for('static', filename='js/edit_subscription.js') }}">
-    </script>
+
+    <script src="{{ url_for('static', filename='js/edit_subscription.js') }}"></script>
+    {% set chatbot_page = 'edit_subscription' %}
+    {% include "partials/chatbot.html" %}
+    <div class="chatbot-badge-tip">Ask AI</div>
 {% endblock %}

@@ -1,0 +1,388 @@
+/**
+ * Smart Subscription Advisor - Edit Subscription Enhancement
+ * Implements flatpickr datepicker, service autocomplete, official logo previews,
+ * and automatic category mapping.
+ */
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 1. Initialize Flatpickr for Date Inputs
+    if (typeof flatpickr !== "undefined") {
+        flatpickr("input[type='date']", {
+            dateFormat: "Y-m-d",
+            allowInput: false,
+            clickOpens: true,
+            disableMobile: true
+        });
+    }
+
+    // 2. Service Metadata Catalog
+    const POPULAR_SERVICES = [
+        {
+            name: "Netflix",
+            category: "Entertainment",
+            aliases: ["netflix", "net", "nfx", "streaming", "movies", "shows"],
+            logoUrl: "/static/assets/logos/subscriptions/netflix.svg",
+            popularity: 100
+        },
+        {
+            name: "Spotify",
+            category: "Entertainment",
+            aliases: ["spotify", "spot", "music", "podcast", "songs"],
+            logoUrl: "/static/assets/logos/subscriptions/spotify.svg",
+            popularity: 95
+        },
+        {
+            name: "YouTube Premium",
+            category: "Entertainment",
+            aliases: ["youtube", "youtube premium", "yt", "yt premium", "videos", "google youtube"],
+            logoUrl: "/static/assets/logos/subscriptions/youtube.svg",
+            popularity: 90
+        },
+        {
+            name: "Amazon Prime",
+            category: "Shopping",
+            aliases: ["amazon", "amazon prime", "prime", "prime video", "shopping", "delivery"],
+            logoUrl: "/static/assets/logos/subscriptions/amazon.svg",
+            popularity: 88
+        },
+        {
+            name: "Microsoft 365",
+            category: "Productivity",
+            aliases: ["microsoft", "microsoft 365", "m365", "office", "office 365", "msft", "word", "excel"],
+            logoUrl: "/static/assets/logos/subscriptions/microsoft365.svg",
+            popularity: 85
+        },
+        {
+            name: "Canva",
+            category: "Productivity",
+            aliases: ["canva", "canva pro", "design", "graphic design", "templates"],
+            logoUrl: "/static/assets/logos/subscriptions/canva.svg",
+            popularity: 82
+        },
+        {
+            name: "ChatGPT",
+            category: "Productivity",
+            aliases: ["chatgpt", "chat gpt", "openai", "chatgpt plus", "gpt", "ai", "llm"],
+            logoUrl: "/static/assets/logos/subscriptions/chatgpt.svg",
+            popularity: 84
+        },
+        {
+            name: "Disney+",
+            category: "Entertainment",
+            aliases: ["disney", "disney+", "disney plus", "hotstar", "marvel", "pixar"],
+            logoUrl: "/static/assets/logos/subscriptions/disneyplus.svg",
+            popularity: 78
+        },
+        {
+            name: "Apple Music",
+            category: "Music",
+            aliases: ["apple music", "apple", "itunes", "music", "songs"],
+            logoUrl: "/static/assets/logos/subscriptions/applemusic.svg",
+            popularity: 76
+        },
+        {
+            name: "Adobe Creative Cloud",
+            category: "Productivity",
+            aliases: ["adobe", "adobe creative cloud", "photoshop", "illustrator", "premiere", "creative cloud", "cc"],
+            logoUrl: "/static/assets/logos/subscriptions/adobe.svg",
+            popularity: 74
+        },
+        {
+            name: "Google One",
+            category: "Utilities",
+            aliases: ["google one", "google", "google drive", "gdrive", "storage", "cloud storage"],
+            logoUrl: "/static/assets/logos/subscriptions/googleone.svg",
+            popularity: 72
+        },
+        {
+            name: "Dropbox",
+            category: "Utilities",
+            aliases: ["dropbox", "drop box", "cloud storage", "backup", "files"],
+            logoUrl: "/static/assets/logos/subscriptions/dropbox.svg",
+            popularity: 68
+        },
+        {
+            name: "Notion",
+            category: "Productivity",
+            aliases: ["notion", "notes", "workspace", "wiki", "docs"],
+            logoUrl: "/static/assets/logos/subscriptions/notion.svg",
+            popularity: 70
+        },
+        {
+            name: "Grammarly",
+            category: "Productivity",
+            aliases: ["grammarly", "writing", "spell check", "grammar"],
+            logoUrl: "/static/assets/logos/subscriptions/grammarly.svg",
+            popularity: 65
+        },
+        {
+            name: "LinkedIn Premium",
+            category: "Productivity",
+            aliases: ["linkedin", "linkedin premium", "jobs", "networking", "in"],
+            logoUrl: "/static/assets/logos/subscriptions/linkedin.svg",
+            popularity: 67
+        }
+    ];
+
+    // DOM Elements
+    const serviceInput = document.getElementById("service-name");
+    const logoIndicator = document.getElementById("serviceLogoIndicator");
+    const dropdown = document.getElementById("serviceAutocompleteDropdown");
+    const categorySelect = document.getElementById("category");
+
+    if (!serviceInput || !dropdown) {
+        return;
+    }
+
+    let activeSuggestionIndex = -1;
+    let currentSuggestions = [];
+
+    // Helper: Reset Logo Indicator to Default Grid Icon
+    function resetLogoIndicator() {
+        if (!logoIndicator) return;
+        logoIndicator.className = "service-logo-indicator";
+        logoIndicator.innerHTML = '<i class="bi bi-grid-1x2"></i>';
+    }
+
+    // Helper: Set Logo Indicator to Known Brand (Official SVG logo)
+    function setBrandLogoIndicator(service) {
+        if (!logoIndicator) return;
+        logoIndicator.className = "service-logo-indicator has-logo";
+        logoIndicator.innerHTML = `<img src="${service.logoUrl}" alt="${service.name}" class="service-brand-logo">`;
+    }
+
+    // Helper: Set Logo Indicator to Graceful Initial Fallback
+    function setFallbackLogoIndicator(text) {
+        if (!logoIndicator) return;
+        const initial = (text || "").trim().charAt(0).toUpperCase();
+        if (initial) {
+            logoIndicator.className = "service-logo-indicator brand-default";
+            logoIndicator.innerHTML = '<span style="font-size:0.82rem;font-weight:700;color:#fff;">' + initial + '</span>';
+        } else {
+            resetLogoIndicator();
+        }
+    }
+
+    // Helper: Find exact or best service match by name
+    function findServiceByName(name) {
+        if (!name) return null;
+        const lower = name.trim().toLowerCase();
+        return POPULAR_SERVICES.find(s => s.name.toLowerCase() === lower || s.aliases.includes(lower));
+    }
+
+    // Initial check on load
+    if (serviceInput.value.trim()) {
+        const initialMatch = findServiceByName(serviceInput.value);
+        if (initialMatch) {
+            setBrandLogoIndicator(initialMatch);
+        }
+    }
+
+    // Scoring algorithm
+    function scoreService(service, q) {
+        const nameLower = service.name.toLowerCase();
+        let score = 0;
+
+        if (nameLower === q) {
+            score = 2000;
+        } else if (nameLower.startsWith(q)) {
+            score = 1000 + service.popularity - nameLower.length;
+        } else {
+            const words = nameLower.split(/\s+/);
+            const wordMatch = words.some(w => w.startsWith(q));
+            if (wordMatch) {
+                score = 800 + service.popularity;
+            } else {
+                const aliasStarts = service.aliases.some(a => a.startsWith(q));
+                if (aliasStarts) {
+                    score = 600 + service.popularity;
+                } else if (nameLower.includes(q)) {
+                    score = 400 + service.popularity - nameLower.indexOf(q);
+                } else {
+                    const aliasContains = service.aliases.some(a => a.includes(q));
+                    if (aliasContains) {
+                        score = 200 + service.popularity;
+                    }
+                }
+            }
+        }
+        return score;
+    }
+
+    function highlightMatch(text, query) {
+        if (!query) return text;
+        const idx = text.toLowerCase().indexOf(query.toLowerCase());
+        if (idx === -1) return text;
+        const before = text.substring(0, idx);
+        const match = text.substring(idx, idx + query.length);
+        const after = text.substring(idx + query.length);
+        return before + '<span class="autocomplete-match">' + match + '</span>' + after;
+    }
+
+    function renderSuggestions(services, query) {
+        currentSuggestions = services;
+        activeSuggestionIndex = -1;
+
+        if (services.length === 0) {
+            dropdown.innerHTML = '<div class="autocomplete-empty">No recognized services. You can continue typing custom name.</div>';
+            dropdown.style.display = "block";
+            return;
+        }
+
+        let html = "";
+        services.forEach((service, index) => {
+            const highlightedName = highlightMatch(service.name, query);
+            html += `
+                <div class="autocomplete-item" data-index="${index}">
+                    <div class="autocomplete-logo-box has-logo">
+                        <img src="${service.logoUrl}" alt="${service.name}" class="service-brand-logo">
+                    </div>
+                    <div class="autocomplete-text">
+                        <span class="autocomplete-name">${highlightedName}</span>
+                        <span class="autocomplete-category">${service.category}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        dropdown.innerHTML = html;
+        dropdown.style.display = "block";
+
+        const items = dropdown.querySelectorAll(".autocomplete-item");
+        items.forEach(item => {
+            item.addEventListener("mousedown", function (e) {
+                e.preventDefault();
+                const idx = parseInt(this.getAttribute("data-index"), 10);
+                selectService(currentSuggestions[idx]);
+            });
+        });
+    }
+
+    function selectService(service) {
+        if (!service) return;
+        serviceInput.value = service.name;
+        setBrandLogoIndicator(service);
+
+        if (categorySelect && service.category) {
+            const option = Array.from(categorySelect.options).find(
+                opt => opt.value.toLowerCase() === service.category.toLowerCase()
+            );
+            if (option) {
+                categorySelect.value = option.value;
+            }
+        }
+
+        closeDropdown();
+
+        const monthlyCostInput = document.getElementById("monthly-cost");
+        if (monthlyCostInput) {
+            monthlyCostInput.focus();
+        }
+    }
+
+    function closeDropdown() {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = "";
+        activeSuggestionIndex = -1;
+        currentSuggestions = [];
+    }
+
+    function updateActiveItem(index) {
+        const items = dropdown.querySelectorAll(".autocomplete-item");
+        items.forEach((item, idx) => {
+            if (idx === index) {
+                item.classList.add("active");
+                item.scrollIntoView({ block: "nearest" });
+            } else {
+                item.classList.remove("active");
+            }
+        });
+        activeSuggestionIndex = index;
+    }
+
+    serviceInput.addEventListener("input", function () {
+        const val = this.value.trim().toLowerCase();
+
+        if (!val) {
+            resetLogoIndicator();
+            closeDropdown();
+            return;
+        }
+
+        const exactMatch = findServiceByName(this.value);
+        if (exactMatch) {
+            setBrandLogoIndicator(exactMatch);
+        } else {
+            setFallbackLogoIndicator(this.value);
+        }
+
+        const scored = [];
+        POPULAR_SERVICES.forEach(service => {
+            const score = scoreService(service, val);
+            if (score > 0) {
+                scored.push({ service, score });
+            }
+        });
+
+        scored.sort((a, b) => b.score - a.score);
+        const topResults = scored.slice(0, 7).map(item => item.service);
+
+        renderSuggestions(topResults, this.value.trim());
+    });
+
+    serviceInput.addEventListener("keydown", function (e) {
+        const isDropdownVisible = dropdown.style.display === "block" && currentSuggestions.length > 0;
+
+        if (e.key === "ArrowDown") {
+            if (isDropdownVisible) {
+                e.preventDefault();
+                let nextIdx = activeSuggestionIndex + 1;
+                if (nextIdx >= currentSuggestions.length) {
+                    nextIdx = 0;
+                }
+                updateActiveItem(nextIdx);
+            } else if (serviceInput.value.trim().length > 0) {
+                serviceInput.dispatchEvent(new Event("input"));
+            }
+        } else if (e.key === "ArrowUp") {
+            if (isDropdownVisible) {
+                e.preventDefault();
+                let prevIdx = activeSuggestionIndex - 1;
+                if (prevIdx < 0) {
+                    prevIdx = currentSuggestions.length - 1;
+                }
+                updateActiveItem(prevIdx);
+            }
+        } else if (e.key === "Enter") {
+            if (isDropdownVisible && activeSuggestionIndex >= 0 && activeSuggestionIndex < currentSuggestions.length) {
+                e.preventDefault();
+                e.stopPropagation();
+                selectService(currentSuggestions[activeSuggestionIndex]);
+                return;
+            }
+        } else if (e.key === "Escape") {
+            closeDropdown();
+        }
+    });
+
+    serviceInput.addEventListener("blur", function () {
+        setTimeout(() => {
+            closeDropdown();
+            const matched = findServiceByName(serviceInput.value);
+            if (matched) {
+                setBrandLogoIndicator(matched);
+            } else if (serviceInput.value.trim()) {
+                setFallbackLogoIndicator(serviceInput.value);
+            } else {
+                resetLogoIndicator();
+            }
+        }, 200);
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest(".service-autocomplete-wrap")) {
+            closeDropdown();
+        }
+    });
+
+});

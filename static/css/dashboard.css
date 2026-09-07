@@ -20,126 +20,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   1. Left Application Sidebar
-   -------------------------------------------------------------------------- */
-.dashboard-sidebar {
-    width: 230px;
-    flex-shrink: 0;
-    background: #FFFFFF;
-    border-right: 1px solid #E2E8F0;
-    padding: 24px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.sidebar-nav-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.sidebar-nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #475569;
-    text-decoration: none;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.sidebar-nav-item i {
-    font-size: 1.1rem;
-    color: #64748B;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-}
-
-.sidebar-nav-item:hover {
-    background-color: #F1F5F9;
-    color: #0F172A;
-}
-
-.sidebar-nav-item:hover i {
-    color: #0F172A;
-}
-
-.sidebar-nav-item.active {
-    background-color: #F8F5EE; /* warm subtle accent from reference */
-    color: #0F172A;
-    font-weight: 600;
-}
-
-.sidebar-nav-item.active i {
-    color: #0F172A;
-}
-
-.sidebar-logout-item {
-    color: #64748B;
-}
-
-.sidebar-logout-item:hover {
-    background-color: #FEF2F2;
-    color: #B91C1C;
-}
-
-.sidebar-logout-item:hover i {
-    color: #B91C1C;
-}
-
-.sidebar-divider {
-    height: 1px;
-    background-color: #E2E8F0;
-    margin: 16px 0;
-}
-
-/* Sidebar Footer Card */
-.sidebar-footer-card {
-    background: #EFF6FF;
-    border-radius: 8px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: auto;
-}
-
-.footer-card-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
-    background: #DBEAFE;
-    color: #2563EB;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-}
-
-.footer-card-body strong {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #0F172A;
-    line-height: 1.25;
-}
-
-.footer-card-body span {
-    font-size: 0.6875rem;
-    color: #64748B;
-    margin-top: 2px;
-    display: block;
-}
-
-/* --------------------------------------------------------------------------
-   2. Main Dashboard Area
+   1. Main Dashboard Area (Shell navigation handled globally by sidebar.css)
    -------------------------------------------------------------------------- */
 .dashboard-main-area {
     flex: 1;
@@ -148,7 +29,7 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
-    max-width: 1440px;
+    max-width: 1600px;
 }
 
 /* Header Row */
@@ -953,9 +834,6 @@
 }
 
 @media (max-width: 991.98px) {
-    .dashboard-sidebar {
-        display: none;
-    }
     .dashboard-main-area {
         padding: 20px 16px 60px 16px;
     }

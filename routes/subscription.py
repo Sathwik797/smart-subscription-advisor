@@ -13,6 +13,7 @@ from controllers.subscription_controller import (
     export_csv as export_csv_controller,
     spending_analytics as spending_analytics_controller,
     subscriptions as subscriptions_controller,
+    update_subscription_usage_controller,
 )
 from routes.auth import auth
 
@@ -21,6 +22,12 @@ from routes.auth import auth
 @login_required
 def add_subscription():
     return add_subscription_controller()
+
+
+@auth.route("/subscriptions/<int:id>/usage", methods=["POST"])
+@login_required
+def update_subscription_usage(id):
+    return update_subscription_usage_controller(id)
 
 
 @auth.route("/subscriptions")

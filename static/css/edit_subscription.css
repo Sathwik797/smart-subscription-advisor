@@ -1,606 +1,942 @@
-/* Edit Subscription companion styling for add_subscription.css. */
-body:has(.edit-subscription-page) {
-    background: #f7f8fc;
-    color: #26324b;
-}
+/* ==========================================================================
+   Smart Subscription Advisor - Edit Subscription Page Stylesheet
+   Design System: Modern Premium SaaS / Fintech Workspace
+   Visual Source of Truth: Approved Reference Design
+   ========================================================================== */
 
-body:has(.edit-subscription-page)>nav {
-    position: sticky;
-    top: 0;
-    z-index: 1030;
-    background: rgba(255,255,255,.9)!important;
-    border-bottom: 1px solid #e8ebf2;
-    backdrop-filter: blur(16px);
-}
-
-body:has(.edit-subscription-page)>nav .navbar-brand {
-    color: #26324b;
-    font-weight: 800;
-}
-
-body:has(.edit-subscription-page)>nav .nav-link {
-    color: #6f7b91;
-    font-weight: 650;
-}
-
-body:has(.edit-subscription-page)>.container.mt-4 {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-}
-
-body:has(.edit-subscription-page)>.container.mt-4>.alert {
-    position: fixed;
-    z-index: 1100;
-    top: 20px;
-    right: 20px;
-    border-radius: 12px;
-    box-shadow: 0 12px 28px rgba(38,50,75,.15);
-}
-
+/* Main Canvas Wrapper */
 .edit-subscription-page {
-    min-height: 100vh;
-    font-family: Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    animation: pageFade .35s ease both;
+    background-color: #F8FAFC;
+    min-height: calc(100vh - 64px);
+    width: 100%;
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+    color: #0F172A;
 }
 
-.edit-subscription-container {
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 24px;
-    padding-bottom: 48px;
-    padding-left: 24px;
-    padding-right: 24px;
+.edit-sub-app-layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+    width: 100%;
 }
 
+/* --------------------------------------------------------------------------
+   1. Main Workspace Content Area
+   -------------------------------------------------------------------------- */
+.edit-sub-main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 40px 48px;
+    background-color: #F8FAFC;
+}
+
+.edit-sub-content-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   2. Page Header
+   -------------------------------------------------------------------------- */
 .edit-page-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    margin-bottom: 24px;
     gap: 16px;
-    margin-bottom: 20px;
-}
-
-.page-kicker,.card-kicker {
-    display: block;
-    color: #8079df;
-    font-size: .67rem;
-    font-weight: 800;
-    letter-spacing: .08em;
-    text-transform: uppercase;
 }
 
 .page-kicker {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #6366F1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
 }
 
-.edit-page-header h1 {
-    margin: 8px 0 6px;
-    color: #202b45;
-    font-size: clamp(1.85rem,3.4vw,2.55rem);
+.page-kicker i {
+    font-size: 0.75rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
     font-weight: 800;
-    letter-spacing: -.055em;
+    color: #0F172A;
+    letter-spacing: -0.03em;
+    margin: 0 0 4px;
+    line-height: 1.2;
 }
 
-.edit-page-header p {
+.page-subtitle {
+    font-size: 0.84rem;
+    color: #64748B;
     margin: 0;
-    color: #79859a;
-    font-size: .91rem;
-}
-
-.edit-subscription-page .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    height: auto;
-    border-radius: 9px;
-    font-size: .79rem;
-    font-weight: 750;
 }
 
 .back-button {
-    padding: 10px 12px;
-    border: 1px solid #dfe4ee;
-    background: #fff;
-    color: #657188;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .back-button:hover {
-    border-color: #c5c0ff;
-    background: #f6f5ff;
-    color: #635bff;
+    background: #F1F5F9;
+    color: #0F172A;
+    border-color: #CBD5E1;
 }
 
-.edit-form-card,.sidebar-card {
-    border: 1px solid #e5e8f1;
+/* --------------------------------------------------------------------------
+   3. Two-Column Workspace Grid
+   -------------------------------------------------------------------------- */
+.workspace-grid {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.workspace-left,
+.workspace-right {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   4. Left Main Form Card
+   -------------------------------------------------------------------------- */
+.edit-form-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
     border-radius: 16px;
-    background: rgba(255,255,255,.82);
-    box-shadow: 0 10px 24px rgba(38,50,75,.055);
-    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
 .form-card-heading {
     display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 28px 29px 0;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
 }
 
-.form-card-heading h2,.sidebar-card h2,.security-sidebar h2 {
-    margin: 5px 0 4px;
-    color: #29354e;
-    font-size: 1.13rem;
-    font-weight: 800;
-    letter-spacing: -.03em;
+.form-card-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #EEF2FF;
+    color: #6366F1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
 }
 
-.form-card-heading p {
+.form-card-title-wrap h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+}
+
+.form-card-title-wrap p {
+    font-size: 0.8125rem;
+    color: #64748B;
     margin: 0;
-    color: #8b95a7;
-    font-size: .75rem;
-}
-
-.form-heading-icon {
-    display: grid;
-    flex: 0 0 39px;
-    height: 39px;
-    place-items: center;
-    border-radius: 11px;
-    background: #efefff;
-    color: #635bff;
-    font-size: 1rem;
 }
 
 .subscription-form {
-    padding: 25px 29px 29px;
+    padding: 0;
+    margin: 0;
+}
+
+.form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 16px;
 }
 
 .form-field {
-    margin-bottom: 19px;
+    margin-bottom: 16px;
+}
+
+.form-row-2col .form-field {
+    margin-bottom: 0;
 }
 
 .edit-subscription-page .form-label {
-    color: #49556d;
-    font-size: .78rem;
-    font-weight: 750;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.field-hint {
+    font-size: 0.72rem;
+    color: #94A3B8;
+    margin-top: 5px;
+    line-height: 1.3;
+}
+
+.edit-subscription-page .form-control,
+.edit-subscription-page .form-select {
+    height: 44px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: #0F172A;
+    font-size: 0.84rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.edit-subscription-page .form-control:focus,
+.edit-subscription-page .form-select:focus {
+    border-color: #0F172A;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+    outline: none;
 }
 
 .input-icon-wrap {
     position: relative;
 }
 
-.input-icon-wrap>i,.currency-wrap>span {
+.input-icon-wrap.currency-wrap > span {
     position: absolute;
-    z-index: 2;
-    top: 50%;
     left: 14px;
-    color: #939cad;
-    font-size: .9rem;
+    top: 50%;
     transform: translateY(-50%);
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.875rem;
+    z-index: 2;
+    pointer-events: none;
 }
 
-.currency-wrap>span {
-    color: #635bff;
-    font-size: 1rem;
-    font-weight: 800;
+.input-icon-wrap.currency-wrap input {
+    padding-left: 32px;
 }
 
-.edit-subscription-page .form-control,.edit-subscription-page .form-select {
-    height: 49px;
-    border: 1px solid #dfe4ed;
-    border-radius: 9px;
-    background-color: #fff;
-    color: #4f5b73;
-    font-size: .83rem;
-    transition: border-color .2s,box-shadow .2s;
+.input-icon-wrap.select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-left: 14px;
+    padding-right: 32px;
+    cursor: pointer;
 }
 
-.edit-subscription-page .form-control {
-    padding: 0 15px 0 40px;
+.input-icon-wrap.select-wrap select.prefix-select {
+    padding-left: 38px;
 }
 
-.edit-subscription-page .form-select {
-    padding-left: 40px;
+.select-prefix-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 2;
 }
 
-.edit-subscription-page .form-control:focus,.edit-subscription-page .form-select:focus {
-    border-color: #756bf3;
-    box-shadow: 0 0 0 4px rgba(99,91,255,.11);
+.input-prefix-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 2;
 }
 
-.usage-note {
+.prefix-input {
+    padding-left: 38px !important;
+}
+
+.input-icon-wrap.select-wrap .select-chevron {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+.input-icon-wrap.date-wrap > i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.input-icon-wrap.date-wrap input {
+    padding-left: 38px;
+}
+
+.input-icon-wrap.category-wrap select {
+    padding-left: 38px;
+}
+
+.input-icon-wrap.category-wrap > i.category-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   5. Usage & Value Section (Inside Left Card)
+   -------------------------------------------------------------------------- */
+.usage-value-section {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #F1F5F9;
+}
+
+.usage-section-heading {
     display: flex;
-    gap: 9px;
-    margin: 1px 0 20px;
-    padding: 11px 12px;
-    border: 1px solid #e4e2ff;
-    border-radius: 9px;
-    background: #f8f7ff;
-}
-
-.usage-note>span {
-    display: grid;
-    flex: 0 0 24px;
-    height: 24px;
-    place-items: center;
-    border-radius: 7px;
-    background: #ebe9ff;
-    color: #635bff;
-    font-size: .75rem;
-}
-
-.usage-note p {
-    margin: 0;
-    color: #7c86a0;
-    font-size: .68rem;
-    line-height: 1.55;
-}
-
-.usage-note strong {
-    color: #5f67a0;
-}
-
-.priority-panel {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding: 15px;
-    border: 1px solid #e8ebf2;
-    border-radius: 11px;
-    background: #fafbfe;
+    margin-bottom: 16px;
 }
 
-.priority-panel h3,.insight-panel h3 {
-    margin: 4px 0;
-    color: #3f4b63;
-    font-size: .87rem;
-    font-weight: 800;
-}
-
-.priority-panel p {
-    max-width: 430px;
-    margin: 0;
-    color: #8c96a9;
-    font-size: .66rem;
-    line-height: 1.45;
-}
-
-.priority-badge,.insight-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 8px;
-    border-radius: 99px;
-    font-size: .67rem;
-    font-weight: 800;
-    white-space: nowrap;
-}
-
-.high {
-    background: #e5f8ef;
-    color: #20926c;
-}
-
-.medium {
-    background: #fff2e4;
-    color: #d58b32;
-}
-
-.low {
-    background: #fff0f1;
-    color: #cd5b65;
-}
-
-.insight-panel {
-    margin-top: 18px;
-    padding: 18px;
-    border: 1px solid #e5e2ff;
-    border-radius: 12px;
-    background: linear-gradient(135deg,#fafaff,#f3f2ff);
-}
-
-.insight-head {
+.usage-section-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #EEF2FF;
+    color: #6366F1;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-}
-
-.insight-head h3 i {
-    color: #756cf0;
-}
-
-.score-circle {
-    display: grid;
-    grid-template-columns: auto auto;
-    align-content: center;
     justify-content: center;
-    width: 53px;
-    height: 53px;
-    border: 4px solid #d9d6ff;
-    border-top-color: #635bff;
-    border-right-color: #635bff;
-    border-radius: 50%;
-    color: #635bff;
+    font-size: 0.95rem;
+    flex-shrink: 0;
 }
 
-.score-circle strong {
-    font-size: .98rem;
-    font-weight: 800;
-}
-
-.score-circle small {
-    align-self: end;
-    margin-bottom: 10px;
-    font-size: .5rem;
-}
-
-.insight-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 14px;
-}
-
-.insight-grid h4 {
-    margin: 0 0 7px;
-    color: #5c6684;
-    font-size: .7rem;
-    font-weight: 800;
-}
-
-.insight-reasons {
-    display: grid;
-    gap: 6px;
+.usage-section-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #0F172A;
     margin: 0;
-    color: #788399;
-    font-size: .66rem;
 }
 
-.insight-reasons i {
-    display: inline-grid;
-    width: 16px;
-    height: 16px;
-    margin-right: 5px;
-    place-items: center;
-    border-radius: 50%;
-    background: #e4f8ef;
-    color: #1ba778;
-    font-size: .55rem;
+.usage-section-subtitle {
+    font-size: 0.75rem;
+    color: #64748B;
+    margin: 1px 0 0;
 }
 
-.recommendation-box {
-    padding: 11px;
-    border: 1px solid #dfdcff;
-    border-radius: 9px;
-    background: #fff;
+.compact-usage-guide {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.73rem;
+    color: #64748B;
+    margin-top: 14px;
+    line-height: 1.4;
 }
 
-.recommendation-box>span {
-    color: #635bff;
-    font-size: .66rem;
-    font-weight: 800;
-}
-
-.recommendation-box p {
-    margin: 5px 0 9px;
-    color: #7e899f;
-    font-size: .66rem;
-    line-height: 1.45;
+.compact-usage-guide i {
+    font-size: 0.85rem;
+    flex-shrink: 0;
 }
 
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 9px;
-    margin-top: 23px;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 14px;
 }
 
 .cancel-button {
-    padding: 10px 15px;
-    border: 1px solid #dfe4ee;
-    background: #fff;
-    color: #6e7a90;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
 }
 
 .cancel-button:hover {
-    background: #f5f6f9;
-    color: #4f5d74;
+    background: #F8FAFC;
+    color: #0F172A;
+    border-color: #CBD5E1;
 }
 
 .submit-button {
-    padding: 11px 15px;
-    border: 0;
-    background: #635bff;
-    box-shadow: 0 10px 20px rgba(99,91,255,.23);
-    color: #fff;
-    transition: transform .2s,box-shadow .2s,background .2s;
+    background: #0F172A;
+    border: 1px solid #0F172A;
+    color: #FFFFFF;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .submit-button:hover {
-    background: #5148e4;
-    box-shadow: 0 14px 26px rgba(99,91,255,.31);
-    color: #fff;
-    transform: translateY(-2px);
+    background: #1E293B;
+    border-color: #1E293B;
+    color: #FFFFFF;
 }
 
-.edit-sidebar {
+/* --------------------------------------------------------------------------
+   6. Right Side: Subscription Snapshot Card
+   -------------------------------------------------------------------------- */
+.snapshot-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+    padding: 24px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.snapshot-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.snapshot-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #ECFDF5;
+    color: #10B981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.snapshot-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+}
+
+.snapshot-subtitle {
+    font-size: 0.78rem;
+    color: #64748B;
+    margin: 0;
+}
+
+/* Identity Box */
+.snapshot-identity-box {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.snapshot-logo-container {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.snapshot-logo-container.has-logo {
+    background: transparent;
+    border: none;
+}
+
+.snapshot-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.snapshot-fallback-initial {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.snapshot-identity-meta {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    line-height: 1.25;
+}
+
+.snapshot-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.snapshot-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0F172A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.snapshot-status-pill {
+    background: #ECFDF5;
+    color: #10B981;
+    font-size: 0.6875rem;
+    font-weight: 650;
+    padding: 2px 7px;
+    border-radius: 6px;
+}
+
+.snapshot-category-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 2px;
+}
+
+.snapshot-tagline {
+    font-size: 0.72rem;
+    color: #94A3B8;
+}
+
+/* Details list */
+.snapshot-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.snapshot-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8125rem;
+    padding: 3px 0;
+}
+
+.detail-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748B;
+    font-weight: 500;
+}
+
+.detail-label i {
+    color: #94A3B8;
+    font-size: 0.85rem;
+    width: 16px;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.detail-hint {
+    font-size: 0.6875rem;
+    color: #94A3B8;
+    display: block;
+    line-height: 1.1;
+    margin-top: 1px;
+}
+
+.snapshot-divider {
+    height: 1px;
+    background-color: #F1F5F9;
+    margin: 16px 0;
+}
+
+.snapshot-priority-section {
+    margin-bottom: 16px;
+}
+
+.priority-section-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.priority-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 6px;
+}
+
+.priority-pill.low {
+    background: #ECFDF5;
+    color: #10B981;
+}
+
+.priority-pill.medium {
+    background: #FFFBEB;
+    color: #F59E0B;
+}
+
+.priority-pill.high {
+    background: #FEF2F2;
+    color: #EF4444;
+}
+
+.priority-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.priority-section-hint {
+    font-size: 0.72rem;
+    color: #94A3B8;
+    margin: 2px 0 0;
+}
+
+.stay-in-control-banner {
+    background: #EFF6FF;
+    border: 1px solid #DBEAFE;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.control-icon-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #DBEAFE;
+    color: #2563EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.control-text strong {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1E3A8A;
+    margin-bottom: 1px;
+}
+
+.control-text p {
+    font-size: 0.72rem;
+    color: #3B82F6;
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   7. Bottom Section: Smart Subscription Insights Card
+   -------------------------------------------------------------------------- */
+.insights-full-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+    padding: 24px 28px;
+    margin-top: 24px;
+}
+
+.insights-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.insights-header-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #EEF2FF;
+    color: #6366F1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.insights-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+}
+
+.insights-subtitle {
+    font-size: 0.78rem;
+    color: #64748B;
+    margin: 0;
+}
+
+.insights-columns-grid {
     display: grid;
+    grid-template-columns: 1fr 1.2fr 1.3fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.insights-col-title {
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: #0F172A;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.insights-col-title i {
+    color: #6366F1;
+}
+
+/* Col 1: Score Donut */
+.score-display-box {
+    display: flex;
+    align-items: center;
     gap: 16px;
 }
 
-.sidebar-card {
-    padding: 21px;
-    transition: transform .2s,box-shadow .2s;
+.score-donut-wrap {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
 }
 
-.sidebar-card:hover {
-    box-shadow: 0 15px 28px rgba(38,50,75,.09);
-    transform: translateY(-3px);
+.score-donut {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
 }
 
-.sidebar-icon {
-    display: grid;
-    width: 34px;
-    height: 34px;
-    margin-bottom: 13px;
-    place-items: center;
-    border-radius: 9px;
-    background: #e6f8ef;
-    color: #1aa778;
+.donut-bg {
+    fill: none;
+    stroke: #F1F5F9;
+    stroke-width: 3.4;
 }
 
-.sidebar-icon.orange {
-    background: #fff2e4;
-    color: #e69132;
+.donut-val {
+    fill: none;
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.5s ease;
 }
 
-.summary-line {
+.score-donut-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    line-height: 1;
+}
+
+.score-num {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0F172A;
+    display: block;
+}
+
+.score-total {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #94A3B8;
+}
+
+.score-meta-text {
     display: flex;
-    justify-content: space-between;
-    gap: 9px;
-    padding: 10px 0;
-    border-top: 1px solid #eef0f5;
-    color: #7b879b;
-    font-size: .71rem;
+    flex-direction: column;
 }
 
-.summary-line:first-of-type {
-    margin-top: 12px;
-}
-
-.summary-line strong {
-    color: #4e5a72;
-    font-size: .72rem;
-    text-align: right;
-}
-
-.tips-card h2 {
-    margin-bottom: 12px;
-}
-
-.tip-row {
-    padding: 9px 0;
-    border-top: 1px solid #eef0f5;
-    color: #778399;
-    font-size: .71rem;
-    font-weight: 650;
-}
-
-.tip-row span {
+.score-badge {
     display: inline-block;
-    width: 22px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    width: fit-content;
+    margin-bottom: 6px;
 }
 
-.security-sidebar {
-    padding: 20px;
-    border-radius: 15px;
-    background: linear-gradient(135deg,#29255d,#4d42a8);
-    box-shadow: 0 13px 26px rgba(49,42,112,.16);
-    color: #dedbff;
+.score-badge.low-value {
+    background: #FEF2F2;
+    color: #DC2626;
 }
 
-.security-sidebar h2 {
-    margin-bottom: 13px;
-    color: #fff;
+.score-badge.fair-value {
+    background: #FFFBEB;
+    color: #D97706;
 }
 
-.security-sidebar>div {
-    padding: 8px 0;
-    border-top: 1px solid rgba(255,255,255,.12);
-    color: #d5d1f5;
-    font-size: .72rem;
-    font-weight: 650;
+.score-badge.high-value {
+    background: #ECFDF5;
+    color: #059669;
 }
 
-.security-sidebar>div i {
-    width: 21px;
-    color: #9c93ff;
+.score-desc {
+    font-size: 0.75rem;
+    color: #64748B;
+    margin: 0;
+    line-height: 1.35;
 }
 
-.security-sidebar .card-kicker {
-    color: #bdb7ff;
+/* Col 2: Why This Matters */
+.insight-reasons-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-@keyframes pageFade {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
+.insight-reasons-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: #475569;
+    line-height: 1.35;
+}
+
+.insight-reasons-list li i {
+    color: #10B981;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+/* Col 3: Recommendation */
+.recommendation-callout-card {
+    background: #F5F3FF;
+    border-left: 3px solid #6366F1;
+    border-radius: 8px;
+    padding: 14px 16px;
+}
+
+.recommendation-text-primary {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #1E1B4B;
+    margin: 0 0 4px;
+    line-height: 1.35;
+}
+
+.recommendation-text-secondary {
+    font-size: 0.75rem;
+    color: #6D28D9;
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   8. Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+    .workspace-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .insights-columns-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
-    to {
-        opacity: 1;
-        transform: none;
+    .edit-sub-main-content {
+        padding: 24px 20px 36px;
     }
-
 }
 
-@media(max-width:991.98px) {
-    .edit-sidebar {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .security-sidebar {
-        grid-column: 1/-1;
-    }
-
-}
-
-@media(max-width:767.98px) {
-    .edit-subscription-container {
-        padding-top: 30px;
-    }
-
-    .edit-page-header {
-        align-items: flex-start;
-        flex-direction: column;
-        margin-bottom: 24px;
-    }
-
-    .edit-sidebar {
+@media (max-width: 575.98px) {
+    .form-row-2col {
         grid-template-columns: 1fr;
     }
 
-    .security-sidebar {
-        grid-column: auto;
-    }
-
-    .form-card-heading,.subscription-form {
-        padding-left: 21px;
-        padding-right: 21px;
-    }
-
-}
-
-@media(max-width:460px) {
-    .edit-page-header h1 {
-        font-size: 1.85rem;
+    .edit-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
     .back-button {
         width: 100%;
-    }
-
-    .form-card-heading {
-        padding-top: 21px;
-    }
-
-    .form-card-heading p {
-        display: none;
-    }
-
-    .subscription-form {
-        padding-top: 20px;
-        padding-bottom: 21px;
-    }
-
-    .insight-grid {
-        grid-template-columns: 1fr;
+        justify-content: center;
     }
 
     .form-actions {
@@ -610,14 +946,4 @@ body:has(.edit-subscription-page)>.container.mt-4>.alert {
     .form-actions .btn {
         width: 100%;
     }
-
-    .priority-panel {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .usage-note {
-        margin-bottom: 17px;
-    }
-
 }

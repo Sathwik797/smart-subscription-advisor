@@ -16,13 +16,19 @@ from validators.subscription_validator import subscription_validator
 def add_subscription():
     """Handle adding a subscription for the current user."""
     if request.method == "POST":
-        service_name = request.form.get("service_name", "").strip()
-        monthly_cost = request.form.get("monthly_cost")
-        category = request.form.get("category")
-        start_date = request.form.get("start_date")
-        billing_cycle = request.form.get("billing_cycle")
-        usage_frequency = request.form.get("usage_frequency")
-        usage_hours = request.form.get("usage_hours")
+        is_ajax = (
+            request.headers.get("X-Requested-With") == "XMLHttpRequest"
+            or request.is_json
+            or "application/json" in request.headers.get("Accept", "")
+        )
+
+        service_name = (request.form.get("service_name") or (request.get_json(silent=True) or {}).get("service_name", "")).strip()
+        monthly_cost = request.form.get("monthly_cost") if not request.is_json else (request.get_json(silent=True) or {}).get("monthly_cost")
+        category = request.form.get("category") if not request.is_json else (request.get_json(silent=True) or {}).get("category")
+        start_date = request.form.get("start_date") if not request.is_json else (request.get_json(silent=True) or {}).get("start_date")
+        billing_cycle = request.form.get("billing_cycle") if not request.is_json else (request.get_json(silent=True) or {}).get("billing_cycle")
+        usage_frequency = request.form.get("usage_frequency") if not request.is_json else (request.get_json(silent=True) or {}).get("usage_frequency")
+        usage_hours = request.form.get("usage_hours") if not request.is_json else (request.get_json(silent=True) or {}).get("usage_hours")
 
         try:
             subscription_validator.validate_create(
@@ -47,19 +53,66 @@ def add_subscription():
                 usage_hours=usage_hours,
             )
             logger.info("Subscription created")
+
+            if is_ajax:
+                return {
+                    "success": True,
+                    "message": "Subscription added successfully!",
+                    "subscription_id": subscription.id,
+                    "service_name": subscription.service_name,
+                    "redirect_url": url_for("auth.subscriptions"),
+                }, 201
+
             flash("Subscription added successfully!", "success")
             return redirect(url_for("auth.subscriptions"))
         except ValidationException as exc:
             logger.warning("Subscription validation failed: %s", str(exc))
-            if request.path.startswith("/api") or request.is_json:
-                raise
+            if is_ajax or request.path.startswith("/api"):
+                return {"success": False, "message": str(exc)}, 400
             flash(str(exc), "danger")
             return redirect(url_for("auth.add_subscription"))
         except ValueError:
+            if is_ajax or request.path.startswith("/api"):
+                return {"success": False, "message": "Please enter valid values in all fields."}, 400
             flash("Please enter valid values in all fields.", "danger")
             return redirect(url_for("auth.add_subscription"))
 
     return render_template("add_subscription.html")
+
+
+def update_subscription_usage_controller(id):
+    """Handle saving optional usage details after subscription creation."""
+    is_ajax = (
+        request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        or request.is_json
+        or "application/json" in request.headers.get("Accept", "")
+    )
+
+    usage_frequency = request.form.get("usage_frequency") or (request.get_json(silent=True) or {}).get("usage_frequency")
+    usage_hours = request.form.get("usage_hours") or (request.get_json(silent=True) or {}).get("usage_hours")
+
+    try:
+        subscription_service.update_subscription_usage(
+            user=current_user,
+            subscription_id=id,
+            usage_frequency=usage_frequency,
+            usage_hours=usage_hours,
+        )
+        logger.info("Subscription usage updated for id %s", id)
+        flash("Usage details saved successfully!", "success")
+        if is_ajax:
+            return {
+                "success": True,
+                "message": "Usage details saved successfully!",
+                "redirect_url": url_for("auth.subscriptions"),
+            }, 200
+        return redirect(url_for("auth.subscriptions"))
+    except Exception as exc:
+        logger.warning("Failed to update subscription usage: %s", str(exc))
+        if is_ajax:
+            return {"success": False, "message": str(exc)}, 400
+        flash("Could not update usage details.", "danger")
+        return redirect(url_for("auth.subscriptions"))
 
 
 def subscriptions():

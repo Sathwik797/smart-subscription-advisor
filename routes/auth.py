@@ -17,6 +17,7 @@ from controllers.auth_controller import (
     register as register_controller,
     resend_verification as resend_verification_controller,
     reset_password as reset_password_controller,
+    settings as settings_controller,
     verify_email as verify_email_controller,
 )
 from middleware.rate_limiter import limiter
@@ -81,6 +82,12 @@ def profile():
 @login_required
 def edit_profile():
     return edit_profile_controller()
+
+
+@auth.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    return settings_controller()
 
 
 @auth.route("/logout")

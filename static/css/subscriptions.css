@@ -22,8 +22,8 @@
 .subscriptions-main-area {
     flex: 1;
     min-width: 0;
-    max-width: 1440px;
-    padding: 28px 36px 64px 36px;
+    max-width: 1600px;
+    padding: 24px 32px 64px 32px;
 }
 
 /* --------------------------------------------------------------------------
@@ -229,7 +229,7 @@
    -------------------------------------------------------------------------- */
 .subscriptions-workspace-grid {
     display: grid;
-    grid-template-columns: 2.15fr 1fr;
+    grid-template-columns: minmax(0, 1fr) 340px;
     gap: 20px;
     align-items: start;
 }
@@ -388,7 +388,7 @@
 }
 
 .subscriptions-saas-table thead th {
-    padding: 10px 18px;
+    padding: 10px 14px;
     font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -396,6 +396,7 @@
     color: #64748B;
     background-color: #FFFFFF;
     border-bottom: 1px solid #E2E8F0;
+    white-space: nowrap;
 }
 
 .subscriptions-saas-table tbody tr {
@@ -408,7 +409,7 @@
 }
 
 .subscriptions-saas-table tbody td {
-    padding: 12px 18px;
+    padding: 12px 14px;
     color: #0F172A;
     vertical-align: middle;
 }

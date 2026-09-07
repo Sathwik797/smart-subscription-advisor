@@ -1,321 +1,273 @@
 {% extends "base.html" %}
 {% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/add_subscription.css') }}">
+
     <main class="add-subscription-page">
-        <div class="add-subscription-container container">
-            <header class="add-page-header">
-                <div>
-                    <span class="page-kicker">
-                        <i class="bi bi-plus-circle">
-                        </i>
-                        Subscription workspace
-                    </span>
-                    <h1>
-                        Add Subscription
-                    </h1>
-                    <p>
-                        Track a new subscription and monitor future recurring expenses.
-                    </p>
-                </div>
-                <a href="{{ url_for('auth.subscriptions') }}" class="btn back-button">
-                    <i class="bi bi-arrow-left">
-                    </i>
-                    Back to Subscriptions
-                </a>
-            </header>
-            <div class="row g-4 align-items-start">
-                <div class="col-lg-8">
-                    <section class="add-form-card">
-                        <div class="form-card-heading">
-                            <div>
-                                <span class="card-kicker">
-                                    Subscription details
-                                </span>
-                                <h2>
-                                    Tell us about this service
-                                </h2>
-                                <p>
-                                    Add the basics now and keep your recurring spending organized.
-                                </p>
-                            </div>
-                            <span class="form-heading-icon">
-                                <i class="bi bi-wallet2">
-                                </i>
+        <div class="add-sub-app-layout">
+            
+            <!-- Left Application Sidebar -->
+            {% with active_nav='add_subscription' %}
+                {% include "partials/sidebar.html" %}
+            {% endwith %}
+
+            <!-- Main Workspace Content -->
+            <div class="add-sub-main-content">
+                <div class="add-sub-content-inner">
+                    
+                    <!-- Page Header Section -->
+                    <header class="add-page-header">
+                        <div>
+                            <span class="page-kicker">
+                                <i class="bi bi-plus-circle"></i>
+                                SUBSCRIPTION WORKSPACE
                             </span>
+                            <h1 class="page-title">Add Subscription</h1>
+                            <p class="page-subtitle">Track a new subscription and monitor future recurring expenses.</p>
                         </div>
-                        <form method="POST" class="subscription-form">
-                            <div class="form-field service-autocomplete-wrap">
-                                <label class="form-label" for="service-name">
-                                    Service name
-                                </label>
-                                <div class="input-icon-wrap" id="serviceInputWrap">
-                                    <span class="service-logo-indicator" id="serviceLogoIndicator">
-                                        <i class="bi bi-grid-1x2"></i>
-                                    </span>
-                                    <input type="text" id="service-name" class="form-control" name="service_name" placeholder="e.g. Netflix" required autocomplete="off">
+                        <a href="{{ url_for('auth.subscriptions') }}" class="btn back-button">
+                            <i class="bi bi-arrow-left"></i>
+                            Back to Subscriptions
+                        </a>
+                    </header>
+
+                    <!-- Two-Column Workspace -->
+                    <div class="workspace-grid">
+                        
+                        <!-- LEFT COLUMN: Main Form Card -->
+                        <div class="workspace-left">
+                            <section class="add-form-card">
+                                <div class="form-card-heading">
+                                    <div class="form-card-icon-box">
+                                        <i class="bi bi-wallet2"></i>
+                                    </div>
+                                    <div class="form-card-title-wrap">
+                                        <h2>Subscription Details</h2>
+                                        <p>Add the essential details. You can update usage information later.</p>
+                                    </div>
                                 </div>
-                                <div class="service-autocomplete-dropdown" id="serviceAutocompleteDropdown" style="display: none;"></div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="monthly-cost">
-                                            Monthly cost
-                                        </label>
-                                        <div class="input-icon-wrap currency-wrap">
-                                            <span>
-                                                ₹
+
+                                <form method="POST" class="subscription-form" id="addSubscriptionForm">
+                                    <!-- 1. Service Name (Full width) -->
+                                    <div class="form-field service-autocomplete-wrap">
+                                        <label class="form-label" for="service-name">Service</label>
+                                        <div class="input-icon-wrap" id="serviceInputWrap">
+                                            <span class="service-logo-indicator" id="serviceLogoIndicator">
+                                                <i class="bi bi-grid-1x2"></i>
                                             </span>
-                                            <input type="number" id="monthly-cost" class="form-control" name="monthly_cost" min="0" step="1" placeholder="299" required>
+                                            <input type="text" id="service-name" class="form-control" name="service_name" placeholder="Search for a service" required autocomplete="off">
+                                        </div>
+                                        <div class="field-hint">Search for a service (e.g. Netflix, Spotify, YouTube)</div>
+                                        <div class="service-autocomplete-dropdown" id="serviceAutocompleteDropdown" style="display: none;"></div>
+                                    </div>
+
+                                    <!-- 2. Cost & Billing Cycle (Two columns) -->
+                                    <div class="form-row-2col">
+                                        <div class="form-field">
+                                            <label class="form-label" for="monthly-cost">Cost (₹)</label>
+                                            <div class="input-icon-wrap currency-wrap">
+                                                <span>₹</span>
+                                                <input type="number" id="monthly-cost" class="form-control" name="monthly_cost" min="0" step="1" placeholder="649" required>
+                                            </div>
+                                            <div class="field-hint">Enter the subscription cost</div>
+                                        </div>
+                                        <div class="form-field">
+                                            <label class="form-label" for="billing-cycle">Billing cycle</label>
+                                            <div class="input-icon-wrap select-wrap">
+                                                <select id="billing-cycle" class="form-select" name="billing_cycle" required>
+                                                    <option value="Monthly" selected>Monthly</option>
+                                                    <option value="Yearly">Yearly</option>
+                                                </select>
+                                                <i class="bi bi-chevron-down select-chevron"></i>
+                                            </div>
+                                            <div class="field-hint">How often you are billed</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. Next Renewal Date & Category (Two columns) -->
+                                    <div class="form-row-2col">
+                                        <div class="form-field">
+                                            <label class="form-label" for="start-date">Next renewal date</label>
+                                            <div class="input-icon-wrap date-wrap">
+                                                <i class="bi bi-calendar3"></i>
+                                                <input type="date" id="start-date" class="form-control" name="start_date" required>
+                                            </div>
+                                            <div class="field-hint">When is your next payment due?</div>
+                                        </div>
+                                        <div class="form-field">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <label class="form-label mb-0" for="category">Category</label>
+                                                <span class="category-status-pill" id="categoryStatusPill">Auto-detected</span>
+                                            </div>
+                                            <div class="input-icon-wrap select-wrap category-wrap">
+                                                <i class="bi bi-display category-icon"></i>
+                                                <select id="category" name="category" class="form-select secondary-category-select" required>
+                                                    <option value="Entertainment">Entertainment</option>
+                                                    <option value="Music">Music</option>
+                                                    <option value="Productivity">Productivity</option>
+                                                    <option value="Shopping">Shopping</option>
+                                                    <option value="Utilities">Utilities</option>
+                                                    <option value="Education">Education</option>
+                                                    <option value="Design">Design</option>
+                                                    <option value="Fitness">Fitness</option>
+                                                    <option value="Gaming">Gaming</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                                <i class="bi bi-chevron-down select-chevron"></i>
+                                            </div>
+                                            <div class="field-hint">Automatically detected, you can change it</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Form Actions -->
+                                    <div class="form-actions">
+                                        <a href="{{ url_for('auth.subscriptions') }}" class="btn cancel-button">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" class="btn submit-button" id="btnSubmitSubscription">
+                                            <i class="bi bi-plus-lg"></i>
+                                            Add Subscription
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- Secondary Optional Usage & Value Step (Post-Save Prompt) -->
+                                <div class="post-save-card" id="postSaveUsageCard" style="display: none;">
+                                    <div class="post-save-header">
+                                        <div class="post-save-check-icon">
+                                            <i class="bi bi-check-lg"></i>
+                                        </div>
+                                        <div>
+                                            <div class="post-save-status">Subscription added successfully</div>
+                                            <h3 class="post-save-heading">Want better recommendations?</h3>
+                                        </div>
+                                    </div>
+
+                                    <p class="post-save-intro">
+                                        Tell us how often you use this subscription to help Smart Subscription Advisor identify subscriptions you may not be getting enough value from.
+                                    </p>
+
+                                    <div class="post-save-form-fields">
+                                        <div class="form-field mb-3">
+                                            <label class="form-label" for="post-save-frequency">
+                                                Usage frequency
+                                            </label>
+                                            <div class="input-icon-wrap select-wrap">
+                                                <i class="bi bi-bar-chart"></i>
+                                                <select id="post-save-frequency" class="form-select">
+                                                    <option value="" selected disabled>Select usage frequency</option>
+                                                    <option value="Daily">Daily</option>
+                                                    <option value="Several times a week">Several times a week</option>
+                                                    <option value="Weekly">Weekly</option>
+                                                    <option value="Monthly">Monthly</option>
+                                                    <option value="Rarely">Rarely</option>
+                                                    <option value="Never">Never</option>
+                                                </select>
+                                                <i class="bi bi-chevron-down select-chevron"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-field mb-4">
+                                            <label class="form-label d-flex justify-content-between" for="post-save-hours">
+                                                <span>Hours used per week</span>
+                                                <span class="text-muted fw-normal">Optional</span>
+                                            </label>
+                                            <div class="input-icon-wrap">
+                                                <i class="bi bi-clock"></i>
+                                                <input type="number" id="post-save-hours" class="form-control" min="0" step="0.5" placeholder="e.g. 5">
+                                            </div>
+                                        </div>
+
+                                        <div class="post-save-actions">
+                                            <button type="button" class="btn cancel-button" id="btnSkipUsage">
+                                                Skip for Now
+                                            </button>
+                                            <button type="button" class="btn submit-button" id="btnSaveUsage">
+                                                <i class="bi bi-check2"></i>
+                                                Save Usage Details
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="category">
-                                            Category
-                                        </label>
-                                        <div class="input-icon-wrap select-wrap">
-                                            <i class="bi bi-folder2">
-                                            </i>
-                                            <select id="category" name="category" class="form-select" required>
-                                                <option value="Entertainment">
-                                                    Entertainment
-                                                </option>
-                                                <option value="Music">
-                                                    Music
-                                                </option>
-                                                <option value="Productivity">
-                                                    Productivity
-                                                </option>
-                                                <option value="Shopping">
-                                                    Shopping
-                                                </option>
-                                                <option value="Utilities">
-                                                    Utilities
-                                                </option>
-                                                <option value="Education">
-                                                    Education
-                                                </option>
-                                                <option value="Design">
-                                                    Design
-                                                </option>
-                                                <option value="Fitness">
-                                                    Fitness
-                                                </option>
-                                                <option value="Gaming">
-                                                    Gaming
-                                                </option>
-                                                <option value="Other">
-                                                    Other
-                                                </option>
-                                            </select>
+                            </section>
+                        </div>
+
+                        <!-- RIGHT COLUMN: Single "Track Smarter" Information Card -->
+                        <div class="workspace-right">
+                            <aside class="track-smarter-card">
+                                <div class="track-smarter-header">
+                                    <div class="track-smarter-icon-box">
+                                        <i class="bi bi-lightbulb"></i>
+                                    </div>
+                                    <h2 class="track-smarter-title">Track smarter</h2>
+                                    <p class="track-smarter-subtitle">
+                                        Stay on top of your recurring expenses with Smart Subscription Advisor.
+                                    </p>
+                                </div>
+
+                                <div class="benefit-list-group">
+                                    <div class="benefit-row">
+                                        <div class="benefit-icon-box icon-blue">
+                                            <i class="bi bi-calendar-event"></i>
+                                        </div>
+                                        <div class="benefit-text">
+                                            <h4 class="benefit-heading">Avoid unexpected renewals</h4>
+                                            <p class="benefit-sub">Get notified before you're charged.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="benefit-row">
+                                        <div class="benefit-icon-box icon-purple">
+                                            <i class="bi bi-bar-chart"></i>
+                                        </div>
+                                        <div class="benefit-text">
+                                            <h4 class="benefit-heading">Understand your spending</h4>
+                                            <p class="benefit-sub">See where your money goes.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="benefit-row">
+                                        <div class="benefit-icon-box icon-amber">
+                                            <i class="bi bi-stars"></i>
+                                        </div>
+                                        <div class="benefit-text">
+                                            <h4 class="benefit-heading">Find potential savings</h4>
+                                            <p class="benefit-sub">Get AI-powered recommendations.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="benefit-row">
+                                        <div class="benefit-icon-box icon-green">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div class="benefit-text">
+                                            <h4 class="benefit-heading">Keep everything in one place</h4>
+                                            <p class="benefit-sub">Manage all your subscriptions easily.</p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="start-date">
-                                            Start date
-                                        </label>
-                                        <div class="input-icon-wrap">
-                                            <i class="bi bi-calendar3">
-                                            </i>
-                                            <input type="date" id="start-date" class="form-control" name="start_date" required>
-                                        </div>
+
+                                <div class="track-smarter-divider"></div>
+
+                                <div class="privacy-note">
+                                    <div class="privacy-icon-box">
+                                        <i class="bi bi-lock"></i>
+                                    </div>
+                                    <div class="privacy-text">
+                                        <span class="privacy-primary">Your data is private and secure.</span>
+                                        <span class="privacy-secondary">Only you can see your subscriptions.</span>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="billing-cycle">
-                                            Billing cycle
-                                        </label>
-                                        <div class="input-icon-wrap select-wrap">
-                                            <i class="bi bi-arrow-repeat">
-                                            </i>
-                                            <select id="billing-cycle" class="form-select" name="billing_cycle" required>
-                                                <option value="Monthly" selected>
-                                                    Monthly
-                                                </option>
-                                                <option value="Yearly">
-                                                    Yearly
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="usage-frequency">
-                                            Usage frequency
-                                        </label>
-                                        <div class="input-icon-wrap select-wrap">
-                                            <i class="bi bi-bar-chart">
-                                            </i>
-                                            <select id="usage-frequency" name="usage_frequency" class="form-select" required>
-                                                <option value="" selected disabled>
-                                                    Select usage frequency
-                                                </option>
-                                                <option value="Daily">
-                                                    Daily
-                                                </option>
-                                                <option value="Weekly">
-                                                    Weekly
-                                                </option>
-                                                <option value="Monthly">
-                                                    Monthly
-                                                </option>
-                                                <option value="Rarely">
-                                                    Rarely
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-field">
-                                        <label class="form-label" for="usage-hours">
-                                            Hours used
-                                        </label>
-                                        <div class="input-icon-wrap">
-                                            <i class="bi bi-clock">
-                                            </i>
-                                            <input type="number" id="usage-hours" class="form-control" name="usage_hours" min="0" step="0.5" placeholder="e.g. 2.5" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="usage-note">
-                                <span>
-                                    <i class="bi bi-info-circle">
-                                    </i>
-                                </span>
-                                <p>
-                                    <strong>
-                                        How to enter usage:
-                                    </strong>
-                                    Daily = hours per day · Weekly = total hours per week · Monthly = total hours per month · Rarely = approximate monthly usage.
-                                </p>
-                            </div>
-                            <div class="form-actions">
-                                <a href="{{ url_for('auth.subscriptions') }}" class="btn cancel-button">
-                                    Cancel
-                                </a>
-                                <button type="submit" class="btn submit-button">
-                                    <i class="bi bi-plus-lg">
-                                    </i>
-                                    Add Subscription
-                                </button>
-                            </div>
-                        </form>
-                    </section>
-                </div>
-                <aside class="col-lg-4">
-                    <div class="add-sidebar">
-                        <section class="sidebar-card why-card">
-                            <span class="sidebar-icon">
-                                <i class="bi bi-graph-up-arrow">
-                                </i>
-                            </span>
-                            <span class="card-kicker">
-                                Plan with clarity
-                            </span>
-                            <h2>
-                                Why track subscriptions?
-                            </h2>
-                            <ul class="benefit-list list-unstyled">
-                                <li>
-                                    <i class="bi bi-check2">
-                                    </i>
-                                    Avoid unexpected renewals
-                                </li>
-                                <li>
-                                    <i class="bi bi-check2">
-                                    </i>
-                                    Understand monthly expenses
-                                </li>
-                                <li>
-                                    <i class="bi bi-check2">
-                                    </i>
-                                    Improve your budgeting
-                                </li>
-                                <li>
-                                    <i class="bi bi-check2">
-                                    </i>
-                                    Get smarter recommendations
-                                </li>
-                            </ul>
-                        </section>
-                        <section class="sidebar-card tips-card">
-                            <span class="sidebar-icon orange">
-                                <i class="bi bi-lightbulb">
-                                </i>
-                            </span>
-                            <span class="card-kicker">
-                                Small habits, big gains
-                            </span>
-                            <h2>
-                                Quick tips
-                            </h2>
-                            <div class="tip-row">
-                                <span>
-                                    💡
-                                </span>
-                                Review subscriptions monthly
-                            </div>
-                            <div class="tip-row">
-                                <span>
-                                    💳
-                                </span>
-                                Cancel unused services
-                            </div>
-                            <div class="tip-row">
-                                <span>
-                                    📅
-                                </span>
-                                Prefer annual billing when cheaper
-                            </div>
-                            <div class="tip-row">
-                                <span>
-                                    🔔
-                                </span>
-                                Enable reminders
-                            </div>
-                        </section>
-                        <section class="security-sidebar">
-                            <span class="card-kicker">
-                                Your information
-                            </span>
-                            <h2>
-                                Secure by design
-                            </h2>
-                            <div>
-                                <i class="bi bi-shield-check">
-                                </i>
-                                JWT protected
-                            </div>
-                            <div>
-                                <i class="bi bi-database-lock">
-                                </i>
-                                Data stored securely
-                            </div>
-                            <div>
-                                <i class="bi bi-person-lock">
-                                </i>
-                                Private dashboard
-                            </div>
-                        </section>
+                            </aside>
+                        </div>
                     </div>
-                </aside>
+
+                </div>
             </div>
         </div>
     </main>
-    <script src="{{ url_for('static', filename='js/add_subscription.js') }}">
-    </script>
+
+    <script src="{{ url_for('static', filename='js/add_subscription.js') }}"></script>
     {% set chatbot_page = 'add_subscription' %}
     {% include "partials/chatbot.html" %}
     <div class="chatbot-badge-tip">Ask AI</div>

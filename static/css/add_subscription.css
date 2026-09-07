@@ -1,476 +1,494 @@
-/* Add-subscription page, scoped so existing application screens are unaffected. */
-body:has(.add-subscription-page) {
-    background: #f7f8fc;
-    color: #26324b;
-}
+/* ==========================================================================
+   Smart Subscription Advisor - Add Subscription Page Stylesheet
+   Design System: Modern Premium SaaS / Fintech Workspace
+   Visual Source of Truth: Approved Reference Design
+   ========================================================================== */
 
-body:has(.add-subscription-page) > nav {
-    position: sticky;
-    top: 0;
-    z-index: 1030;
-    background: rgba(255,255,255,.9)!important;
-    border-bottom: 1px solid #e8ebf2;
-    backdrop-filter: blur(16px);
-}
-
-body:has(.add-subscription-page) > nav .navbar-brand {
-    color: #26324b;
-    font-weight: 800;
-}
-
-body:has(.add-subscription-page) > nav .nav-link {
-    color: #6f7b91;
-    font-weight: 650;
-}
-
-body:has(.add-subscription-page) > .container.mt-4 {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-}
-
-body:has(.add-subscription-page) > .container.mt-4 > .alert {
-    position: fixed;
-    z-index: 1100;
-    top: 20px;
-    right: 20px;
-    border-radius: 12px;
-    box-shadow: 0 12px 28px rgba(38,50,75,.15);
-}
-
+/* Main Canvas Wrapper */
 .add-subscription-page {
-    min-height: 100vh;
-    font-family: Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    animation: pageFade .35s ease both;
+    background-color: #F8FAFC;
+    min-height: calc(100vh - 64px);
+    width: 100%;
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+    color: #0F172A;
 }
 
-.add-subscription-container {
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 24px;
-    padding-bottom: 48px;
-    padding-left: 24px;
-    padding-right: 24px;
+.add-sub-app-layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+    width: 100%;
 }
 
+/* --------------------------------------------------------------------------
+   1. Main Workspace Content Area
+   -------------------------------------------------------------------------- */
+.add-sub-main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 40px 48px;
+    background-color: #F8FAFC;
+}
+
+.add-sub-content-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   2. Page Header
+   -------------------------------------------------------------------------- */
 .add-page-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    margin-bottom: 24px;
     gap: 16px;
-    margin-bottom: 20px;
-}
-
-.page-kicker,.card-kicker {
-    display: block;
-    color: #8079df;
-    font-size: .67rem;
-    font-weight: 800;
-    letter-spacing: .08em;
-    text-transform: uppercase;
 }
 
 .page-kicker {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #6366F1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
 }
 
-.add-page-header h1 {
-    margin: 8px 0 6px;
-    color: #202b45;
-    font-size: clamp(1.85rem,3.4vw,2.55rem);
+.page-kicker i {
+    font-size: 0.75rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
     font-weight: 800;
-    letter-spacing: -.055em;
+    color: #0F172A;
+    letter-spacing: -0.03em;
+    margin: 0 0 4px;
+    line-height: 1.2;
 }
 
-.add-page-header p {
+.page-subtitle {
+    font-size: 0.84rem;
+    color: #64748B;
     margin: 0;
-    color: #79859a;
-    font-size: .91rem;
-}
-
-.add-subscription-page .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    height: auto;
-    border-radius: 9px;
-    font-size: .79rem;
-    font-weight: 750;
 }
 
 .back-button {
-    padding: 10px 12px;
-    border: 1px solid #dfe4ee;
-    background: #fff;
-    color: #657188;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .back-button:hover {
-    border-color: #c5c0ff;
-    background: #f6f5ff;
-    color: #635bff;
+    background: #F1F5F9;
+    color: #0F172A;
+    border-color: #CBD5E1;
 }
 
-.add-form-card,.sidebar-card {
-    border: 1px solid #e5e8f1;
+/* --------------------------------------------------------------------------
+   3. Two-Column Workspace Grid
+   -------------------------------------------------------------------------- */
+.workspace-grid {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.workspace-left,
+.workspace-right {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   4. Left Main Form Card
+   -------------------------------------------------------------------------- */
+.add-form-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
     border-radius: 16px;
-    background: rgba(255,255,255,.82);
-    box-shadow: 0 10px 24px rgba(38,50,75,.055);
-    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
 .form-card-heading {
     display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 28px 29px 0;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
 }
 
-.form-card-heading h2,.sidebar-card h2,.security-sidebar h2 {
-    margin: 5px 0 4px;
-    color: #29354e;
-    font-size: 1.13rem;
-    font-weight: 800;
-    letter-spacing: -.03em;
+.form-card-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #EEF2FF;
+    color: #6366F1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
 }
 
-.form-card-heading p {
+.form-card-title-wrap h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+}
+
+.form-card-title-wrap p {
+    font-size: 0.8125rem;
+    color: #64748B;
     margin: 0;
-    color: #8b95a7;
-    font-size: .75rem;
-}
-
-.form-heading-icon {
-    display: grid;
-    flex: 0 0 39px;
-    height: 39px;
-    place-items: center;
-    border-radius: 11px;
-    background: #efefff;
-    color: #635bff;
-    font-size: 1rem;
 }
 
 .subscription-form {
-    padding: 25px 29px 29px;
+    padding: 0;
+    margin: 0;
+}
+
+.form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 16px;
 }
 
 .form-field {
-    margin-bottom: 19px;
+    margin-bottom: 16px;
+}
+
+.form-row-2col .form-field {
+    margin-bottom: 0;
 }
 
 .add-subscription-page .form-label {
-    color: #49556d;
-    font-size: .78rem;
-    font-weight: 750;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.field-hint {
+    font-size: 0.72rem;
+    color: #94A3B8;
+    margin-top: 5px;
+    line-height: 1.3;
+}
+
+.add-subscription-page .form-control,
+.add-subscription-page .form-select {
+    height: 44px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: #0F172A;
+    font-size: 0.84rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.add-subscription-page .form-control:focus,
+.add-subscription-page .form-select:focus {
+    border-color: #0F172A;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+    outline: none;
 }
 
 .input-icon-wrap {
     position: relative;
 }
 
-.input-icon-wrap > i,.currency-wrap > span {
+.input-icon-wrap.currency-wrap > span {
     position: absolute;
-    z-index: 2;
-    top: 50%;
     left: 14px;
-    color: #939cad;
-    font-size: .9rem;
+    top: 50%;
     transform: translateY(-50%);
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.875rem;
+    z-index: 2;
+    pointer-events: none;
 }
 
-.currency-wrap > span {
-    color: #635bff;
-    font-size: 1rem;
-    font-weight: 800;
+.input-icon-wrap.currency-wrap input {
+    padding-left: 32px;
 }
 
-.add-subscription-page .form-control,.add-subscription-page .form-select {
-    height: 49px;
-    border: 1px solid #dfe4ed;
-    border-radius: 9px;
-    background-color: #fff;
-    color: #4f5b73;
-    font-size: .83rem;
-    transition: border-color .2s,box-shadow .2s,transform .2s;
+.input-icon-wrap.select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-left: 14px;
+    padding-right: 32px;
+    cursor: pointer;
 }
 
-.add-subscription-page .form-control {
-    padding: 0 15px 0 40px;
+.input-icon-wrap.select-wrap .select-chevron {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.75rem;
+    pointer-events: none;
 }
 
-.add-subscription-page .form-select {
-    padding-left: 40px;
+.input-icon-wrap.date-wrap > i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.85rem;
+    pointer-events: none;
 }
 
-.add-subscription-page .form-control::placeholder {
-    color: #adb4c0;
+.input-icon-wrap.date-wrap input {
+    padding-left: 38px;
 }
 
-.add-subscription-page .form-control:focus,.add-subscription-page .form-select:focus {
-    border-color: #756bf3;
-    box-shadow: 0 0 0 4px rgba(99,91,255,.11);
+.input-icon-wrap.category-wrap select {
+    padding-left: 38px;
 }
 
-.usage-note {
-    display: flex;
-    gap: 9px;
-    margin: 1px 0 24px;
-    padding: 11px 12px;
-    border: 1px solid #e4e2ff;
-    border-radius: 9px;
-    background: #f8f7ff;
+.input-icon-wrap.category-wrap > i.category-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.875rem;
+    pointer-events: none;
 }
 
-.usage-note > span {
-    display: grid;
-    flex: 0 0 24px;
-    height: 24px;
-    place-items: center;
-    border-radius: 7px;
-    background: #ebe9ff;
-    color: #635bff;
-    font-size: .75rem;
-}
-
-.usage-note p {
-    margin: 0;
-    color: #7c86a0;
-    font-size: .68rem;
-    line-height: 1.55;
-}
-
-.usage-note strong {
-    color: #5f67a0;
+.category-status-pill {
+    background: #ECFDF5;
+    color: #10B981;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
 }
 
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 9px;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 12px;
 }
 
 .cancel-button {
-    padding: 10px 15px;
-    border: 1px solid #dfe4ee;
-    background: #fff;
-    color: #6e7a90;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
 }
 
 .cancel-button:hover {
-    background: #f5f6f9;
-    color: #4f5d74;
+    background: #F8FAFC;
+    color: #0F172A;
+    border-color: #CBD5E1;
 }
 
 .submit-button {
-    padding: 11px 15px;
-    border: 0;
-    background: #635bff;
-    box-shadow: 0 10px 20px rgba(99,91,255,.23);
-    color: #fff;
-    transition: transform .2s,box-shadow .2s,background .2s;
+    background: #0F172A;
+    border: 1px solid #0F172A;
+    color: #FFFFFF;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .submit-button:hover {
-    background: #5148e4;
-    box-shadow: 0 14px 26px rgba(99,91,255,.31);
-    color: #fff;
-    transform: translateY(-2px);
+    background: #1E293B;
+    border-color: #1E293B;
+    color: #FFFFFF;
 }
 
-.add-sidebar {
-    display: grid;
-    gap: 16px;
+/* --------------------------------------------------------------------------
+   5. Right Side: Single "Track Smarter" Information Card
+   -------------------------------------------------------------------------- */
+.track-smarter-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+    padding: 28px 26px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
-.sidebar-card {
-    padding: 21px;
-    transition: transform .2s,box-shadow .2s;
-}
-
-.sidebar-card:hover {
-    box-shadow: 0 15px 28px rgba(38,50,75,.09);
-    transform: translateY(-3px);
-}
-
-.sidebar-icon {
-    display: grid;
-    width: 34px;
-    height: 34px;
-    margin-bottom: 13px;
-    place-items: center;
-    border-radius: 9px;
-    background: #e6f8ef;
-    color: #1aa778;
-}
-
-.sidebar-icon.orange {
-    background: #fff2e4;
-    color: #e69132;
-}
-
-.benefit-list {
-    display: grid;
-    gap: 10px;
-    margin: 15px 0 0;
-    color: #768298;
-    font-size: .73rem;
-    font-weight: 650;
-}
-
-.benefit-list i {
-    display: inline-grid;
-    width: 17px;
-    height: 17px;
-    margin-right: 7px;
-    place-items: center;
-    border-radius: 50%;
-    background: #e3f8ef;
-    color: #1aa778;
-    font-size: .62rem;
-}
-
-.tips-card h2 {
+.track-smarter-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #ECFDF5;
+    color: #10B981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
     margin-bottom: 12px;
 }
 
-.tip-row {
-    padding: 9px 0;
-    border-top: 1px solid #eef0f5;
-    color: #778399;
-    font-size: .71rem;
-    font-weight: 650;
+.track-smarter-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
 }
 
-.tip-row span {
-    display: inline-block;
-    width: 22px;
+.track-smarter-subtitle {
+    font-size: 0.8125rem;
+    color: #64748B;
+    margin: 0 0 20px;
+    line-height: 1.45;
 }
 
-.security-sidebar {
-    padding: 20px;
-    border-radius: 15px;
-    background: linear-gradient(135deg,#29255d,#4d42a8);
-    box-shadow: 0 13px 26px rgba(49,42,112,.16);
-    color: #dedbff;
+.benefit-list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.security-sidebar h2 {
-    margin-bottom: 13px;
-    color: #fff;
+.benefit-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
 }
 
-.security-sidebar > div {
-    padding: 8px 0;
-    border-top: 1px solid rgba(255,255,255,.12);
-    color: #d5d1f5;
-    font-size: .72rem;
-    font-weight: 650;
+.benefit-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
-.security-sidebar > div i {
-    width: 21px;
-    color: #9c93ff;
+.benefit-icon-box.icon-blue {
+    background: #EFF6FF;
+    color: #3B82F6;
 }
 
-.security-sidebar .card-kicker {
-    color: #bdb7ff;
+.benefit-icon-box.icon-purple {
+    background: #F5F3FF;
+    color: #8B5CF6;
 }
 
-@keyframes pageFade {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: none;
-    }
-
+.benefit-icon-box.icon-amber {
+    background: #FFFBEB;
+    color: #F59E0B;
 }
 
-@media (max-width:991.98px) {
-    .add-sidebar {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .security-sidebar {
-        grid-column: 1/-1;
-    }
-
+.benefit-icon-box.icon-green {
+    background: #ECFDF5;
+    color: #10B981;
 }
 
-@media (max-width:767.98px) {
-    .add-subscription-container {
-        padding-top: 30px;
-    }
-
-    .add-page-header {
-        align-items: flex-start;
-        flex-direction: column;
-        margin-bottom: 24px;
-    }
-
-    .add-sidebar {
-        grid-template-columns: 1fr;
-    }
-
-    .security-sidebar {
-        grid-column: auto;
-    }
-
-    .form-card-heading,.subscription-form {
-        padding-left: 21px;
-        padding-right: 21px;
-    }
-
+.benefit-heading {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #0F172A;
+    margin: 0 0 1px;
+    line-height: 1.3;
 }
 
-@media (max-width:460px) {
-    .add-page-header h1 {
-        font-size: 1.85rem;
-    }
-
-    .back-button {
-        width: 100%;
-    }
-
-    .form-card-heading {
-        padding-top: 21px;
-    }
-
-    .form-card-heading p {
-        display: none;
-    }
-
-    .subscription-form {
-        padding-top: 20px;
-        padding-bottom: 21px;
-    }
-
-    .form-actions {
-        flex-direction: column-reverse;
-    }
-
-    .form-actions .btn {
-        width: 100%;
-    }
-
-    .usage-note {
-        margin-bottom: 19px;
-    }
-
+.benefit-sub {
+    font-size: 0.75rem;
+    color: #64748B;
+    margin: 0;
+    line-height: 1.35;
 }
 
-/* ==========================================================================
-   Service Autocomplete & Logo System
-   ========================================================================== */
+.track-smarter-divider {
+    height: 1px;
+    background-color: #F1F5F9;
+    margin: 20px 0 16px;
+}
 
+.privacy-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.privacy-icon-box {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    color: #64748B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.privacy-primary {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #334155;
+    line-height: 1.3;
+}
+
+.privacy-secondary {
+    display: block;
+    font-size: 0.72rem;
+    color: #94A3B8;
+    line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   6. Service Autocomplete & Logo System
+   -------------------------------------------------------------------------- */
 .service-autocomplete-wrap {
     position: relative;
 }
@@ -489,9 +507,9 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
     justify-content: center;
     font-size: 0.78rem;
     font-weight: 700;
-    color: #94a3b8;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    color: #94A3B8;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
     pointer-events: none;
     transition: all 0.2s ease;
     overflow: hidden;
@@ -528,8 +546,8 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
     top: calc(100% + 4px);
     left: 0;
     right: 0;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
     border-radius: 12px;
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12), 0 2px 4px rgba(15, 23, 42, 0.04);
     max-height: 280px;
@@ -542,8 +560,9 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
 .service-autocomplete-dropdown::-webkit-scrollbar {
     width: 6px;
 }
+
 .service-autocomplete-dropdown::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
+    background-color: #CBD5E1;
     border-radius: 3px;
 }
 
@@ -560,11 +579,11 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
 
 .autocomplete-item:hover,
 .autocomplete-item.active {
-    background-color: #f5f3ff;
+    background-color: #F5F3FF;
 }
 
 .autocomplete-item.active {
-    outline: 1px solid #d8d3ff;
+    outline: 1px solid #D8D3FF;
 }
 
 .autocomplete-logo-box {
@@ -577,7 +596,7 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
     font-size: 0.8rem;
     font-weight: 700;
     flex-shrink: 0;
-    color: #ffffff;
+    color: #FFFFFF;
     overflow: hidden;
 }
 
@@ -596,7 +615,7 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
 .autocomplete-name {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #1e293b;
+    color: #1E293B;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -604,107 +623,105 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
 
 .autocomplete-category {
     font-size: 0.72rem;
-    color: #64748b;
+    color: #64748B;
     font-weight: 500;
     margin-top: 2px;
 }
 
 .autocomplete-match {
-    color: #635bff;
+    color: #635BFF;
     font-weight: 700;
 }
 
 .autocomplete-empty {
     padding: 12px;
     text-align: center;
-    color: #64748b;
+    color: #64748B;
     font-size: 0.82rem;
 }
 
-/* Service Brand Color Classes */
-.brand-netflix {
-    background-color: #000000 !important;
-    color: #E50914 !important;
-    font-weight: 800 !important;
-    border-color: #000000 !important;
-}
-.brand-spotify {
-    background-color: #1DB954 !important;
-    color: #FFFFFF !important;
-    border-color: #1DB954 !important;
-}
-.brand-youtube {
-    background-color: #DC2626 !important;
-    color: #FFFFFF !important;
-    border-color: #DC2626 !important;
-}
-.brand-amazon {
-    background-color: #0284C7 !important;
-    color: #FFFFFF !important;
-    border-color: #0284C7 !important;
-}
-.brand-microsoft {
-    background-color: #2563EB !important;
-    color: #FFFFFF !important;
-    border-color: #2563EB !important;
-}
-.brand-canva {
-    background-color: #00C4CC !important;
-    color: #FFFFFF !important;
-    border-color: #00C4CC !important;
-}
-.brand-chatgpt {
-    background-color: #10A37F !important;
-    color: #FFFFFF !important;
-    border-color: #10A37F !important;
-}
-.brand-disney {
-    background-color: #0C1946 !important;
-    color: #FFFFFF !important;
-    border-color: #0C1946 !important;
-}
-.brand-apple {
-    background-color: #FC3C44 !important;
-    color: #FFFFFF !important;
-    border-color: #FC3C44 !important;
-}
-.brand-adobe {
-    background-color: #DA1F26 !important;
-    color: #FFFFFF !important;
-    border-color: #DA1F26 !important;
-}
-.brand-google {
-    background-color: #4285F4 !important;
-    color: #FFFFFF !important;
-    border-color: #4285F4 !important;
-}
-.brand-dropbox {
-    background-color: #0061FF !important;
-    color: #FFFFFF !important;
-    border-color: #0061FF !important;
-}
-.brand-notion {
-    background-color: #000000 !important;
-    color: #FFFFFF !important;
-    border-color: #000000 !important;
-}
-.brand-grammarly {
-    background-color: #15C39A !important;
-    color: #FFFFFF !important;
-    border-color: #15C39A !important;
-}
-.brand-linkedin {
-    background-color: #0A66C2 !important;
-    color: #FFFFFF !important;
-    border-color: #0A66C2 !important;
-}
 .brand-default {
     background-color: #64748B !important;
     color: #FFFFFF !important;
     border-color: #64748B !important;
 }
 
-/* Chatbot Badge Tip */
+/* --------------------------------------------------------------------------
+   7. Post-Save "Usage & Value" Card
+   -------------------------------------------------------------------------- */
+.post-save-card {
+    padding: 24px 20px 20px;
+    animation: fadeInStep 0.25s ease forwards;
+}
+
+@keyframes fadeInStep {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.post-save-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.post-save-check-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ECFDF5;
+    color: #10B981;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.post-save-status {
+    font-size: 0.72rem;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #059669;
+}
+
+.post-save-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 2px 0 0;
+    letter-spacing: -0.02em;
+}
+
+.post-save-intro {
+    font-size: 0.85rem;
+    color: #64748B;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.post-save-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.post-save-actions .btn {
+    min-width: 120px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Chatbot Badge Tip
+   -------------------------------------------------------------------------- */
 .chatbot-badge-tip {
     position: fixed;
     bottom: 84px;
@@ -728,4 +745,42 @@ body:has(.add-subscription-page) > .container.mt-4 > .alert {
     border-width: 4px 4px 0;
     border-style: solid;
     border-color: #0F172A transparent transparent;
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+    .workspace-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .add-sub-main-content {
+        padding: 24px 20px 36px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .form-row-2col {
+        grid-template-columns: 1fr;
+    }
+
+    .add-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .back-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
 }

@@ -203,3 +203,133 @@ def test_add_subscription_official_logos_exist_and_referenced():
     for logo in required_logos:
         assert f"/static/assets/logos/subscriptions/{logo}" in js_content, f"{logo} not referenced in add_subscription.js"
 
+
+def test_add_subscription_streamlined_form_removes_usage_from_initial_view(client, auth_user):
+    """Verify usage frequency and hours are removed from the initial form and moved to post-save."""
+    res = client.get("/add-subscription")
+    assert res.status_code == 200
+    html = res.data.decode("utf-8")
+
+    # Initial form should NOT contain usage fields
+    initial_form_part = html.split('<form')[1].split('</form>')[0]
+    assert 'name="usage_frequency"' not in initial_form_part
+    assert 'name="usage_hours"' not in initial_form_part
+    assert 'class="usage-note"' not in initial_form_part
+
+    # Post-save card must exist and contain the required frictionless prompt
+    assert 'id="postSaveUsageCard"' in html
+    assert "Subscription added successfully" in html
+    assert "Want better recommendations?" in html
+    assert "Tell us how often you use this subscription" in html
+    assert "Skip for Now" in html
+    assert "Save Usage Details" in html
+    assert 'id="post-save-frequency"' in html
+    assert 'id="post-save-hours"' in html
+
+
+def test_fast_subscription_creation_without_usage_info(client, auth_user):
+    """Initial subscription creation should succeed without any usage information."""
+    res = client.post(
+        "/add-subscription",
+        data={
+            "service_name": "Hotstar",
+            "monthly_cost": "299",
+            "category": "Entertainment",
+            "start_date": "2026-09-15",
+            "billing_cycle": "Monthly",
+        },
+        follow_redirects=True
+    )
+    assert res.status_code == 200
+
+    sub = Subscription.query.filter_by(user_id=auth_user, service_name="Hotstar").first()
+    assert sub is not None
+    assert sub.monthly_cost == 299.0
+    assert sub.billing_cycle == "Monthly"
+    assert sub.usage_frequency is None or sub.usage_frequency == ""
+    # Recommendation priority calculation works even without usage info
+    assert sub.priority is not None
+
+
+def test_ajax_subscription_creation_returns_subscription_id_for_post_save(client, auth_user):
+    """AJAX subscription submission returns JSON with subscription_id for seamless in-place transition."""
+    res = client.post(
+        "/add-subscription",
+        data={
+            "service_name": "ChatGPT Plus",
+            "monthly_cost": "1999",
+            "category": "Productivity",
+            "start_date": "2026-10-01",
+            "billing_cycle": "Monthly",
+        },
+        headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"}
+    )
+    assert res.status_code == 201
+    json_data = res.get_json()
+    assert json_data is not None
+    assert json_data["success"] is True
+    assert "subscription_id" in json_data
+    sub_id = json_data["subscription_id"]
+
+    sub = db.session.get(Subscription, sub_id)
+    assert sub is not None
+    assert sub.service_name == "ChatGPT Plus"
+
+
+def test_post_save_usage_endpoint_updates_subscription_usage(client, auth_user):
+    """POST /subscriptions/<id>/usage updates usage details and re-evaluates recommendations."""
+    # First create subscription
+    sub = Subscription(
+        user_id=auth_user,
+        service_name="Audible",
+        monthly_cost=199.0,
+        category="Entertainment",
+        start_date=date(2026, 9, 1),
+        renewal_date=date(2026, 10, 1),
+        billing_cycle="Monthly"
+    )
+    db.session.add(sub)
+    db.session.commit()
+    sub_id = sub.id
+
+    # Now post usage details via JSON
+    res = client.post(
+        f"/subscriptions/{sub_id}/usage",
+        json={"usage_frequency": "Several times a week", "usage_hours": 6},
+        headers={"X-Requested-With": "XMLHttpRequest"}
+    )
+    assert res.status_code == 200
+    json_data = res.get_json()
+    assert json_data["success"] is True
+
+    updated_sub = db.session.get(Subscription, sub_id)
+    assert updated_sub.usage_frequency == "Several times a week"
+    assert updated_sub.usage_hours == 6.0
+
+
+def test_skip_post_save_step_preserves_subscription_intact(client, auth_user):
+    """Skipping the post-save step does not alter or delete the created subscription."""
+    sub = Subscription(
+        user_id=auth_user,
+        service_name="Duolingo",
+        monthly_cost=499.0,
+        category="Education",
+        start_date=date(2026, 9, 1),
+        renewal_date=date(2026, 10, 1),
+        billing_cycle="Monthly"
+    )
+    db.session.add(sub)
+    db.session.commit()
+    sub_id = sub.id
+
+    # User navigates directly to /subscriptions without calling /usage
+    res = client.get("/subscriptions")
+    assert res.status_code == 200
+
+    persisted = db.session.get(Subscription, sub_id)
+    assert persisted is not None
+    assert persisted.service_name == "Duolingo"
+    assert persisted.monthly_cost == 499.0
+
+
+

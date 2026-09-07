@@ -1,0 +1,335 @@
+/* ==========================================================================
+   Global Authenticated Navigation & Collapsible Sidebar Stylesheet
+   Design System: Deep Slate #0F172A, Border #E2E8F0, Neutral #F8FAFC, Accent #2563EB
+   Source of Truth: Approved Reference Navigation Shell
+   ========================================================================== */
+
+:root {
+    --sidebar-width-collapsed: 72px;
+    --sidebar-width-expanded: 260px;
+    --sidebar-width: var(--sidebar-width-collapsed);
+}
+
+body.sidebar-expanded,
+html.sidebar-expanded body {
+    --sidebar-width: var(--sidebar-width-expanded);
+}
+
+/* --------------------------------------------------------------------------
+   1. Sidebar Container
+   -------------------------------------------------------------------------- */
+.dashboard-sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    flex-shrink: 0;
+    background-color: #FFFFFF;
+    border-right: 1px solid #E2E8F0;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: width 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+                min-width 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+                max-width 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    z-index: 1020;
+}
+
+/* --------------------------------------------------------------------------
+   2. Top Toggle & Identity Bar
+   -------------------------------------------------------------------------- */
+.sidebar-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    min-height: 36px;
+    position: relative;
+}
+
+body.sidebar-expanded .sidebar-header-bar {
+    justify-content: space-between;
+    padding: 0 4px;
+}
+
+.sidebar-brand-compact {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+body.sidebar-expanded .sidebar-brand-compact {
+    display: flex;
+}
+
+.brand-mini-mark {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    background: #0F172A;
+    color: #FFFFFF;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+}
+
+.brand-mini-text {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #0F172A;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.sidebar-toggle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+    background-color: #F1F5F9;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+.sidebar-toggle-btn:focus-visible {
+    outline: 2px solid #2563EB;
+    outline-offset: 2px;
+}
+
+.toggle-icon-collapsed {
+    display: inline-flex;
+}
+
+.toggle-icon-expanded {
+    display: none;
+}
+
+body.sidebar-expanded .toggle-icon-collapsed {
+    display: none;
+}
+
+body.sidebar-expanded .toggle-icon-expanded {
+    display: inline-flex;
+}
+
+/* --------------------------------------------------------------------------
+   3. Navigation Items & Grouping
+   -------------------------------------------------------------------------- */
+.sidebar-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.sidebar-nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 100%;
+    border-radius: 8px;
+    color: #475569;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+body.sidebar-expanded .sidebar-nav-item {
+    justify-content: flex-start;
+    height: 40px;
+    padding: 0 10px;
+    gap: 12px;
+}
+
+/* Navigation Icon */
+.nav-icon-wrap {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    border-radius: 6px;
+    color: #64748B;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+body.sidebar-expanded .nav-icon-wrap {
+    width: 22px;
+    height: 22px;
+    font-size: 1.05rem;
+}
+
+/* Navigation Text Label */
+.nav-label {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    overflow: hidden;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: inherit;
+    transition: opacity 0.15s ease 0.03s;
+}
+
+body.sidebar-expanded .nav-label {
+    opacity: 1;
+    visibility: visible;
+    width: auto;
+    overflow: visible;
+    pointer-events: auto;
+}
+
+/* Hover & Active States */
+.sidebar-nav-item:hover {
+    color: #0F172A;
+}
+
+/* Collapsed Hover / Active */
+body:not(.sidebar-expanded) .sidebar-nav-item:hover .nav-icon-wrap {
+    background-color: #F8FAFC;
+    color: #0F172A;
+}
+
+body:not(.sidebar-expanded) .sidebar-nav-item.active .nav-icon-wrap {
+    background-color: #F1F5F9;
+    color: #0F172A;
+    font-weight: 600;
+}
+
+body:not(.sidebar-expanded) .sidebar-nav-item.active:hover .nav-icon-wrap {
+    background-color: #EEF2F6;
+    color: #0F172A;
+}
+
+/* Expanded Hover / Active */
+body.sidebar-expanded .sidebar-nav-item:hover {
+    background-color: #F8FAFC;
+    color: #0F172A;
+}
+
+body.sidebar-expanded .sidebar-nav-item:hover .nav-icon-wrap {
+    color: #0F172A;
+}
+
+body.sidebar-expanded .sidebar-nav-item.active {
+    background-color: #F1F5F9;
+    color: #0F172A;
+    font-weight: 600;
+}
+
+body.sidebar-expanded .sidebar-nav-item.active .nav-icon-wrap {
+    color: #0F172A;
+}
+
+body.sidebar-expanded .sidebar-nav-item.active:hover {
+    background-color: #EEF2F6;
+}
+
+/* Divider */
+.sidebar-divider {
+    height: 1px;
+    background-color: #E2E8F0;
+    margin: 10px 0;
+    width: 100%;
+}
+
+/* Logout Item */
+.sidebar-logout-item {
+    color: #64748B;
+}
+
+body:not(.sidebar-expanded) .sidebar-logout-item:hover .nav-icon-wrap {
+    background-color: #FEF2F2;
+    color: #B91C1C;
+}
+
+body.sidebar-expanded .sidebar-logout-item:hover {
+    background-color: #FEF2F2;
+    color: #B91C1C;
+}
+
+body.sidebar-expanded .sidebar-logout-item:hover .nav-icon-wrap {
+    color: #B91C1C;
+}
+
+/* --------------------------------------------------------------------------
+   4. Tooltips (Collapsed View Only)
+   -------------------------------------------------------------------------- */
+.sidebar-tooltip {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #0F172A;
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1060;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+}
+
+.sidebar-tooltip::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 4px solid transparent;
+    border-right-color: #0F172A;
+}
+
+body:not(.sidebar-expanded) .sidebar-nav-item:hover .sidebar-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+body.sidebar-expanded .sidebar-tooltip {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Mobile Responsiveness
+   -------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+    .dashboard-sidebar {
+        display: none !important;
+    }
+}

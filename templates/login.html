@@ -58,13 +58,6 @@
                             <i class="bi bi-exclamation-circle-fill me-2"></i>
                             <span>{{ login_error }}</span>
                         </div>
-                        {% if show_resend %}
-                            <div class="resend-email-wrap mt-2">
-                                <a href="{{ url_for('auth.resend_verification', email=unverified_email) }}" class="btn btn-resend-link">
-                                    <i class="bi bi-envelope-check me-1"></i> Resend Verification Email
-                                </a>
-                            </div>
-                        {% endif %}
                     </div>
                 {% endif %}
 

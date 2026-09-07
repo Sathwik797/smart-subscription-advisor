@@ -613,6 +613,13 @@ body:has(.register-page) > .app-content > .container.app-flash-container {
     margin-bottom: 6px;
 }
 
+.form-label-optional {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #64748B;
+    margin-left: 4px;
+}
+
 .input-icon-wrap {
     position: relative;
     display: flex;
