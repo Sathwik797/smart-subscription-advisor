@@ -4,10 +4,11 @@ Services contain the application's business rules and orchestrate repository
 calls without directly handling HTTP requests.
 """
 
-from decimal import Decimal
+import calendar
 import csv
-from io import StringIO
 from datetime import datetime, timedelta
+from decimal import Decimal
+from io import StringIO
 
 from dateutil.relativedelta import relativedelta
 
@@ -346,7 +347,7 @@ class SubscriptionService:
     def get_spending_analytics(self, user):
         """Prepare comprehensive spending analytics and insights for the current user."""
         subscriptions = self.subscription_repository.get_user_subscriptions(user.id)
-        intel = self.intelligence_service.build_intelligence_context(user)
+        intel = self.intelligence_service.build_intelligence_context(user, subscriptions=subscriptions)
 
         fin_summary = intel.get("financial_summary", {})
         total_monthly = float(fin_summary.get("monthly_spending", intel.get("total_monthly", 0.0)))
@@ -356,21 +357,44 @@ class SubscriptionService:
         active_count = len(subscriptions)
         avg_monthly = round(total_monthly / active_count, 2) if active_count > 0 else 0.0
 
-        # 1. Monthly Spending Trend (Last 6 Months)
+        # 1. Projected Billing Schedule (Next 6 Months of actual projected payment events based on cycle & renewal date)
         today = datetime.now().date()
-        trend_months = []
-        trend_values = []
-        for i in range(5, -1, -1):
-            m_date = today - relativedelta(months=i)
-            trend_months.append(m_date.strftime("%b"))
+        schedule_months = []
+        schedule_values = []
+        for i in range(6):
+            target_date = today + relativedelta(months=i)
+            schedule_months.append(target_date.strftime("%b"))
             if not subscriptions:
-                trend_values.append(0.0)
+                schedule_values.append(0.0)
             else:
-                m_spend = sum(
-                    float(s.monthly_equivalent) for s in subscriptions
-                    if getattr(s, "start_date", None) is None or s.start_date <= m_date.replace(day=28)
-                )
-                trend_values.append(round(m_spend, 2))
+                target_year = target_date.year
+                target_month = target_date.month
+                month_payment_sum = Decimal("0.00")
+                for s in subscriptions:
+                    cycle = (getattr(s, "billing_cycle", "Monthly") or "Monthly").strip().capitalize()
+                    cost = getattr(s, "cost_decimal", Decimal(str(s.monthly_cost or "0.00")))
+                    ren_date = getattr(s, "renewal_date", None) or getattr(s, "start_date", None) or today
+
+                    if cycle == "Monthly":
+                        month_payment_sum += cost
+                    elif cycle == "Yearly":
+                        if ren_date.month == target_month:
+                            month_payment_sum += cost
+                    elif cycle == "Quarterly":
+                        month_diff = (target_year - ren_date.year) * 12 + (target_month - ren_date.month)
+                        if month_diff % 3 == 0:
+                            month_payment_sum += cost
+                    elif cycle == "Weekly":
+                        num_days = calendar.monthrange(target_year, target_month)[1]
+                        weekday_count = sum(
+                            1 for d in range(1, num_days + 1)
+                            if datetime(target_year, target_month, d).weekday() == ren_date.weekday()
+                        )
+                        month_payment_sum += cost * Decimal(str(weekday_count))
+                    else:
+                        month_payment_sum += cost
+
+                schedule_values.append(float(round(month_payment_sum, 2)))
 
         # 2. Spending by Category
         category_palette = [
@@ -442,7 +466,7 @@ class SubscriptionService:
         else:
             pro_tip = "All active subscriptions currently use longer billing periods."
 
-        # 5. Spending Insights
+        # 5. Data-Driven Spending Insights
         insights = []
         if subscriptions:
             # Insight 1: Category concentration
@@ -453,64 +477,92 @@ class SubscriptionService:
                         "icon": "bi-pie-chart-fill",
                         "color": "purple",
                         "title": f"{top_cat['name']} accounts for {top_cat['percentage']:.0f}%",
-                        "description": f"Almost half of your spending goes to {top_cat['name'].lower()} subscriptions.",
+                        "description": f"Over a third of your recurring spend goes to {top_cat['name'].lower()} subscriptions.",
                     })
                 else:
                     insights.append({
                         "icon": "bi-pie-chart-fill",
                         "color": "purple",
                         "title": f"{top_cat['name']} is your highest category",
-                        "description": f"Accounts for {top_cat['percentage']:.0f}% (₹{top_cat['monthly_amount']:.0f}/mo) of total spend.",
+                        "description": f"Accounts for {top_cat['percentage']:.0f}% (₹{top_cat['monthly_amount']:,.0f}/mo) of total spend.",
                     })
 
-            # Insight 2: Spend Stability
-            insights.append({
-                "icon": "bi-arrow-down-short",
-                "color": "green",
-                "title": "Spending is stable",
-                "description": "Your monthly spending has remained consistent over the last 6 months.",
-            })
-
-            # Insight 3: Optimization Opportunities
-            if potential_monthly_savings > 0:
-                low_subs = [s for s in subscriptions if getattr(s, "priority", "") == "Low"]
-                opt_count = len(low_subs) if low_subs else 1
+            # Insight 2: Largest Single Commitment
+            if top_subscriptions:
+                top_sub = top_subscriptions[0]
                 insights.append({
-                    "icon": "bi-calendar-check",
+                    "icon": "bi-award-fill",
+                    "color": "blue",
+                    "title": f"{top_sub['service_name']} is your largest service",
+                    "description": f"Accounts for {top_sub['percentage']:.0f}% of recurring commitments (₹{top_sub['monthly_equivalent']:,.0f}/mo).",
+                })
+
+            # Insight 3: Upcoming Renewals (Next 7 Days)
+            next_7_days = today + timedelta(days=7)
+            renewing_soon = [s for s in subscriptions if s.renewal_date and today <= s.renewal_date <= next_7_days]
+            if renewing_soon:
+                soon_total = sum(float(s.monthly_cost) for s in renewing_soon)
+                insights.append({
+                    "icon": "bi-calendar-event-fill",
                     "color": "amber",
-                    "title": f"{opt_count} subscription{'s' if opt_count != 1 else ''} may be optimized",
-                    "description": f"You could save up to ₹{potential_monthly_savings:.0f}/month with annual plans or alternative options.",
+                    "title": f"{len(renewing_soon)} renewal{'s' if len(renewing_soon) != 1 else ''} in next 7 days",
+                    "description": f"₹{soon_total:,.0f} due across upcoming scheduled renewals.",
                 })
             else:
                 insights.append({
                     "icon": "bi-shield-check",
+                    "color": "green",
+                    "title": "No renewals this week",
+                    "description": "All scheduled subscription renewals are outside the next 7 days.",
+                })
+
+            # Insight 4: Optimization Opportunities
+            if potential_monthly_savings > 0:
+                low_subs = [s for s in subscriptions if getattr(s, "priority", "") == "Low"]
+                opt_count = len(low_subs) if low_subs else 1
+                insights.append({
+                    "icon": "bi-piggy-bank-fill",
                     "color": "amber",
+                    "title": f"₹{potential_monthly_savings:,.0f}/mo potential savings",
+                    "description": f"Identified across {opt_count} low-utilization or optimizable service{'s' if opt_count != 1 else ''}.",
+                })
+            else:
+                insights.append({
+                    "icon": "bi-check2-circle",
+                    "color": "emerald",
                     "title": "Portfolio is well-managed",
                     "description": "No immediate low-utility subscriptions detected in your portfolio.",
                 })
 
-            # Insight 4: Average Spend
-            insights.append({
-                "icon": "bi-graph-up",
-                "color": "blue",
-                "title": f"Average spend is ₹{avg_monthly:.0f}/subscription",
-                "description": f"Your spending is distributed across {active_count} tracked service{'s' if active_count != 1 else ''}.",
-            })
-
         return {
+            "summary": {
+                "total_monthly": total_monthly,
+                "total_yearly": total_yearly,
+                "avg_monthly": avg_monthly,
+                "potential_monthly_savings": potential_monthly_savings,
+                "potential_yearly_savings": potential_yearly_savings,
+                "active_subscriptions": active_count,
+            },
+            "categories": categories_data,
+            "top_subscriptions": top_subscriptions,
+            "billing_cycles": billing_cycles,
+            "spending_schedule": {
+                "months": schedule_months,
+                "values": schedule_values,
+                "label": "Projected Billing Schedule",
+            },
+            "pro_tip": pro_tip,
+            "insights": insights,
+            # Backward-compatible aliases for templates and JS consumption
             "total_monthly": total_monthly,
             "total_yearly": total_yearly,
             "avg_monthly": avg_monthly,
             "potential_monthly_savings": potential_monthly_savings,
             "potential_yearly_savings": potential_yearly_savings,
             "total_subscriptions": active_count,
-            "trend_months": trend_months,
-            "trend_values": trend_values,
+            "trend_months": schedule_months,
+            "trend_values": schedule_values,
             "categories_data": categories_data,
-            "top_subscriptions": top_subscriptions,
-            "billing_cycles": billing_cycles,
-            "pro_tip": pro_tip,
-            "insights": insights,
         }
 
 

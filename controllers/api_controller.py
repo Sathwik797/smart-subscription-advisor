@@ -229,3 +229,14 @@ def api_intelligence():
 
     intelligence_data = ai_reasoning_service.get_reasoned_intelligence(user)
     return json_success("Intelligence fetched successfully", intelligence_data)
+
+
+@jwt_required()
+def api_analytics():
+    """Return canonical spending analytics via JWT."""
+    user_id = get_jwt_identity()
+    user = auth_service.get_user_by_id(user_id)
+
+    analytics_data = subscription_service.get_spending_analytics(user)
+    return json_success("Analytics fetched successfully", analytics_data)
+

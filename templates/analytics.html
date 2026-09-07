@@ -24,7 +24,7 @@
                 <div class="header-right-wrap">
                     <div class="analytics-range-selector" title="Selected reporting period">
                         <i class="bi bi-calendar3 date-range-icon"></i>
-                        <span>Last 6 Months</span>
+                        <span>Next 6 Months</span>
                         <i class="bi bi-chevron-down range-chevron"></i>
                     </div>
                 </div>
@@ -44,8 +44,7 @@
                         <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiSpendValue">{{ "{:,.0f}".format(total_monthly) if total_monthly is defined else "0" }}</span>
                     </div>
                     <div class="kpi-subtext-row">
-                        <span class="kpi-trend positive"><i class="bi bi-arrow-down-short"></i> 12%</span>
-                        <span class="kpi-context">vs previous 6 months</span>
+                        <span class="kpi-context">Across {{ total_subscriptions }} active services</span>
                     </div>
                 </div>
 
@@ -61,8 +60,7 @@
                         <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiYearlyValue">{{ "{:,.0f}".format(total_yearly) if total_yearly is defined else "0" }}</span>
                     </div>
                     <div class="kpi-subtext-row">
-                        <span class="kpi-trend neutral"><i class="bi bi-arrow-up-short"></i> 8%</span>
-                        <span class="kpi-context">vs previous year</span>
+                        <span class="kpi-context">Based on active billing cycles</span>
                     </div>
                 </div>
 
@@ -72,13 +70,13 @@
                         <div class="kpi-icon-box kpi-icon-green">
                             <i class="bi bi-bar-chart-fill"></i>
                         </div>
-                        <span class="kpi-label" id="kpiLabelAvg">Average Monthly Spend</span>
+                        <span class="kpi-label" id="kpiLabelAvg">Average per Subscription</span>
                     </div>
                     <div class="kpi-value-row">
                         <span class="kpi-currency">₹</span><span class="kpi-value" id="kpiAvgValue">{{ "{:,.0f}".format(avg_monthly) if avg_monthly is defined else "0" }}</span>
                     </div>
                     <div class="kpi-subtext-row">
-                        <span class="kpi-context">Based on last 6 months</span>
+                        <span class="kpi-context">Average monthly commitment</span>
                     </div>
                 </div>
 
@@ -113,13 +111,13 @@
                 <div class="analytics-panel-card trend-card">
                     <div class="panel-header">
                         <div class="panel-title-wrap">
-                            <h2 class="panel-title" id="trendCardTitle">Monthly Spending Trend</h2>
-                            <p class="panel-subtitle">Your total subscription spending over time.</p>
+                            <h2 class="panel-title" id="trendCardTitle">Projected Billing Schedule</h2>
+                            <p class="panel-subtitle">Upcoming renewal commitments over the next 6 months.</p>
                         </div>
                         <div class="panel-filter-wrap">
                             <span class="filter-label">Time Period</span>
                             <div class="inline-select-pill">
-                                <span>Last 6 Months</span>
+                                <span>Next 6 Months</span>
                                 <i class="bi bi-chevron-down"></i>
                             </div>
                         </div>
@@ -135,7 +133,7 @@
                                 <i class="bi bi-bar-chart"></i>
                             </div>
                             <h3 class="empty-state-title">No spending data yet</h3>
-                            <p class="empty-state-desc">Add your first subscription to see your spending trend.</p>
+                            <p class="empty-state-desc">Add your first subscription to see your upcoming payment schedule.</p>
                             <a href="{{ url_for('auth.add_subscription') }}" class="empty-cta-btn">Add Subscription</a>
                         </div>
                         {% endif %}
@@ -210,7 +208,7 @@
                                 </thead>
                                 <tbody>
                                     {% for sub in top_subscriptions[:5] %}
-                                    <tr class="sub-table-row" data-monthly="{{ sub.monthly_cost }}" data-yearly="{{ sub.yearly_cost }}">
+                                    <tr class="sub-table-row" data-monthly="{{ sub.monthly_equivalent }}" data-yearly="{{ sub.yearly_cost }}">
                                         <td>
                                             <div class="sub-ident-wrap">
                                                 {% set name_lower = sub.service_name|lower %}
@@ -234,7 +232,7 @@
                                             <span class="sub-category-pill">{{ sub.category }}</span>
                                         </td>
                                         <td class="text-right sub-cost-cell font-semibold">
-                                            ₹{{ "{:,.0f}".format(sub.monthly_cost) }}
+                                            ₹{{ "{:,.0f}".format(sub.monthly_equivalent) }}
                                         </td>
                                         <td class="text-right sub-pct-cell font-medium text-muted">
                                             {{ "%.1f"|format(sub.percentage) }}%

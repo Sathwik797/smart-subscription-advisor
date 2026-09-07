@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: {
                         labels: months,
                         datasets: [{
-                            label: "Total Spend",
+                            label: "Projected Billing",
                             data: values,
                             backgroundColor: "#60A5FA",
                             hoverBackgroundColor: "#3B82F6",
@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Update KPI 3 (Average Spend)
         if (kpiLabelAvg && kpiAvgValue) {
-            kpiLabelAvg.textContent = isMonthly ? "Average Monthly Spend" : "Average Annual Spend";
+            kpiLabelAvg.textContent = isMonthly ? "Average per Subscription" : "Average per Subscription (Annual)";
             kpiAvgValue.textContent = formatINR(isMonthly ? data.avgMonthly : data.avgYearly);
         }
 

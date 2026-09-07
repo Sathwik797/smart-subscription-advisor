@@ -279,13 +279,14 @@ class IntelligenceService:
         candidates.sort(key=lambda c: c.get("score", 0), reverse=True)
         return candidates
 
-    def build_intelligence_context(self, user: Any) -> Dict[str, Any]:
+    def build_intelligence_context(self, user: Any, subscriptions: Optional[List[Any]] = None) -> Dict[str, Any]:
         """
         Build the unified, grounded intelligence context for a specific authenticated user.
 
         Ensures strict user isolation and non-duplicated potential savings using Decimal precision.
         """
-        subscriptions = self.subscription_repository.get_user_subscriptions(user.id)
+        if subscriptions is None:
+            subscriptions = self.subscription_repository.get_user_subscriptions(user.id)
         pref = getattr(user, "financial_preference", "Balanced")
 
         # 1. Deterministic financial metrics (authoritative Decimal calculations)
